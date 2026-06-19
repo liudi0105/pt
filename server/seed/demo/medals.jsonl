@@ -1,0 +1,8 @@
+{"model":"medal","data":{"code":0,"description":"Awarded for completing the first upload milestone","image":"first-upload.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":1,"description":"Awarded for reaching the 100 uploads milestone","image":"100-uploads.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":2,"description":"Awarded for seeding for 1000 hours","image":"seed-master.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":3,"description":"Awarded for receiving 50 thanks","image":"helpful-user.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":4,"description":"Special medal for VIP members","image":"vip-member.png","price":100,"is_active":true}}
+{"model":"medal","data":{"code":5,"description":"Awarded to top uploaders of the month","image":"top-uploader.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":6,"description":"Awarded for being a member for 1 year","image":"anniversary-1year.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":7,"description":"Awarded for making 100 forum posts","image":"forum-active.png","price":0,"is_active":true}}

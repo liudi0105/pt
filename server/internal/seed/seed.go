@@ -1,9 +1,8 @@
-package main
+package seed
 
 import (
 	"bufio"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -12,9 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"pt-server/internal/config"
 	"pt-server/internal/model"
-	"pt-server/internal/repository"
 	"pt-server/internal/utils"
 
 	"golang.org/x/crypto/bcrypt"
@@ -22,46 +19,103 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type SeedEntry struct {
+type Entry struct {
 	Model string         `json:"model"`
 	Data  map[string]any `json:"data"`
 }
 
-func main() {
-	seedDir := flag.String("seed", "seed", "seed data directory")
-	flag.Parse()
+var silent = logger.Discard
 
-	cfg, err := config.Load()
+func strVal(m map[string]any, key string) string {
+	v, _ := m[key].(string)
+	return v
+}
+
+func intVal(m map[string]any, key string) int {
+	v, _ := m[key].(float64)
+	return int(v)
+}
+
+func int64Val(m map[string]any, key string) int64 {
+	v, _ := m[key].(float64)
+	return int64(v)
+}
+
+func floatVal(m map[string]any, key string) float64 {
+	v, _ := m[key].(float64)
+	return v
+}
+
+func boolVal(m map[string]any, key string) bool {
+	v, _ := m[key].(bool)
+	return v
+}
+
+func parseTime(s string) time.Time {
+	if s == "" {
+		return time.Now().Add(24 * time.Hour * 30)
+	}
+	t, err := time.Parse("2006-01-02T15:04:05Z", s)
 	if err != nil {
-		log.Fatalf("Failed to load config: %v", err)
-	}
-
-	db, err := repository.NewDB(cfg)
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
-
-	files, err := filepath.Glob(filepath.Join(*seedDir, "*.jsonl"))
-	if err != nil {
-		log.Fatalf("Failed to list seed files: %v", err)
-	}
-	if len(files) == 0 {
-		log.Fatalf("No .jsonl files found in %s", *seedDir)
-	}
-	sort.Strings(files)
-
-	entries := make([]SeedEntry, 0)
-	for _, f := range files {
-		log.Printf("Reading %s", filepath.Base(f))
-		fileEntries, err := readFile(f)
+		t, err = time.Parse("2006-01-02", s)
 		if err != nil {
-			log.Fatalf("Error reading %s: %v", f, err)
+			return time.Now().Add(24 * time.Hour * 30)
 		}
-		entries = append(entries, fileEntries...)
 	}
+	return t
+}
 
-	// dependency order
-	order := []string{"permission", "dict_type", "dict_data", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal"}
+func ReadFiles(dirs ...string) ([]Entry, error) {
+	var entries []Entry
+	for _, dir := range dirs {
+		files, err := filepath.Glob(filepath.Join(dir, "*.jsonl"))
+		if err != nil {
+			return nil, fmt.Errorf("failed to list seed files in %s: %w", dir, err)
+		}
+		sort.Strings(files)
+		if len(files) == 0 {
+			return nil, fmt.Errorf("no .jsonl files found in %s", dir)
+		}
+		for _, f := range files {
+			log.Printf("Reading %s", filepath.Base(f))
+			fileEntries, err := readFile(f)
+			if err != nil {
+				return nil, fmt.Errorf("error reading %s: %w", f, err)
+			}
+			entries = append(entries, fileEntries...)
+		}
+	}
+	return entries, nil
+}
+
+func readFile(path string) ([]Entry, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	var entries []Entry
+	scanner := bufio.NewScanner(f)
+	lineNo := 0
+	for scanner.Scan() {
+		lineNo++
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+		var entry Entry
+		if err := json.Unmarshal([]byte(line), &entry); err != nil {
+			log.Printf("Warning: %s line %d: invalid JSON: %v", filepath.Base(path), lineNo, err)
+			continue
+		}
+		entries = append(entries, entry)
+	}
+	return entries, scanner.Err()
+}
+
+func InsertAll(db *gorm.DB, entries []Entry) error {
+	order := []string{"permission", "dict_type", "dict_data", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal", "announcement"}
 	modelOrder := make(map[string]int, len(order))
 	for i, m := range order {
 		modelOrder[m] = i
@@ -76,36 +130,10 @@ func main() {
 		}
 	}
 	log.Println("Seed data initialized successfully")
+	return nil
 }
 
-func readFile(path string) ([]SeedEntry, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	var entries []SeedEntry
-	scanner := bufio.NewScanner(f)
-	lineNo := 0
-	for scanner.Scan() {
-		lineNo++
-		line := strings.TrimSpace(scanner.Text())
-		if line == "" || strings.HasPrefix(line, "#") {
-			continue
-		}
-
-		var entry SeedEntry
-		if err := json.Unmarshal([]byte(line), &entry); err != nil {
-			log.Printf("Warning: %s line %d: invalid JSON: %v", filepath.Base(path), lineNo, err)
-			continue
-		}
-		entries = append(entries, entry)
-	}
-	return entries, scanner.Err()
-}
-
-func insertEntry(db *gorm.DB, entry SeedEntry) error {
+func insertEntry(db *gorm.DB, entry Entry) error {
 	switch entry.Model {
 	case "permission":
 		return insertPermission(db, entry.Data)
@@ -141,44 +169,28 @@ func insertEntry(db *gorm.DB, entry SeedEntry) error {
 		return insertMedal(db, entry.Data)
 	case "user_medal":
 		return insertUserMedal(db, entry.Data)
+	case "announcement":
+		return insertAnnouncement(db, entry.Data)
 	default:
 		log.Printf("Unknown model: %s", entry.Model)
 		return nil
 	}
 }
 
-func strVal(m map[string]any, key string) string {
-	v, _ := m[key].(string)
-	return v
-}
-
-func intVal(m map[string]any, key string) int {
-	v, _ := m[key].(float64)
-	return int(v)
-}
-
-func int64Val(m map[string]any, key string) int64 {
-	v, _ := m[key].(float64)
-	return int64(v)
-}
-
-func floatVal(m map[string]any, key string) float64 {
-	v, _ := m[key].(float64)
-	return v
-}
-
-func boolVal(m map[string]any, key string) bool {
-	v, _ := m[key].(bool)
-	return v
-}
-
-var silent = logger.Discard
-
 func lookupType(db *gorm.DB, name string) (model.DictType, error) {
 	var dt model.DictType
 	err := db.Session(&gorm.Session{Logger: silent}).
 		Where("name = ?", name).Take(&dt).Error
 	return dt, err
+}
+
+func saveI18n(db *gorm.DB, key, locale, value string) {
+	if value == "" {
+		return
+	}
+	db.Where("key = ? AND locale = ?", key, locale).
+		Assign(model.I18n{Value: value}).
+		FirstOrCreate(&model.I18n{Key: key, Locale: locale})
 }
 
 func insertPermission(db *gorm.DB, data map[string]any) error {
@@ -263,7 +275,23 @@ func insertDictType(db *gorm.DB, data map[string]any) error {
 		IsSystem:  boolVal(data, "is_system"),
 		IsActive:  boolVal(data, "is_active"),
 	}
-	return db.Create(&d).Error
+	if err := db.Create(&d).Error; err != nil {
+		return err
+	}
+
+	prefix := "dict_type." + name
+	localeFields := []struct{ locale, field, val string }{
+		{"zh", "label", strVal(data, "label_zh")},
+		{"en", "label", strVal(data, "label_en")},
+		{"zh", "remark", strVal(data, "remark_zh")},
+		{"en", "remark", strVal(data, "remark_en")},
+	}
+	for _, lf := range localeFields {
+		if lf.val != "" {
+			saveI18n(db, prefix+"."+lf.field, lf.locale, lf.val)
+		}
+	}
+	return nil
 }
 
 func insertDictData(db *gorm.DB, data map[string]any) error {
@@ -291,22 +319,40 @@ func insertDictData(db *gorm.DB, data map[string]any) error {
 		IsDefault: boolVal(data, "is_default"),
 		IsActive:  boolVal(data, "is_active"),
 	}
-	return db.Create(&d).Error
+	if err := db.Create(&d).Error; err != nil {
+		return err
+	}
+
+	prefix := "dict_data." + typeName + "." + key
+	localeFields := []struct{ locale, field, val string }{
+		{"zh", "label", strVal(data, "label_zh")},
+		{"en", "label", strVal(data, "label_en")},
+	}
+	for _, lf := range localeFields {
+		if lf.val != "" {
+			saveI18n(db, prefix+"."+lf.field, lf.locale, lf.val)
+		}
+	}
+	return nil
 }
 
 func insertUserLevel(db *gorm.DB, data map[string]any) error {
-	name := strVal(data, "name")
-	if name == "" {
+	if _, ok := data["code"]; !ok {
+		return nil
+	}
+	code := intVal(data, "code")
+	if code < 0 {
 		return nil
 	}
 	var c int64
-	db.Model(&model.UserLevel{}).Where("name = ?", name).Count(&c)
+	db.Model(&model.UserLevel{}).Where("code = ?", code).Count(&c)
 	if c > 0 {
-		log.Printf("  UserLevel '%s' already exists, skipping", name)
+		log.Printf("  UserLevel '%d' already exists, skipping", code)
 		return nil
 	}
 	l := model.UserLevel{
-		Name:         name,
+		Code:         code,
+		Label:        strVal(data, "label"),
 		MinUpload:    int64Val(data, "min_upload"),
 		MinDownload:  int64Val(data, "min_download"),
 		MinRatio:     floatVal(data, "min_ratio"),
@@ -317,7 +363,21 @@ func insertUserLevel(db *gorm.DB, data map[string]any) error {
 		SortOrder:    intVal(data, "sort_order"),
 		IsActive:     boolVal(data, "is_active"),
 	}
-	return db.Create(&l).Error
+	if err := db.Create(&l).Error; err != nil {
+		return err
+	}
+
+	prefix := fmt.Sprintf("user_level.%d", code)
+	localeFields := []struct{ locale, field, val string }{
+		{"zh", "label", strVal(data, "label_zh")},
+		{"en", "label", strVal(data, "label_en")},
+	}
+	for _, lf := range localeFields {
+		if lf.val != "" {
+			saveI18n(db, prefix+"."+lf.field, lf.locale, lf.val)
+		}
+	}
+	return nil
 }
 
 func insertUser(db *gorm.DB, data map[string]any) error {
@@ -350,6 +410,15 @@ func insertUser(db *gorm.DB, data map[string]any) error {
 		var role model.RoleModel
 		if err := db.Where("name = ?", roleName).First(&role).Error; err == nil {
 			user.RoleID = &role.ID
+		}
+	}
+
+	if lvlCode, ok := data["level_code"]; ok {
+		if f, ok := lvlCode.(float64); ok {
+			var level model.UserLevel
+			if err := db.Where("code = ?", int(f)).First(&level).Error; err == nil {
+				user.LevelID = &level.ID
+			}
 		}
 	}
 
@@ -415,9 +484,9 @@ func insertNews(db *gorm.DB, data map[string]any) error {
 	}
 
 	n := model.News{
-		Title:  title,
+		Title:   title,
 		Content: strVal(data, "content"),
-		UserID: userID,
+		UserID:  userID,
 	}
 	return db.Create(&n).Error
 }
@@ -608,25 +677,66 @@ func insertInvite(db *gorm.DB, data map[string]any) error {
 }
 
 func insertMedal(db *gorm.DB, data map[string]any) error {
-	name := strVal(data, "name")
-	if name == "" {
+	if _, ok := data["code"]; !ok {
+		return nil
+	}
+	code := intVal(data, "code")
+	if code < 0 {
 		return nil
 	}
 	var c int64
-	db.Model(&model.Medal{}).Where("name = ?", name).Count(&c)
+	db.Model(&model.Medal{}).Where("code = ?", code).Count(&c)
 	if c > 0 {
-		log.Printf("  Medal '%s' already exists, skipping", name)
+		log.Printf("  Medal '%d' already exists, skipping", code)
 		return nil
 	}
 
 	m := model.Medal{
-		Name:        name,
+		Code:        code,
 		Description: strVal(data, "description"),
 		Image:       strVal(data, "image"),
 		Price:       floatVal(data, "price"),
 		IsActive:    boolVal(data, "is_active"),
 	}
 	return db.Create(&m).Error
+}
+
+func insertAnnouncement(db *gorm.DB, data map[string]any) error {
+	title := strVal(data, "title")
+	if title == "" {
+		return nil
+	}
+	var c int64
+	db.Model(&model.Announcement{}).Where("title = ?", title).Count(&c)
+	if c > 0 {
+		log.Printf("  Announcement '%s' already exists, skipping", title)
+		return nil
+	}
+
+	expiresAt := parseTimePtr(strVal(data, "expires_at"))
+	a := model.Announcement{
+		Title:     title,
+		Content:   strVal(data, "content"),
+		IsSticky:  boolVal(data, "is_sticky"),
+		ExpiresAt: expiresAt,
+		IsActive:  boolVal(data, "is_active"),
+		CreatedBy: int64Val(data, "created_by"),
+	}
+	return db.Create(&a).Error
+}
+
+func parseTimePtr(s string) *time.Time {
+	if s == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02T15:04:05Z", s)
+	if err != nil {
+		t, err = time.Parse("2006-01-02", s)
+		if err != nil {
+			return nil
+		}
+	}
+	return &t
 }
 
 func insertUserMedal(db *gorm.DB, data map[string]any) error {
@@ -648,18 +758,4 @@ func insertUserMedal(db *gorm.DB, data map[string]any) error {
 		MedalID: medalID,
 	}
 	return db.Create(&um).Error
-}
-
-func parseTime(s string) time.Time {
-	if s == "" {
-		return time.Now().Add(24 * time.Hour * 30)
-	}
-	t, err := time.Parse("2006-01-02T15:04:05Z", s)
-	if err != nil {
-		t, err = time.Parse("2006-01-02", s)
-		if err != nil {
-			return time.Now().Add(24 * time.Hour * 30)
-		}
-	}
-	return t
 }

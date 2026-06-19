@@ -11,7 +11,7 @@ const { TextArea } = Input
 export function TorrentEdit() {
   const { t } = useTranslation('torrent')
   const { t: tCommon } = useTranslation('common')
-  const { id } = useParams({ from: '/torrents_/$id/edit' })
+  const { id } = useParams({ from: '/$lang/torrents_/$id/edit' })
   const { lang } = useParams({ from: '/$lang' })
   const navigate = useNavigate()
   const torrentId = Number(id)
@@ -28,7 +28,7 @@ export function TorrentEdit() {
       editTorrent(torrentId, values),
     onSuccess: () => {
       message.success(t('updateSuccess'))
-      navigate({ to: `/${lang}/torrents/$id`, params: { id } })
+      navigate({ to: '/$lang/torrents/$id', params: { lang, id } })
     },
     onError: (err: any) => message.error(err.response?.data?.error || tCommon('error')),
   })
@@ -39,7 +39,7 @@ export function TorrentEdit() {
   return (
     <div style={{ maxWidth: 700, margin: '0 auto' }}>
       <Space style={{ marginBottom: 16 }}>
-        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate({ to: `/${lang}/torrents/$id`, params: { id } })}>{tCommon('back')}</Button>
+        <Button icon={<ArrowLeftOutlined />} onClick={() => navigate({ to: '/$lang/torrents/$id', params: { lang, id } })}>{tCommon('back')}</Button>
       </Space>
       <Card>
         <Title level={4}>{t('editTitle')}</Title>

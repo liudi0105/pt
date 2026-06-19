@@ -20,6 +20,7 @@ sidebar_position: 3
 | 运营约束与激励 | 管理考核、H&R、勋章、求种和认领 | 考核、考核用户、H&R、勋章、奖励 | Exams、ExamUsers、H&R、Rewards、User Medals | 高 |
 | 后台与治理 | 负责站点配置、风控、字典和运营面板 | 设置、客户端规则、标签、统计、插件 | Settings、Agent Allow/Deny、Dashboard、Tags、Medals、用户后台管理 | 高 |
 | 数据与存储 | 提供业务数据、附件、索引和运行态存储基础 | MySQL、缓存、附件、日志、队列 | 数据库表体系、附件文件、运行日志、统计数据 | 高 |
+| 接入与运维 | 处理站点入口、第三方联动、外部读取和运行保障 | 首页跳转、OAuth、Passkey、第三方审批、cookie 读取、备份和监控 | 首页跳转、第三方审批、cookie 用户读取、接口总览、运行检查 | 高 |
 
 ## 主业务链路
 
@@ -89,6 +90,7 @@ sidebar_position: 3
 - [社区与运营](./modules/community-and-operation)
 - [后台与治理](./modules/admin-and-ops)
 - [数据库与存储](./modules/database-and-storage)
+- [接入与运维](./api-and-ops)
 
 ## 使用方式
 

@@ -1,0 +1,130 @@
+{"model":"dict_data","data":{"type_name":"category","key":"movie","label":"Movies","label_zh":"电影","label_en":"Movies","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"tv","label":"TV Series","label_zh":"电视剧","label_en":"TV Series","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"music","label":"Music","label_zh":"音乐","label_en":"Music","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"game","label":"Games","label_zh":"游戏","label_en":"Games","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"software","label":"Software","label_zh":"软件","label_en":"Software","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"documentary","label":"Documentary","label_zh":"纪录片","label_en":"Documentary","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"anime","label":"Anime","label_zh":"动漫","label_en":"Anime","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"ebook","label":"E-Book","label_zh":"电子书","label_en":"E-Book","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"category","key":"unsorted","label":"Unsorted","label_zh":"未分类","label_en":"Unsorted","value":"{}","sort_order":99,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"bluray","label":"Blu-ray","label_zh":"蓝光原盘","label_en":"Blu-ray","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"webdl","label":"WEB-DL","label_zh":"WEB-DL","label_en":"WEB-DL","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"webrip","label":"WEBRip","label_zh":"WEBRip","label_en":"WEBRip","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"hdtv","label":"HDTV","label_zh":"HDTV","label_en":"HDTV","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"dvd","label":"DVD","label_zh":"DVD","label_en":"DVD","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"bdrip","label":"BDRip","label_zh":"BDRip","label_en":"BDRip","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"dvdrip","label":"DVDRip","label_zh":"DVDRip","label_en":"DVDRip","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"cam","label":"CAM","label_zh":"CAM","label_en":"CAM","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"ts","label":"TS","label_zh":"TS","label_en":"TS","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"tv","label":"TV","label_zh":"TV","label_en":"TV","value":"{}","sort_order":10,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"vhs","label":"VHS","label_zh":"VHS","label_en":"VHS","value":"{}","sort_order":11,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"source","key":"ld","label":"LaserDisc","label_zh":"LaserDisc","label_en":"LaserDisc","value":"{}","sort_order":12,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"480p","label":"480p","label_zh":"480p","label_en":"480p","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"540p","label":"540p","label_zh":"540p","label_en":"540p","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"576p","label":"576p","label_zh":"576p","label_en":"576p","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"720p","label":"720p","label_zh":"720p","label_en":"720p","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"810p","label":"810p","label_zh":"810p","label_en":"810p","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"1080p","label":"1080p","label_zh":"1080p","label_en":"1080p","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"1080i","label":"1080i","label_zh":"1080i","label_en":"1080i","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"2160p","label":"4K","label_zh":"4K","label_en":"4K","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"resolution","key":"4320p","label":"8K","label_zh":"8K","label_en":"8K","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"h264","label":"H.264 AVC","label_zh":"H.264 AVC","label_en":"H.264 AVC","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"hevc","label":"H.265 HEVC","label_zh":"H.265 HEVC","label_en":"H.265 HEVC","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"vc1","label":"VC-1","label_zh":"VC-1","label_en":"VC-1","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"mpeg2","label":"MPEG-2","label_zh":"MPEG-2","label_en":"MPEG-2","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"mpeg4","label":"MPEG-4","label_zh":"MPEG-4","label_en":"MPEG-4","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"divx","label":"DivX","label_zh":"DivX","label_en":"DivX","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"xvid","label":"XviD","label_zh":"XviD","label_en":"XviD","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"vp9","label":"VP9","label_zh":"VP9","label_en":"VP9","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"codec","key":"av1","label":"AV1","label_zh":"AV1","label_en":"AV1","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"aac","label":"AAC","label_zh":"AAC","label_en":"AAC","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"flac","label":"FLAC","label_zh":"FLAC","label_en":"FLAC","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"ac3","label":"AC3 / Dolby Digital","label_zh":"AC3 / 杜比数字","label_en":"AC3 / Dolby Digital","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"eac3","label":"E-AC3 / Dolby Digital Plus","label_zh":"E-AC3 / 杜比数字 Plus","label_en":"E-AC3 / Dolby Digital Plus","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"dts","label":"DTS","label_zh":"DTS","label_en":"DTS","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"dtshd","label":"DTS-HD MA","label_zh":"DTS-HD MA","label_en":"DTS-HD MA","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"dtsx","label":"DTS:X","label_zh":"DTS:X","label_en":"DTS:X","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"truehd","label":"Dolby TrueHD","label_zh":"杜比 TrueHD","label_en":"Dolby TrueHD","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"atmos","label":"Dolby Atmos","label_zh":"杜比全景声","label_en":"Dolby Atmos","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"mp3","label":"MP3","label_zh":"MP3","label_en":"MP3","value":"{}","sort_order":10,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"opus","label":"Opus","label_zh":"Opus","label_en":"Opus","value":"{}","sort_order":11,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"lpcm","label":"LPCM","label_zh":"LPCM","label_en":"LPCM","value":"{}","sort_order":12,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"audio","key":"pcm","label":"PCM","label_zh":"PCM","label_en":"PCM","value":"{}","sort_order":13,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"frame","label":"FraMeSToR","label_zh":"FraMeSToR","label_en":"FraMeSToR","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"chd","label":"CHD","label_zh":"CHD","label_en":"CHD","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hdchina","label":"HDChina","label_zh":"HDChina","label_en":"HDChina","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hdwing","label":"HDWinG","label_zh":"HDWinG","label_en":"HDWinG","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hdsky","label":"HDSky","label_zh":"HDSky","label_en":"HDSky","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"wiki","label":"WiKi","label_zh":"WiKi","label_en":"WiKi","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hdtime","label":"HDTime","label_zh":"HDTime","label_en":"HDTime","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"cny","label":"CNY","label_zh":"CNY","label_en":"CNY","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"mteam","label":"MTeam","label_zh":"MTeam","label_en":"MTeam","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"beyondhd","label":"BeyondHD","label_zh":"BeyondHD","label_en":"BeyondHD","value":"{}","sort_order":10,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"decoy","label":"Decoy","label_zh":"Decoy","label_en":"Decoy","value":"{}","sort_order":11,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"tigole","label":"Tigole","label_zh":"Tigole","label_en":"Tigole","value":"{}","sort_order":12,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"qpr","label":"QxR","label_zh":"QxR","label_en":"QxR","value":"{}","sort_order":13,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"ctrlhd","label":"CtrlHD","label_zh":"CtrlHD","label_en":"CtrlHD","value":"{}","sort_order":14,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"don","label":"DON","label_zh":"DON","label_en":"DON","value":"{}","sort_order":15,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"ebp","label":"EbP","label_zh":"EbP","label_en":"EbP","value":"{}","sort_order":16,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"terminal","label":"TERMiNAL","label_zh":"TERMiNAL","label_en":"TERMiNAL","value":"{}","sort_order":17,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"ntb","label":"NTb","label_zh":"NTb","label_en":"NTb","value":"{}","sort_order":18,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hqmux","label":"HQMUX","label_zh":"HQMUX","label_en":"HQMUX","value":"{}","sort_order":19,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"toxict","label":"TOXICT","label_zh":"TOXICT","label_en":"TOXICT","value":"{}","sort_order":20,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"vision","label":"ViSiON","label_zh":"ViSiON","label_en":"ViSiON","value":"{}","sort_order":21,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"w4nk3r","label":"W4NK3R","label_zh":"W4NK3R","label_en":"W4NK3R","value":"{}","sort_order":22,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"playhd","label":"PLAYHD","label_zh":"PLAYHD","label_en":"PLAYHD","value":"{}","sort_order":23,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"killer","label":"KiLLER","label_zh":"KiLLER","label_en":"KiLLER","value":"{}","sort_order":24,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"bmf","label":"BMF","label_zh":"BMF","label_en":"BMF","value":"{}","sort_order":25,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"monkee","label":"MONKEE","label_zh":"MONKEE","label_en":"MONKEE","value":"{}","sort_order":26,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"crisc","label":"CRiSC","label_zh":"CRiSC","label_en":"CRiSC","value":"{}","sort_order":27,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"3li","label":"3Li","label_zh":"3Li","label_en":"3Li","value":"{}","sort_order":28,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hnw","label":"HNW","label_zh":"HNW","label_en":"HNW","value":"{}","sort_order":29,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"living","label":"LiViNG","label_zh":"LiViNG","label_en":"LiViNG","value":"{}","sort_order":30,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"low","label":"LOW","label_zh":"LOW","label_en":"LOW","value":"{}","sort_order":31,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"sic","label":"SiC","label_zh":"SiC","label_en":"SiC","value":"{}","sort_order":32,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"x0r","label":"X0R","label_zh":"X0R","label_en":"X0R","value":"{}","sort_order":33,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"zq","label":"ZQ","label_zh":"ZQ","label_en":"ZQ","value":"{}","sort_order":34,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"int","label":"iNT","label_zh":"iNT","label_en":"iNT","value":"{}","sort_order":35,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"pter","label":"PTER","label_zh":"PTER","label_en":"PTER","value":"{}","sort_order":36,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"hdpost","label":"HDPOST","label_zh":"HDPOST","label_en":"HDPOST","value":"{}","sort_order":37,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"ttn","label":"TTN","label_zh":"TTN","label_en":"TTN","value":"{}","sort_order":38,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"ourbits","label":"OurBits","label_zh":"OurBits","label_en":"OurBits","value":"{}","sort_order":39,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"team","key":"nyaa","label":"Nyaa","label_zh":"Nyaa","label_en":"Nyaa","value":"{}","sort_order":40,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"us","label":"US","label_zh":"美国","label_en":"US","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"uk","label":"UK","label_zh":"英国","label_en":"UK","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"cn","label":"China","label_zh":"中国大陆","label_en":"China","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"jp","label":"Japan","label_zh":"日本","label_en":"Japan","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"kr","label":"Korea","label_zh":"韩国","label_en":"Korea","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"tw","label":"Taiwan","label_zh":"台湾","label_en":"Taiwan","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"hk","label":"Hong Kong","label_zh":"香港","label_en":"Hong Kong","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"int","label":"International","label_zh":"国际","label_en":"International","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"fr","label":"France","label_zh":"法国","label_en":"France","value":"{}","sort_order":9,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"de","label":"Germany","label_zh":"德国","label_en":"Germany","value":"{}","sort_order":10,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"it","label":"Italy","label_zh":"意大利","label_en":"Italy","value":"{}","sort_order":11,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"es","label":"Spain","label_zh":"西班牙","label_en":"Spain","value":"{}","sort_order":12,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"in","label":"India","label_zh":"印度","label_en":"India","value":"{}","sort_order":13,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"au","label":"Australia","label_zh":"澳大利亚","label_en":"Australia","value":"{}","sort_order":14,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"region","key":"ru","label":"Russia","label_zh":"俄罗斯","label_en":"Russia","value":"{}","sort_order":15,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"remux","label":"Remux","label_zh":"Remux","label_en":"Remux","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"encode","label":"Encode","label_zh":"压制","label_en":"Encode","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"raw","label":"Raw / Untouched","label_zh":"原盘","label_en":"Raw / Untouched","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"repack","label":"Repack","label_zh":"重制","label_en":"Repack","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"proper","label":"Proper","label_zh":"修正版","label_en":"Proper","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"sample","label":"Sample","label_zh":"样本","label_en":"Sample","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"trailer","label":"Trailer","label_zh":"预告片","label_en":"Trailer","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"processing","key":"upscale","label":"Upscale / AI","label_zh":"AI 增强","label_en":"Upscale / AI","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"none","label":"No Subtitle","label_zh":"无字幕","label_en":"No Subtitle","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"chs","label":"Chinese Simplified","label_zh":"简体中文","label_en":"Chinese Simplified","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"cht","label":"Chinese Traditional","label_zh":"繁体中文","label_en":"Chinese Traditional","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"eng","label":"English","label_zh":"英文","label_en":"English","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"chseng","label":"Chinese + English","label_zh":"中英双语","label_en":"Chinese + English","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"subtitle","key":"multi","label":"Multi-Language","label_zh":"多语言","label_en":"Multi-Language","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"mkv","label":"MKV","label_zh":"MKV","label_en":"MKV","value":"{}","sort_order":1,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"mp4","label":"MP4","label_zh":"MP4","label_en":"MP4","value":"{}","sort_order":2,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"avi","label":"AVI","label_zh":"AVI","label_en":"AVI","value":"{}","sort_order":3,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"ts","label":"TS","label_zh":"TS","label_en":"TS","value":"{}","sort_order":4,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"iso","label":"ISO","label_zh":"ISO","label_en":"ISO","value":"{}","sort_order":5,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"m2ts","label":"M2TS","label_zh":"M2TS","label_en":"M2TS","value":"{}","sort_order":6,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"flac","label":"FLAC","label_zh":"FLAC","label_en":"FLAC","value":"{}","sort_order":7,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"ape","label":"APE","label_zh":"APE","label_en":"APE","value":"{}","sort_order":8,"is_active":true}}
+{"model":"dict_data","data":{"type_name":"format","key":"cue","label":"CUE+BIN","label_zh":"CUE+BIN","label_en":"CUE+BIN","value":"{}","sort_order":9,"is_active":true}}

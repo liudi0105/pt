@@ -32,6 +32,7 @@ export function TorrentList() {
   const [category, setCategory] = useState('')
   const [page, setPage] = useState(1)
   const { lang } = useParams({ from: '/$lang' })
+  const { t: tt } = useTranslation('torrent')
   const { t } = useTranslation()
 
   const { data, isLoading } = useQuery({
@@ -42,17 +43,17 @@ export function TorrentList() {
 
   const columns: ColumnsType<Torrent> = [
     {
-      title: t('torrent.name'),
+      title: tt('name'),
       dataIndex: 'name',
       key: 'name',
       render: (name: string, record: Torrent) => (
-        <Link to={`/${lang}/torrents/$id`} params={{ id: String(record.id) }}>
+        <Link to="/$lang/torrents/$id" params={{ lang, id: String(record.id) }}>
           {name}
         </Link>
       ),
     },
     {
-      title: t('torrent.promotion'),
+      title: tt('promotion'),
       dataIndex: 'promotion',
       key: 'promotion',
       width: 100,
@@ -66,14 +67,14 @@ export function TorrentList() {
       },
     },
     {
-      title: t('torrent.category'),
+      title: tt('category'),
       dataIndex: 'category',
       key: 'category',
       width: 120,
       render: (cat: string) => <Tag color="blue">{CATEGORY_LABELS[cat] || cat}</Tag>,
     },
     {
-      title: t('torrent.size'),
+      title: tt('size'),
       dataIndex: 'size',
       key: 'size',
       width: 120,
@@ -94,19 +95,19 @@ export function TorrentList() {
       render: (n: number) => <span style={{ color: '#faad14' }}>{n}</span>,
     },
     {
-      title: t('torrent.completed'),
+      title: tt('completed'),
       dataIndex: 'completed',
       key: 'completed',
       width: 80,
     },
     {
-      title: t('torrent.uploader'),
+      title: tt('uploader'),
       dataIndex: 'uploader',
       key: 'uploader',
       width: 120,
     },
     {
-      title: t('torrent.created'),
+      title: tt('created'),
       dataIndex: 'created_at',
       key: 'created_at',
       width: 120,
@@ -116,16 +117,16 @@ export function TorrentList() {
 
   return (
     <div>
-      <Title level={3}>{t('torrent.title')}</Title>
+      <Title level={3}>{tt('title')}</Title>
       <Space style={{ marginBottom: 16 }}>
         <Search
-          placeholder={t('torrent.searchPlaceholder')}
+          placeholder={tt('searchPlaceholder')}
           onSearch={setKeyword}
           allowClear
           style={{ width: 300 }}
         />
         <Select
-          placeholder={t('torrent.categoryPlaceholder')}
+          placeholder={tt('categoryPlaceholder')}
           value={category || undefined}
           onChange={setCategory}
           allowClear
@@ -149,7 +150,7 @@ export function TorrentList() {
           pageSize: 50,
           total: data?.total,
           onChange: setPage,
-          showTotal: (total) => t('torrent.totalTorrents', { count: total }),
+          showTotal: (total) => tt('totalTorrents', { count: total }),
         }}
         size="small"
       />

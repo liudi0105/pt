@@ -9,7 +9,8 @@ export interface User {
   role: string
   status: number
   level_id: number | null
-  level_name?: string
+  level_code?: number
+  level_label?: string
   total_snatches?: number
   seeding_count?: number
   created_at: string
@@ -24,6 +25,18 @@ export interface Torrent {
   size: number
   file_count: number
   category: string
+  source: string
+  medium: string
+  codec: string
+  standard: string
+  processing: string
+  team: string
+  audiocodec: string
+  small_descr: string
+  technical_info: string
+  cover: string
+  nfo: string
+  tags: string
   seeders: number
   leechers: number
   completed: number
@@ -98,6 +111,7 @@ export interface DictType {
   is_active: boolean
   created_at: string
   updated_at: string
+  i18n?: Record<string, Record<string, string>>
 }
 
 export interface DictData {
@@ -112,11 +126,13 @@ export interface DictData {
   created_at: string
   updated_at: string
   type_name?: string
+  i18n?: Record<string, Record<string, string>>
 }
 
 export interface UserLevel {
   id: number
-  name: string
+  code: number
+  label: string
   min_upload: number
   min_download: number
   min_ratio: number
@@ -127,6 +143,7 @@ export interface UserLevel {
   sort_order: number
   is_active: boolean
   created_at: string
+  i18n?: Record<string, Record<string, string>>
 }
 
 export interface Comment {
@@ -224,10 +241,11 @@ export interface Report {
 
 export interface Medal {
   id: number
-  name: string
+  code: number
   description: string
   image: string
   price: number
+  is_active: boolean
   created_at: string
 }
 
@@ -235,7 +253,7 @@ export interface UserMedal {
   id: number
   user_id: number
   medal_id: number
-  medal_name?: string
+  medal_code?: number
   created_at: string
 }
 
@@ -278,6 +296,29 @@ export interface SiteSetting {
   type: string
   description: string
   is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface BonusLog {
+  id: number
+  user_id: number
+  business_type: number
+  old_total_value: number
+  value: number
+  new_total_value: number
+  comment: string
+  created_at: string
+}
+
+export interface Announcement {
+  id: number
+  title: string
+  content: string
+  is_sticky: boolean
+  expires_at: string | null
+  is_active: boolean
+  created_by: number
   created_at: string
   updated_at: string
 }

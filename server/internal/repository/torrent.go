@@ -91,6 +91,17 @@ func (r *TorrentRepo) List(f TorrentFilter) (*TorrentListResult, error) {
 	}, nil
 }
 
+func (r *TorrentRepo) Latest(limit int) ([]model.Torrent, error) {
+	if limit < 1 {
+		limit = 5
+	}
+	result, err := r.List(TorrentFilter{Page: 1, PageSize: limit})
+	if err != nil {
+		return nil, err
+	}
+	return result.Torrents, nil
+}
+
 func (r *TorrentRepo) UpdateStats(id int64, seeders, leechers int) error {
 	return r.db.Model(&model.Torrent{}).Where("id = ?", id).Updates(map[string]interface{}{
 		"seeders":  seeders,
@@ -113,7 +124,7 @@ func (r *TorrentRepo) UpdateFileName(id int64, filename string) error {
 
 func (r *TorrentRepo) Update(t *model.Torrent) error {
 	return r.db.Model(&model.Torrent{}).Where("id = ? AND is_deleted = ?", t.ID, false).
-		Select("name", "description", "category").Updates(t).Error
+		Select("name", "description", "category", "source", "medium", "codec", "standard", "processing", "team", "audiocodec", "small_descr", "technical_info", "cover", "nfo", "tags").Updates(t).Error
 }
 
 func (r *TorrentRepo) Delete(id int64) error {

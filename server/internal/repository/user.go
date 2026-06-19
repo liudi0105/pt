@@ -74,13 +74,43 @@ func (r *UserRepo) List(f UserFilter) (*UserListResult, error) {
 	var users []model.User
 	err := query.Order("id DESC").
 		Limit(f.PageSize).
-		Offset((f.Page-1)*f.PageSize).
+		Offset((f.Page - 1) * f.PageSize).
 		Find(&users).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return &UserListResult{Users: users, Total: int(total)}, nil
+}
+
+func (r *UserRepo) Count() (int64, error) {
+	var count int64
+	err := r.db.Model(&model.User{}).Count(&count).Error
+	return count, err
+}
+
+func (r *UserRepo) CountByStatus(status int) (int64, error) {
+	var count int64
+	err := r.db.Model(&model.User{}).Where("status = ?", status).Count(&count).Error
+	return count, err
+}
+
+func (r *UserRepo) TotalTraffic() (int64, int64, error) {
+	var upload, download int64
+	err := r.db.Model(&model.User{}).
+		Select("COALESCE(SUM(upload_bytes), 0), COALESCE(SUM(download_bytes), 0)").
+		Row().
+		Scan(&upload, &download)
+	return upload, download, err
+}
+
+func (r *UserRepo) Latest(limit int) ([]model.User, error) {
+	if limit < 1 {
+		limit = 5
+	}
+	var users []model.User
+	err := r.db.Order("id DESC").Limit(limit).Find(&users).Error
+	return users, err
 }
 
 func (r *UserRepo) UpdateRole(id int64, role model.Role) error {

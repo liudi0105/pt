@@ -42,7 +42,7 @@ export function HR() {
       dataIndex: 'torrent_name',
       key: 'torrent_name',
       render: (name: string, r: HRItem) => (
-        <Link to={`/${lang}/torrents/$id`} params={{ id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
+        <Link to="/$lang/torrents/$id" params={{ lang, id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
       ),
     },
     {

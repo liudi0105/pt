@@ -3,7 +3,8 @@ import { TorrentDetail } from '../../pages/TorrentDetail'
 
 export const Route = createFileRoute('/$lang/torrents_/$id')({
   staticData: {
-    title: '种子详情',
+    title: 'common:nav.torrentDetail',
+    menuCode: 'torrents',
   },
   component: TorrentDetail,
 })

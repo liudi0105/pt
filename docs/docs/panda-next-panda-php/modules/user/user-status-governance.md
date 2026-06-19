@@ -1,72 +1,91 @@
 # 用户状态治理
 
-## 功能目标
+## 1. 概述
 
-管理用户的可用性、处罚和恢复过程，确保用户状态变化能够立即影响站点行为。
+管理用户从正常到受限再到恢复的治理全过程，包括禁用/启用、重置密码、增减字段、移除二步验证及删除用户等操作，所有治理动作均记录审计日志。
 
-## 参与角色
+## 2. 功能说明
 
-- 管理员
-- 被处理用户
-- 系统自动规则
+### 2.1 核心状态字段
+| 字段 | 值 | 含义 |
+|------|------|------|
+| `status` | confirmed / pending | 用户确认状态 |
+| `enabled` | yes / no | 是否启用 |
+| `downloadpos` | yes / no | 下载权限 |
+| `leechwarn` | yes / no | 吸血警告 |
+| `leechwarnuntil` | datetime | 吸血警告截止时间 |
 
-## 入口
+`User::checkIsNormal()` 要求 `status=confirmed` 且 `enabled=yes`。
 
-- 管理后台用户处理页
-- 用户状态校验中间件
-- 安全和运营触发动作
+### 2.2 治理操作 API
 
-## 前台功能
+**禁用用户** — `POST /api/user-disable`
+- 需提供 `reason` 参数，自动追加到 `modcomment` 字段
+- 同时写入 `UserBanLog` 记录
+- 用户立即无法登录和执行任何业务操作
 
-- 用户查看自身状态结果
-- 被限制时收到明确反馈
+**启用用户** — `POST /api/user-enable`
+- 将 `enabled` 恢复为 `yes`
+- 若目标用户为 Peasant（class=0），自动设置 `leechwarn=yes` 并持续 30 天
 
-## 后台功能
+**重置密码** — `POST /api/user-reset-password`
+- 生成新的 `secret` 和 `passhash`
+- 原 Token 和 Cookie 立即失效，用户需重新登录
 
-- 禁用用户
-- 启用用户
-- 修改状态字段
-- 写入管理备注
-- 触发密码重置
+**增减字段** — `PUT /api/user-increment-decrement`
+- 支持字段：`uploaded`, `downloaded`, `seedbonus`, `invites`, `attendance_card`
+- 操作为增量调整（正数增加，负数减少）
 
-## 状态定义
+**移除二步验证** — `PUT /api/user-remove-two-step`
+- 清除 `two_step_secret` 字段
 
-- 正常
-- 待验证
-- 禁用
-- 封禁
-- 警告中
-- 待人工处理
+**删除用户** — `UserRepository::destroy()`
+- 物理删除用户记录以及所有关联数据（种子、评论、消息等）
+- 不可逆操作，执行前需确认
 
-## 状态流转
+**变更等级** — `changeClass()`
+- 提升或降低用户等级
+- 变更后自动发送 PM 通知用户
 
-1. 用户初始进入默认状态
-2. 因违规、安全或运营原因进入限制状态
-3. 管理员启用、恢复或继续处罚
-4. 状态变化立即影响登录和受限功能
+**切换下载权限** — `updateDownloadPrivileges()`
+- 切换 `downloadpos` 字段
 
-## 规则与校验
+**移除吸血警告** — `removeLeechWarn()`
+- 清除 `leechwarn` 和 `leechwarnuntil`
+- 恢复下载权限
 
-- 任何限制状态都必须有来源动作
-- 启用/禁用应记录操作人和时间
-- 用户状态应作为所有核心功能前置校验
-- 恢复状态后权限按等级重新生效
+### 2.3 审计日志
+所有治理操作均写入对应的审计表：
+- `user_ban_logs` — 禁用/启用记录，包含操作人、原因、时间
+- `user_operation_*` 表 — 其他操作记录
 
-## 异常与边界
+### 2.4 状态变化影响
+- 登录拦截：`enabled=no` 或 `status=pending` 时拒绝登录
+- 权限拦截：禁用用户无法调用任何受权限保护的 API
+- 恢复后，权限按当前等级和角色重新计算
 
-- 已禁用用户重复禁用
-- 恢复后仍存在其它限制条件
-- 批量处理部分失败
+## 3. 操作入口
 
-## 数据结果
+- `POST /api/user-disable` — 禁用用户
+- `POST /api/user-enable` — 启用用户
+- `POST /api/user-reset-password` — 重置密码
+- `PUT /api/user-increment-decrement` — 增减字段
+- `PUT /api/user-remove-two-step` — 移除二步验证
+- `UserRepository::destroy()` — 删除用户
+- `changeClass()` — 变更等级
+- `updateDownloadPrivileges()` — 切换下载权限
+- `removeLeechWarn()` — 移除吸血警告
 
-- 用户当前状态
-- 处罚与恢复记录
-- 管理备注
-- 操作审计
+## 4. 使用说明
 
-## 验收标准
+1. 禁用用户时必须填写原因，便于后续追溯。
+2. 启用 Peasant 用户时系统自动附加 30 天吸血警告，需管理员关注。
+3. 重置密码后用户所有活跃会话立即失效。
+4. 增减字段支持正负值，但下载量不可为负。
+5. 删除用户为物理删除，关联数据一并清除，请谨慎操作。
+6. 所有治理动作均自动记录审计日志，人工操作时需确认操作者身份。
 
-- 用户状态可直接控制登录和核心业务访问
-- 每次状态变更都有完整审计信息
-- 恢复动作后用户行为权限恢复一致
+## 5. 配置参考（可选）
+
+- `leechwarn` 默认持续时长由业务逻辑硬编码为 30 天
+- `modcomment` 追加格式：`[操作时间] 操作人: 操作描述`

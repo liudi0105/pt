@@ -18,7 +18,7 @@ export function Register() {
     try {
       await register(values.username, values.email, values.password)
       message.success(t('registerSuccess'))
-      navigate({ to: `/${lang}/login` })
+      navigate({ to: '/$lang/login', params: { lang } })
     } catch {
       message.error(t('registerFailed'))
     }
@@ -28,7 +28,7 @@ export function Register() {
     try {
       await registerWithInvite(values.username, values.password, values.email, values.invite)
       message.success(t('registerSuccess'))
-      navigate({ to: `/${lang}/login` })
+      navigate({ to: '/$lang/login', params: { lang } })
     } catch (err: any) {
       message.error(err.response?.data?.error || t('registerFailed'))
     }
@@ -86,7 +86,7 @@ export function Register() {
         <Title level={3} style={{ textAlign: 'center' }}>{t('register')}</Title>
         <Tabs items={tabItems} />
         <div style={{ textAlign: 'center' }}>
-          {t('hasAccount')} <Link to={`/${lang}/login`}>{t('login')}</Link>
+          {t('hasAccount')} <Link to="/$lang/login" params={{ lang }}>{t('login')}</Link>
         </div>
       </Card>
     </div>

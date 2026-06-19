@@ -3,7 +3,8 @@ import { ReportManage } from '../../pages/admin/ReportManage'
 
 export const Route = createFileRoute('/$lang/admin/reports')({
   staticData: {
-    title: '举报管理',
+    title: 'admin:menu.reports',
+    menuCode: 'reports',
   },
   component: ReportManage,
 })

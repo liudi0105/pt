@@ -9,6 +9,7 @@ import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTranslation } from 'react-i18next'
+import { useI18n } from '../hooks/useI18n'
 
 dayjs.extend(relativeTime)
 
@@ -36,6 +37,12 @@ function ProfileTab() {
     select: (res) => res.data,
   })
 
+  const i18nLevel = useI18n('user_level')
+  const levelCode = profile?.level_code
+  const levelLabel = levelCode !== undefined
+    ? i18nLevel.getLabel(String(levelCode)) || profile?.level_label || `Level ${levelCode}`
+    : '-'
+
   return (
     <Card>
       {profile && (
@@ -45,7 +52,7 @@ function ProfileTab() {
           <Descriptions.Item label={t('profile.role')}>
             <Tag>{profile.role}</Tag>
           </Descriptions.Item>
-          <Descriptions.Item label={t('profile.level')}>{profile.level_name || '-'}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.level')}>{levelLabel}</Descriptions.Item>
           <Descriptions.Item label={t('profile.bonus')}>
             <span style={{ color: '#faad14', fontWeight: 'bold' }}>{profile.bonus?.toFixed(2)}</span>
           </Descriptions.Item>
@@ -125,7 +132,7 @@ function SnatchHistoryTab() {
       dataIndex: 'torrent_name',
       key: 'torrent_name',
       render: (name: string, r: Snatch) => (
-        <Link to={`/${lang}/torrents/$id`} params={{ id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
+        <Link to="/$lang/torrents/$id" params={{ lang, id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
       ),
     },
     {
@@ -187,7 +194,7 @@ function SeedingTab() {
       dataIndex: 'torrent_name',
       key: 'torrent_name',
       render: (name: string, r: SeedingInfo) => (
-        <Link to={`/${lang}/torrents/$id`} params={{ id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
+        <Link to="/$lang/torrents/$id" params={{ lang, id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
       ),
     },
     {
@@ -248,7 +255,7 @@ function BookmarksTab() {
       dataIndex: 'torrent_name',
       key: 'torrent_name',
       render: (name: string, r: Bookmark) => (
-        <Link to={`/${lang}/torrents/$id`} params={{ id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
+        <Link to="/$lang/torrents/$id" params={{ lang, id: String(r.torrent_id) }}>{name || `#${r.torrent_id}`}</Link>
       ),
     },
     {
@@ -420,7 +427,7 @@ export function UserCenter() {
   })
 
   useEffect(() => {
-    if (!token) navigate({ to: `/${lang}/login` })
+    if (!token) navigate({ to: '/$lang/login', params: { lang } })
   }, [token, navigate])
 
   const handleTabChange = (key: string) => {

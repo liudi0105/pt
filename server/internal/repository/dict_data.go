@@ -41,6 +41,15 @@ func (r *DictDataRepo) ListByTypeName(typeName string) ([]model.DictData, error)
 	return data, err
 }
 
+func (r *DictDataRepo) ListByTypeNames(typeNames []string) ([]model.DictData, error) {
+	var data []model.DictData
+	err := r.db.Joins("JOIN sys_dict_type ON sys_dict_type.id = sys_dict_data.type_id").
+		Where("sys_dict_type.name IN ? AND sys_dict_data.is_active = ?", typeNames, true).
+		Order("sys_dict_data.sort_order ASC, sys_dict_data.id ASC").
+		Find(&data).Error
+	return data, err
+}
+
 func (r *DictDataRepo) Update(d *model.DictData) error {
 	return r.db.Save(d).Error
 }

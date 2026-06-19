@@ -22,6 +22,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
+	if err := repository.ValidateSchema(db); err != nil {
+		log.Fatalf("Database schema validation failed: %v", err)
+	}
 
 	peerStore := tracker.NewPeerStore()
 	go peerStore.CleanupLoop(cfg.Tracker.CleanupInterval)
@@ -121,6 +124,9 @@ func main() {
 		}
 		api.POST("/auth/register-with-invite", h.RegisterWithInvite)
 
+		// Public dict data (no auth required)
+		api.GET("/dict-data", h.ListDictDataPublic)
+
 		// Reports
 		api.POST("/reports", mw.Auth(), h.CreateReport)
 
@@ -135,6 +141,10 @@ func main() {
 		admin := api.Group("/admin")
 		admin.Use(mw.Auth(), mw.Admin())
 		{
+			admin.GET("/dashboard", h.AdminDashboard)
+			admin.GET("/client-risk", h.AdminClientRisk)
+			admin.GET("/resources", h.AdminResources)
+
 			admin.GET("/users", h.AdminListUsers)
 			admin.PUT("/users/:id/role", h.AdminUpdateUserRole)
 			admin.PUT("/users/:id/status", h.AdminUpdateUserStatus)
@@ -181,8 +191,20 @@ func main() {
 			// Site Settings
 			admin.GET("/settings", h.ListSiteSettings)
 			admin.PUT("/settings/:key", h.UpdateSiteSetting)
+
+			// Announcements
+			admin.GET("/announcements", h.ListAnnouncements)
+			admin.POST("/announcements", h.CreateAnnouncement)
+			admin.PUT("/announcements/:id", h.UpdateAnnouncement)
+			admin.DELETE("/announcements/:id", h.DeleteAnnouncement)
+
+			// Bonus Logs
+			admin.GET("/bonus-logs", h.AdminListBonusLogs)
 		}
 	}
+
+	api.GET("/announcements", h.ListActiveAnnouncements)
+	api.GET("/i18n", h.QueryI18n)
 
 	r.GET("/announce", h.Announce)
 	r.GET("/scrape", h.Scrape)

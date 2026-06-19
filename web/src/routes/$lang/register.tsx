@@ -3,7 +3,7 @@ import { Register } from '../../pages/Register'
 
 export const Route = createFileRoute('/$lang/register')({
   staticData: {
-    title: '注册',
+    title: 'common:nav.register',
   },
   component: Register,
 })

@@ -3,7 +3,7 @@ import { HR } from '../../pages/HR'
 
 export const Route = createFileRoute('/$lang/hr')({
   staticData: {
-    title: 'H&R',
+    title: 'common:nav.hr',
   },
   component: HR,
 })

@@ -3,7 +3,7 @@ import { UserCenter } from '../../pages/UserCenter'
 
 export const Route = createFileRoute('/$lang/user_')({
   staticData: {
-    title: '用户中心',
+    title: 'common:nav.userCenter',
   },
   component: UserCenter,
 })

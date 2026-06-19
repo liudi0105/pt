@@ -3,7 +3,8 @@ import { LevelManage } from '../../pages/admin/LevelManage'
 
 export const Route = createFileRoute('/$lang/admin/levels')({
   staticData: {
-    title: '等级管理',
+    title: 'admin:menu.levels',
+    menuCode: 'levels',
   },
   component: LevelManage,
 })

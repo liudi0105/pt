@@ -3,7 +3,8 @@ import { UserManage } from '../../pages/admin/UserManage'
 
 export const Route = createFileRoute('/$lang/admin/users')({
   staticData: {
-    title: '用户管理',
+    title: 'admin:menu.users',
+    menuCode: 'users',
   },
   component: UserManage,
 })

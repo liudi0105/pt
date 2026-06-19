@@ -3,7 +3,7 @@ import { Login } from '../../pages/Login'
 
 export const Route = createFileRoute('/$lang/login')({
   staticData: {
-    title: '登录',
+    title: 'common:nav.login',
   },
   component: Login,
 })

@@ -1,5 +1,6 @@
 *.db
+*.db-journal
 .idea
 *.lockb
-server
 node_modules/
+*.exe

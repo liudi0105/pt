@@ -26,7 +26,7 @@ func (r *LevelRepo) GetByID(id int64) (*model.UserLevel, error) {
 
 func (r *LevelRepo) List() ([]model.UserLevel, error) {
 	var levels []model.UserLevel
-	err := r.db.Order("sort_order ASC, id ASC").Find(&levels).Error
+	err := r.db.Order("code ASC, id ASC").Find(&levels).Error
 	return levels, err
 }
 

@@ -20,7 +20,7 @@ func (r *MedalRepo) Create(m *model.Medal) error {
 
 func (r *MedalRepo) List() ([]model.Medal, error) {
 	var medals []model.Medal
-	err := r.db.Order("id ASC").Find(&medals).Error
+	err := r.db.Order("code ASC, id ASC").Find(&medals).Error
 	return medals, err
 }
 
@@ -54,8 +54,8 @@ func (r *UserMedalRepo) ListByUser(userID int64) ([]model.UserMedal, error) {
 	}
 	for i := range ums {
 		var m model.Medal
-		if err := r.db.Select("name").First(&m, ums[i].MedalID).Error; err == nil {
-			ums[i].MedalName = m.Name
+		if err := r.db.Select("code").First(&m, ums[i].MedalID).Error; err == nil {
+			ums[i].MedalCode = m.Code
 		}
 	}
 	return ums, err

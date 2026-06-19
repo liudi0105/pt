@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as LangIndexRouteImport } from './routes/$lang/index'
 import { Route as LangUserRouteImport } from './routes/$lang/user_'
+import { Route as LangTorrentsRouteImport } from './routes/$lang/torrents'
 import { Route as LangRegisterRouteImport } from './routes/$lang/register'
 import { Route as LangOffersRouteImport } from './routes/$lang/offers'
 import { Route as LangMessagesRouteImport } from './routes/$lang/messages'
@@ -28,9 +29,13 @@ import { Route as LangAdminSettingsRouteImport } from './routes/$lang/admin.sett
 import { Route as LangAdminRolesRouteImport } from './routes/$lang/admin.roles'
 import { Route as LangAdminReportsRouteImport } from './routes/$lang/admin.reports'
 import { Route as LangAdminPromotionsRouteImport } from './routes/$lang/admin.promotions'
+import { Route as LangAdminOperationsResourcesRouteImport } from './routes/$lang/admin.operations-resources'
 import { Route as LangAdminMedalsRouteImport } from './routes/$lang/admin.medals'
 import { Route as LangAdminLevelsRouteImport } from './routes/$lang/admin.levels'
 import { Route as LangAdminDictRouteImport } from './routes/$lang/admin.dict'
+import { Route as LangAdminClientRiskControlRouteImport } from './routes/$lang/admin.client-risk-control'
+import { Route as LangAdminBonusRouteImport } from './routes/$lang/admin.bonus'
+import { Route as LangAdminAnnouncementsRouteImport } from './routes/$lang/admin.announcements'
 import { Route as LangTorrentsIdEditRouteImport } from './routes/$lang/torrents_.$id.edit'
 
 const LangRoute = LangRouteImport.update({
@@ -46,6 +51,11 @@ const LangIndexRoute = LangIndexRouteImport.update({
 const LangUserRoute = LangUserRouteImport.update({
   id: '/user_',
   path: '/user',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangTorrentsRoute = LangTorrentsRouteImport.update({
+  id: '/torrents',
+  path: '/torrents',
   getParentRoute: () => LangRoute,
 } as any)
 const LangRegisterRoute = LangRegisterRouteImport.update({
@@ -128,6 +138,12 @@ const LangAdminPromotionsRoute = LangAdminPromotionsRouteImport.update({
   path: '/promotions',
   getParentRoute: () => LangAdminRoute,
 } as any)
+const LangAdminOperationsResourcesRoute =
+  LangAdminOperationsResourcesRouteImport.update({
+    id: '/operations-resources',
+    path: '/operations-resources',
+    getParentRoute: () => LangAdminRoute,
+  } as any)
 const LangAdminMedalsRoute = LangAdminMedalsRouteImport.update({
   id: '/medals',
   path: '/medals',
@@ -141,6 +157,22 @@ const LangAdminLevelsRoute = LangAdminLevelsRouteImport.update({
 const LangAdminDictRoute = LangAdminDictRouteImport.update({
   id: '/dict',
   path: '/dict',
+  getParentRoute: () => LangAdminRoute,
+} as any)
+const LangAdminClientRiskControlRoute =
+  LangAdminClientRiskControlRouteImport.update({
+    id: '/client-risk-control',
+    path: '/client-risk-control',
+    getParentRoute: () => LangAdminRoute,
+  } as any)
+const LangAdminBonusRoute = LangAdminBonusRouteImport.update({
+  id: '/bonus',
+  path: '/bonus',
+  getParentRoute: () => LangAdminRoute,
+} as any)
+const LangAdminAnnouncementsRoute = LangAdminAnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
   getParentRoute: () => LangAdminRoute,
 } as any)
 const LangTorrentsIdEditRoute = LangTorrentsIdEditRouteImport.update({
@@ -159,11 +191,16 @@ export interface FileRoutesByFullPath {
   '/$lang/messages': typeof LangMessagesRoute
   '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
+  '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
+  '/$lang/admin/bonus': typeof LangAdminBonusRoute
+  '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
   '/$lang/admin/dict': typeof LangAdminDictRoute
   '/$lang/admin/levels': typeof LangAdminLevelsRoute
   '/$lang/admin/medals': typeof LangAdminMedalsRoute
+  '/$lang/admin/operations-resources': typeof LangAdminOperationsResourcesRoute
   '/$lang/admin/promotions': typeof LangAdminPromotionsRoute
   '/$lang/admin/reports': typeof LangAdminReportsRoute
   '/$lang/admin/roles': typeof LangAdminRolesRoute
@@ -182,11 +219,16 @@ export interface FileRoutesByTo {
   '/$lang/messages': typeof LangMessagesRoute
   '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang': typeof LangIndexRoute
+  '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
+  '/$lang/admin/bonus': typeof LangAdminBonusRoute
+  '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
   '/$lang/admin/dict': typeof LangAdminDictRoute
   '/$lang/admin/levels': typeof LangAdminLevelsRoute
   '/$lang/admin/medals': typeof LangAdminMedalsRoute
+  '/$lang/admin/operations-resources': typeof LangAdminOperationsResourcesRoute
   '/$lang/admin/promotions': typeof LangAdminPromotionsRoute
   '/$lang/admin/reports': typeof LangAdminReportsRoute
   '/$lang/admin/roles': typeof LangAdminRolesRoute
@@ -208,11 +250,16 @@ export interface FileRoutesById {
   '/$lang/messages': typeof LangMessagesRoute
   '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user_': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
+  '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
+  '/$lang/admin/bonus': typeof LangAdminBonusRoute
+  '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
   '/$lang/admin/dict': typeof LangAdminDictRoute
   '/$lang/admin/levels': typeof LangAdminLevelsRoute
   '/$lang/admin/medals': typeof LangAdminMedalsRoute
+  '/$lang/admin/operations-resources': typeof LangAdminOperationsResourcesRoute
   '/$lang/admin/promotions': typeof LangAdminPromotionsRoute
   '/$lang/admin/reports': typeof LangAdminReportsRoute
   '/$lang/admin/roles': typeof LangAdminRolesRoute
@@ -235,11 +282,16 @@ export interface FileRouteTypes {
     | '/$lang/messages'
     | '/$lang/offers'
     | '/$lang/register'
+    | '/$lang/torrents'
     | '/$lang/user'
     | '/$lang/'
+    | '/$lang/admin/announcements'
+    | '/$lang/admin/bonus'
+    | '/$lang/admin/client-risk-control'
     | '/$lang/admin/dict'
     | '/$lang/admin/levels'
     | '/$lang/admin/medals'
+    | '/$lang/admin/operations-resources'
     | '/$lang/admin/promotions'
     | '/$lang/admin/reports'
     | '/$lang/admin/roles'
@@ -258,11 +310,16 @@ export interface FileRouteTypes {
     | '/$lang/messages'
     | '/$lang/offers'
     | '/$lang/register'
+    | '/$lang/torrents'
     | '/$lang/user'
     | '/$lang'
+    | '/$lang/admin/announcements'
+    | '/$lang/admin/bonus'
+    | '/$lang/admin/client-risk-control'
     | '/$lang/admin/dict'
     | '/$lang/admin/levels'
     | '/$lang/admin/medals'
+    | '/$lang/admin/operations-resources'
     | '/$lang/admin/promotions'
     | '/$lang/admin/reports'
     | '/$lang/admin/roles'
@@ -283,11 +340,16 @@ export interface FileRouteTypes {
     | '/$lang/messages'
     | '/$lang/offers'
     | '/$lang/register'
+    | '/$lang/torrents'
     | '/$lang/user_'
     | '/$lang/'
+    | '/$lang/admin/announcements'
+    | '/$lang/admin/bonus'
+    | '/$lang/admin/client-risk-control'
     | '/$lang/admin/dict'
     | '/$lang/admin/levels'
     | '/$lang/admin/medals'
+    | '/$lang/admin/operations-resources'
     | '/$lang/admin/promotions'
     | '/$lang/admin/reports'
     | '/$lang/admin/roles'
@@ -324,6 +386,13 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/$lang/user'
       preLoaderRoute: typeof LangUserRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/torrents': {
+      id: '/$lang/torrents'
+      path: '/torrents'
+      fullPath: '/$lang/torrents'
+      preLoaderRoute: typeof LangTorrentsRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/register': {
@@ -438,6 +507,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangAdminPromotionsRouteImport
       parentRoute: typeof LangAdminRoute
     }
+    '/$lang/admin/operations-resources': {
+      id: '/$lang/admin/operations-resources'
+      path: '/operations-resources'
+      fullPath: '/$lang/admin/operations-resources'
+      preLoaderRoute: typeof LangAdminOperationsResourcesRouteImport
+      parentRoute: typeof LangAdminRoute
+    }
     '/$lang/admin/medals': {
       id: '/$lang/admin/medals'
       path: '/medals'
@@ -459,6 +535,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangAdminDictRouteImport
       parentRoute: typeof LangAdminRoute
     }
+    '/$lang/admin/client-risk-control': {
+      id: '/$lang/admin/client-risk-control'
+      path: '/client-risk-control'
+      fullPath: '/$lang/admin/client-risk-control'
+      preLoaderRoute: typeof LangAdminClientRiskControlRouteImport
+      parentRoute: typeof LangAdminRoute
+    }
+    '/$lang/admin/bonus': {
+      id: '/$lang/admin/bonus'
+      path: '/bonus'
+      fullPath: '/$lang/admin/bonus'
+      preLoaderRoute: typeof LangAdminBonusRouteImport
+      parentRoute: typeof LangAdminRoute
+    }
+    '/$lang/admin/announcements': {
+      id: '/$lang/admin/announcements'
+      path: '/announcements'
+      fullPath: '/$lang/admin/announcements'
+      preLoaderRoute: typeof LangAdminAnnouncementsRouteImport
+      parentRoute: typeof LangAdminRoute
+    }
     '/$lang/torrents_/$id/edit': {
       id: '/$lang/torrents_/$id/edit'
       path: '/edit'
@@ -470,9 +567,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface LangAdminRouteChildren {
+  LangAdminAnnouncementsRoute: typeof LangAdminAnnouncementsRoute
+  LangAdminBonusRoute: typeof LangAdminBonusRoute
+  LangAdminClientRiskControlRoute: typeof LangAdminClientRiskControlRoute
   LangAdminDictRoute: typeof LangAdminDictRoute
   LangAdminLevelsRoute: typeof LangAdminLevelsRoute
   LangAdminMedalsRoute: typeof LangAdminMedalsRoute
+  LangAdminOperationsResourcesRoute: typeof LangAdminOperationsResourcesRoute
   LangAdminPromotionsRoute: typeof LangAdminPromotionsRoute
   LangAdminReportsRoute: typeof LangAdminReportsRoute
   LangAdminRolesRoute: typeof LangAdminRolesRoute
@@ -482,9 +583,13 @@ interface LangAdminRouteChildren {
 }
 
 const LangAdminRouteChildren: LangAdminRouteChildren = {
+  LangAdminAnnouncementsRoute: LangAdminAnnouncementsRoute,
+  LangAdminBonusRoute: LangAdminBonusRoute,
+  LangAdminClientRiskControlRoute: LangAdminClientRiskControlRoute,
   LangAdminDictRoute: LangAdminDictRoute,
   LangAdminLevelsRoute: LangAdminLevelsRoute,
   LangAdminMedalsRoute: LangAdminMedalsRoute,
+  LangAdminOperationsResourcesRoute: LangAdminOperationsResourcesRoute,
   LangAdminPromotionsRoute: LangAdminPromotionsRoute,
   LangAdminReportsRoute: LangAdminReportsRoute,
   LangAdminRolesRoute: LangAdminRolesRoute,
@@ -518,6 +623,7 @@ interface LangRouteChildren {
   LangMessagesRoute: typeof LangMessagesRoute
   LangOffersRoute: typeof LangOffersRoute
   LangRegisterRoute: typeof LangRegisterRoute
+  LangTorrentsRoute: typeof LangTorrentsRoute
   LangUserRoute: typeof LangUserRoute
   LangIndexRoute: typeof LangIndexRoute
   LangTorrentsIdRoute: typeof LangTorrentsIdRouteWithChildren
@@ -533,6 +639,7 @@ const LangRouteChildren: LangRouteChildren = {
   LangMessagesRoute: LangMessagesRoute,
   LangOffersRoute: LangOffersRoute,
   LangRegisterRoute: LangRegisterRoute,
+  LangTorrentsRoute: LangTorrentsRoute,
   LangUserRoute: LangUserRoute,
   LangIndexRoute: LangIndexRoute,
   LangTorrentsIdRoute: LangTorrentsIdRouteWithChildren,

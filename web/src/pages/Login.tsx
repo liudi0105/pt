@@ -20,7 +20,7 @@ export function Login() {
       const { token, user_id, username, role } = res.data
       setAuth(token, { id: user_id, username, role } as any)
       message.success(t('loginSuccess'))
-      navigate({ to: `/${lang}` })
+      navigate({ to: '/$lang', params: { lang } })
     } catch {
       message.error(t('invalidCredentials'))
     }
@@ -46,7 +46,7 @@ export function Login() {
           </Form.Item>
         </Form>
         <div style={{ textAlign: 'center' }}>
-          {t('noAccount')} <Link to={`/${lang}/register`}>{t('register')}</Link>
+          {t('noAccount')} <Link to="/$lang/register" params={{ lang }}>{t('register')}</Link>
         </div>
       </Card>
     </div>

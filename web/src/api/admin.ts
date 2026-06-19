@@ -1,5 +1,5 @@
 import { api } from './client'
-import type { DictType, DictData, UserLevel, RoleModel, Permission, SiteSetting } from '../types'
+import type { DictType, DictData, UserLevel, RoleModel, Permission, SiteSetting, Torrent, User, Announcement, BonusLog } from '../types'
 
 // ---- Dict Types ----
 export function listDictTypes() {
@@ -117,4 +117,51 @@ export function listSiteSettings() {
 
 export function updateSiteSetting(key: string, value: string) {
   return api.put(`/admin/settings/${key}`, { value })
+}
+
+// ---- Dashboard ----
+export interface AdminDashboardStats {
+  total_users: number
+  active_users: number
+  total_upload_bytes: number
+  total_download_bytes: number
+  latest_users: User[]
+  latest_torrents: Torrent[]
+}
+
+// ---- Announcements ----
+export function listAnnouncements() {
+  return api.get<{ announcements: Announcement[] }>('/admin/announcements')
+}
+export function createAnnouncement(data: Partial<Announcement>) {
+  return api.post<Announcement>('/admin/announcements', data)
+}
+export function updateAnnouncement(id: number, data: Partial<Announcement>) {
+  return api.put<Announcement>(`/admin/announcements/${id}`, data)
+}
+export function deleteAnnouncement(id: number) {
+  return api.delete(`/admin/announcements/${id}`)
+}
+
+export function adminGetDashboard() {
+  return api.get<AdminDashboardStats>('/admin/dashboard')
+}
+
+// ---- Bonus Logs ----
+export function listBonusLogs(params: {
+  user_id?: number
+  business_type?: number
+  page?: number
+  page_size?: number
+}) {
+  return api.get<{ logs: BonusLog[]; total: number }>('/admin/bonus-logs', { params })
+}
+
+// ---- Admin Docs Views ----
+export function adminGetClientRisk() {
+  return api.get('/admin/client-risk')
+}
+
+export function adminGetResources() {
+  return api.get('/admin/resources')
 }

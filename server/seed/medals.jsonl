@@ -1,8 +1,0 @@
-{"model":"medal","data":{"name":"First Upload","description":"Awarded for uploading your first torrent","image":"first-upload.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"100 Uploads","description":"Awarded for uploading 100 torrents","image":"100-uploads.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"Seed Master","description":"Awarded for seeding for 1000 hours","image":"seed-master.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"Helpful User","description":"Awarded for receiving 50 thanks","image":"helpful-user.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"VIP Member","description":"Special medal for VIP members","image":"vip-member.png","price":100,"is_active":true}}
-{"model":"medal","data":{"name":"Top Uploader","description":"Awarded to top uploaders of the month","image":"top-uploader.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"Anniversary 1 Year","description":"Awarded for being a member for 1 year","image":"anniversary-1year.png","price":0,"is_active":true}}
-{"model":"medal","data":{"name":"Forum Active","description":"Awarded for making 100 forum posts","image":"forum-active.png","price":0,"is_active":true}}

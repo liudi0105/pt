@@ -1,9 +1,10 @@
 {
   "nav": {
     "home": "Home",
+    "torrents": "Torrents",
     "offers": "Offers",
     "candidates": "Candidates",
-    "upload": "Upload",
+    "upload": "Publish",
     "profile": "Profile",
     "checkin": "Check-in",
     "seeding": "Seeding",
@@ -19,7 +20,9 @@
     "userCenter": "User Center",
     "adminPanel": "Admin Panel",
     "inbox": "Inbox",
-    "outbox": "Outbox"
+    "outbox": "Outbox",
+    "torrentDetail": "Torrent Detail",
+    "torrentEdit": "Edit Torrent"
   },
   "brand": "PT Site",
   "categories": {
@@ -92,6 +95,26 @@
   "created": "Created",
   "deleted": "Deleted",
   "error": "Failed",
+  "medals": {
+    "0": "First Upload",
+    "1": "100 Uploads",
+    "2": "Seed Master",
+    "3": "Helpful User",
+    "4": "VIP Member",
+    "5": "Top Uploader",
+    "6": "Anniversary 1 Year",
+    "7": "Forum Active"
+  },
+  "medalDescriptions": {
+    "0": "Granted after completing the first upload milestone",
+    "1": "Granted after reaching 100 uploads",
+    "2": "Granted after seeding for 1000 hours",
+    "3": "Granted after receiving 50 thanks",
+    "4": "Special medal for VIP members",
+    "5": "Granted to the top uploaders of the month",
+    "6": "Granted after 1 year of membership",
+    "7": "Granted after 100 forum posts"
+  },
   "medal": {
     "purchased": "Medal purchased!",
     "purchaseFailed": "Purchase failed",
@@ -100,6 +123,9 @@
     "price": "Price",
     "noDescription": "No description",
     "empty": "No medals available yet"
+  },
+  "announcements": {
+    "title": "Announcements"
   },
   "hr": {
     "title": "Hit & Run",
@@ -113,5 +139,11 @@
     "ok": "OK",
     "seeding": "Seeding",
     "stopped": "Stopped"
+  },
+  "home": {
+    "welcome": "Welcome to the site! Browse torrents or vote on offers.",
+    "quickLinks": "Quick Links",
+    "browseTorrents": "Browse latest torrents",
+    "browseOffers": "View candidates and vote"
   }
 }

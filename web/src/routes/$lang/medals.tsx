@@ -3,7 +3,7 @@ import { Medals } from '../../pages/Medals'
 
 export const Route = createFileRoute('/$lang/medals')({
   staticData: {
-    title: '勋章',
+    title: 'common:nav.medals',
   },
   component: Medals,
 })

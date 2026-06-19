@@ -3,7 +3,8 @@ import { AdminDashboard } from '../../pages/admin/Dashboard'
 
 export const Route = createFileRoute('/$lang/admin/')({
   staticData: {
-    title: '管理后台',
+    title: 'admin:menu.dashboard',
+    menuCode: 'dashboard',
   },
   component: AdminDashboard,
 })

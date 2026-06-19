@@ -9,6 +9,7 @@ const { Title, Text } = Typography
 
 export function Medals() {
   const { t } = useTranslation()
+  const { t: tCommon } = useTranslation('common')
   const queryClient = useQueryClient()
 
   const { data: medals, isLoading } = useQuery({
@@ -43,6 +44,8 @@ export function Medals() {
       <Row gutter={[16, 16]}>
         {(medals ?? []).map((m: Medal) => {
           const has = owned.has(m.id)
+          const medalLabel = tCommon(`medals.${m.code}`, { defaultValue: `Medal ${m.code}` })
+          const medalDescription = tCommon(`medalDescriptions.${m.code}`, { defaultValue: m.description })
           return (
             <Col key={m.id} xs={24} sm={12} md={8} lg={6}>
               <Card
@@ -53,10 +56,10 @@ export function Medals() {
                     {t('medal.buy')} ({m.price} {t('medal.bonus')})
                   </Button>,
                 ]}
-              >
+                >
                 <div style={{ fontSize: 48, marginBottom: 8 }}>🏅</div>
-                <Title level={5}>{m.name}</Title>
-                <Text type="secondary">{m.description || t('medal.noDescription')}</Text>
+                <Title level={5}>{medalLabel}</Title>
+                <Text type="secondary">{medalDescription || t('medal.noDescription')}</Text>
                 <div style={{ marginTop: 8 }}>
                   {has ? <Tag color="green">{t('status.active')}</Tag> : <Tag>{t('medal.price')}: {m.price}</Tag>}
                 </div>

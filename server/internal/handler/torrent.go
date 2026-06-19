@@ -56,9 +56,21 @@ func (h *Handler) GetTorrent(c *gin.Context) {
 }
 
 type EditTorrentRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
-	Category    string `json:"category" binding:"required"`
+	Name          string `json:"name" binding:"required"`
+	Description   string `json:"description"`
+	Category      string `json:"category" binding:"required"`
+	Source        string `json:"source"`
+	Medium        string `json:"medium"`
+	Codec         string `json:"codec"`
+	Standard      string `json:"standard"`
+	Processing    string `json:"processing"`
+	Team          string `json:"team"`
+	AudioCodec    string `json:"audiocodec"`
+	SmallDescr    string `json:"small_descr"`
+	TechnicalInfo string `json:"technical_info"`
+	Cover         string `json:"cover"`
+	NFO           string `json:"nfo"`
+	Tags          string `json:"tags"`
 }
 
 func (h *Handler) EditTorrent(c *gin.Context) {
@@ -90,6 +102,18 @@ func (h *Handler) EditTorrent(c *gin.Context) {
 	torrent.Name = req.Name
 	torrent.Description = req.Description
 	torrent.Category = req.Category
+	torrent.Source = req.Source
+	torrent.Medium = req.Medium
+	torrent.Codec = req.Codec
+	torrent.Standard = req.Standard
+	torrent.Processing = req.Processing
+	torrent.Team = req.Team
+	torrent.AudioCodec = req.AudioCodec
+	torrent.SmallDescr = req.SmallDescr
+	torrent.TechnicalInfo = req.TechnicalInfo
+	torrent.Cover = req.Cover
+	torrent.NFO = req.NFO
+	torrent.Tags = req.Tags
 	if err := h.repo.Torrent.Update(torrent); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "failed_to_update_torrent")})
 		return
@@ -126,12 +150,6 @@ func (h *Handler) DeleteTorrent(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"ok": true})
 }
 
-type UploadRequest struct {
-	Name        string `json:"name" binding:"required"`
-	Description string `json:"description"`
-	Category    string `json:"category" binding:"required"`
-}
-
 func (h *Handler) UploadTorrent(c *gin.Context) {
 	file, err := c.FormFile("torrent_file")
 	if err != nil {
@@ -160,14 +178,37 @@ func (h *Handler) UploadTorrent(c *gin.Context) {
 
 	userID, _ := c.Get("user_id")
 
+	nfoContent := ""
+	if nfoFile, err := c.FormFile("nfo"); err == nil {
+		if nfoFH, err := nfoFile.Open(); err == nil {
+			nfoBuf := make([]byte, nfoFile.Size)
+			if _, err := nfoFH.Read(nfoBuf); err == nil {
+				nfoContent = string(nfoBuf)
+			}
+			nfoFH.Close()
+		}
+	}
+
 	t := &model.Torrent{
-		UserID:      userID.(int64),
-		InfoHash:    torrentInfo.InfoHash[:],
-		Name:        c.PostForm("name"),
-		Description: c.PostForm("description"),
-		Size:        torrentInfo.Length,
-		FileCount:   len(torrentInfo.Files),
-		Category:    c.PostForm("category"),
+		UserID:        userID.(int64),
+		InfoHash:      torrentInfo.InfoHash[:],
+		Name:          c.PostForm("name"),
+		Description:   c.PostForm("description"),
+		Size:          torrentInfo.Length,
+		FileCount:     len(torrentInfo.Files),
+		Category:      c.PostForm("category"),
+		Source:        c.PostForm("source"),
+		Medium:        c.PostForm("medium"),
+		Codec:         c.PostForm("codec"),
+		Standard:      c.PostForm("standard"),
+		Processing:    c.PostForm("processing"),
+		Team:          c.PostForm("team"),
+		AudioCodec:    c.PostForm("audiocodec"),
+		SmallDescr:    c.PostForm("small_descr"),
+		TechnicalInfo: c.PostForm("technical_info"),
+		Cover:         c.PostForm("cover"),
+		NFO:           nfoContent,
+		Tags:          c.PostForm("tags"),
 	}
 
 	if t.Name == "" {
@@ -179,7 +220,6 @@ func (h *Handler) UploadTorrent(c *gin.Context) {
 		return
 	}
 
-	// Save torrent file to disk
 	uploadDir := h.cfg.UploadDir
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "failed_to_create_upload_dir")})

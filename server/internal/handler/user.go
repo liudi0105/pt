@@ -23,11 +23,13 @@ func (h *Handler) GetProfile(c *gin.Context) {
 
 	total, seeding, _ := h.repo.Snatch.CountByUser(user.ID)
 
-	levelName := ""
+	levelCode := 0
+	levelLabel := ""
 	if user.LevelID != nil {
 		level, err := h.repo.Level.GetByID(*user.LevelID)
 		if err == nil {
-			levelName = level.Name
+			levelCode = level.Code
+			levelLabel = level.Label
 		}
 	}
 
@@ -40,7 +42,8 @@ func (h *Handler) GetProfile(c *gin.Context) {
 		"download_bytes": user.DownloadBytes,
 		"bonus":          user.Bonus,
 		"role":           user.Role,
-		"level_name":     levelName,
+		"level_code":     levelCode,
+		"level_label":    levelLabel,
 		"total_snatches": total,
 		"seeding_count":  seeding,
 		"created_at":     user.CreatedAt,
@@ -297,10 +300,19 @@ func (h *Handler) BuyUpload(c *gin.Context) {
 
 	uploadBytes := int64(req.BonusSpent / bonusPerGB * 1024 * 1024 * 1024)
 
+	oldBonus := user.Bonus
 	if err := h.repo.User.AddBonus(user.ID, -req.BonusSpent); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "transaction_failed")})
 		return
 	}
+	h.repo.BonusLog.Create(&model.BonusLog{
+		UserID:        user.ID,
+		BusinessType:  model.BonusTypeExchange,
+		OldTotalValue: oldBonus,
+		Value:         -req.BonusSpent,
+		NewTotalValue: oldBonus - req.BonusSpent,
+		Comment:       "兑换上传流量",
+	})
 	if err := h.repo.User.AddUpload(user.ID, uploadBytes); err != nil {
 		// Rollback bonus
 		h.repo.User.AddBonus(user.ID, req.BonusSpent)
@@ -309,9 +321,9 @@ func (h *Handler) BuyUpload(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"ok":            true,
-		"upload_bytes":  uploadBytes,
-		"bonus_spent":   req.BonusSpent,
-		"remaining":     user.Bonus - req.BonusSpent,
+		"ok":           true,
+		"upload_bytes": uploadBytes,
+		"bonus_spent":  req.BonusSpent,
+		"remaining":    user.Bonus - req.BonusSpent,
 	})
 }

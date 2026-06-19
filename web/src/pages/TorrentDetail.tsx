@@ -152,7 +152,7 @@ export function TorrentDetail() {
   return (
     <div>
       <Space style={{ marginBottom: 16 }}>
-        <Link to={`/${lang}`}><Button icon={<ArrowLeftOutlined />}>{tCommon('back')}</Button></Link>
+        <Link to="/$lang" params={{ lang }}><Button icon={<ArrowLeftOutlined />}>{tCommon('back')}</Button></Link>
       </Space>
 
       <Card>
@@ -214,7 +214,7 @@ export function TorrentDetail() {
             {isBookmarked ? t('bookmarked') : t('bookmark')}
           </Button>
           {(currentUser?.role === 'admin' || currentUser?.id === torrent.user_id) && (
-            <Button icon={<EditOutlined />} onClick={() => navigate({ to: `/${lang}/torrents/$id/edit`, params: { id } })}>
+            <Button icon={<EditOutlined />} onClick={() => navigate({ to: '/$lang/torrents/$id/edit', params: { lang, id } })}>
               Edit
             </Button>
           )}

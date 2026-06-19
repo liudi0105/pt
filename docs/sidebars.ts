@@ -49,6 +49,8 @@ const sidebars: SidebarsConfig = {
             'panda-next-panda-php/modules/torrent/torrent-publish-edit',
             'panda-next-panda-php/modules/torrent/torrent-approval',
             'panda-next-panda-php/modules/torrent/torrent-search-filter',
+            'panda-next-panda-php/modules/torrent/file-download-contract',
+            'panda-next-panda-php/modules/torrent/peer-snatch-query',
             'panda-next-panda-php/modules/torrent/tracker-announce',
             'panda-next-panda-php/modules/torrent/tracker-scrape-peer-snatch',
           ],
@@ -63,6 +65,8 @@ const sidebars: SidebarsConfig = {
             'panda-next-panda-php/modules/community/comments-thanks-bookmarks',
             'panda-next-panda-php/modules/community/attendance-signin',
             'panda-next-panda-php/modules/community/rewards-and-medals',
+            'panda-next-panda-php/modules/community/reward-notification-contract',
+            'panda-next-panda-php/modules/community/comment-governance-and-moderation',
             'panda-next-panda-php/modules/community/exams-and-hit-and-run',
             'panda-next-panda-php/modules/community/requests-claims-and-reports',
           ],
@@ -76,6 +80,9 @@ const sidebars: SidebarsConfig = {
             'panda-next-panda-php/modules/admin/user-governance-backoffice',
             'panda-next-panda-php/modules/admin/client-risk-control',
             'panda-next-panda-php/modules/admin/operations-resources',
+            'panda-next-panda-php/modules/admin/admin-operation-contract',
+            'panda-next-panda-php/modules/admin/search-index-sync',
+            'panda-next-panda-php/modules/admin/logs-audit-query',
             'panda-next-panda-php/modules/admin/dashboard-and-statistics',
           ],
         },
@@ -93,13 +100,16 @@ const sidebars: SidebarsConfig = {
         'panda-next-panda-php/data-model',
       ],
     },
-    {
-      type: 'category',
-      label: '接口与运维',
-      items: [
-        'panda-next-panda-php/api-and-ops',
-      ],
-    },
+        {
+          type: 'category',
+          label: '接入与运维',
+          items: [
+            'panda-next-panda-php/api-and-ops',
+            'panda-next-panda-php/modules/integration/site-entry-and-home',
+            'panda-next-panda-php/modules/integration/third-party-approval',
+            'panda-next-panda-php/modules/integration/external-user-lookup',
+          ],
+        },
   ],
   databaseSidebar: [
     {

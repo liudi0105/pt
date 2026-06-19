@@ -1,9 +1,10 @@
 {
   "nav": {
     "home": "首页",
+    "torrents": "种子",
     "offers": "Offers",
     "candidates": "候选",
-    "upload": "上传",
+    "upload": "发布",
     "profile": "个人资料",
     "checkin": "签到",
     "seeding": "做种",
@@ -19,7 +20,9 @@
     "userCenter": "用户中心",
     "adminPanel": "管理面板",
     "inbox": "收件箱",
-    "outbox": "发件箱"
+    "outbox": "发件箱",
+    "torrentDetail": "种子详情",
+    "torrentEdit": "编辑种子"
   },
   "brand": "PT Site",
   "categories": {
@@ -92,6 +95,26 @@
   "created": "创建时间",
   "deleted": "已删除",
   "error": "操作失败",
+  "medals": {
+    "0": "首个上传",
+    "1": "百次上传",
+    "2": "做种大师",
+    "3": "热心用户",
+    "4": "VIP 会员",
+    "5": "月度上传王",
+    "6": "周年纪念",
+    "7": "论坛活跃"
+  },
+  "medalDescriptions": {
+    "0": "完成第一次上传后授予",
+    "1": "达到 100 次上传里程碑后授予",
+    "2": "连续做种 1000 小时后授予",
+    "3": "收到 50 次感谢后授予",
+    "4": "面向 VIP 会员的特殊勋章",
+    "5": "授予月度上传量最高的用户",
+    "6": "成为会员满 1 年后授予",
+    "7": "论坛发帖达到 100 条后授予"
+  },
   "medal": {
     "purchased": "勋章购买成功！",
     "purchaseFailed": "购买失败",
@@ -100,6 +123,9 @@
     "price": "价格",
     "noDescription": "暂无描述",
     "empty": "暂无勋章"
+  },
+  "announcements": {
+    "title": "公告"
   },
   "hr": {
     "title": "Hit & Run",
@@ -113,5 +139,11 @@
     "ok": "正常",
     "seeding": "做种中",
     "stopped": "已停止"
+  },
+  "home": {
+    "welcome": "欢迎来到本站点！请浏览种子或参与候选投票。",
+    "quickLinks": "快速链接",
+    "browseTorrents": "浏览最新种子",
+    "browseOffers": "查看候选和投票"
   }
 }

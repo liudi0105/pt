@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Input, InputNumber, Switch, Space, message, Typography, Popconfirm, ColorPicker,
+  Table, Button, Modal, Form, Input, InputNumber, Switch, Space, message, Typography, Popconfirm, ColorPicker, Select,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -10,11 +10,15 @@ import { useTranslation } from 'react-i18next'
 
 const { Title } = Typography
 
+const locales = ['zh', 'en', 'jp', 'fr', 'de', 'ko', 'ru', 'es']
+
 export function LevelManage() {
   const { t } = useTranslation('admin')
-  const { t: tCommon } = useTranslation('common')
+  const { t: tCommon, i18n } = useTranslation('common')
+  const currentLang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
   const [modalOpen, setModalOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState<UserLevel | null>(null)
+  const [i18nRows, setI18nRows] = useState<string[]>([])
   const queryClient = useQueryClient()
 
   const { data, isLoading } = useQuery({
@@ -47,8 +51,23 @@ export function LevelManage() {
     },
   })
 
+  const openModal = (record: UserLevel | null) => {
+    setEditingRecord(record)
+    if (record?.i18n) {
+      setI18nRows(Object.keys(record.i18n))
+    } else {
+      setI18nRows([])
+    }
+    setModalOpen(true)
+  }
+
   const columns = [
-    { title: t('levelManage.name'), dataIndex: 'name', key: 'name' },
+    { title: t('levelManage.code'), dataIndex: 'code', key: 'code', width: 80 },
+    {
+      title: t('levelManage.display'),
+      key: 'label',
+      render: (_: unknown, record: UserLevel) => record.i18n?.[currentLang]?.label || record.label,
+    },
     {
       title: t('levelManage.color'),
       dataIndex: 'color',
@@ -75,13 +94,7 @@ export function LevelManage() {
       width: 120,
       render: (_: any, record: UserLevel) => (
         <Space>
-          <Button
-            size="small"
-            onClick={() => {
-              setEditingRecord(record)
-              setModalOpen(true)
-            }}
-          >
+          <Button size="small" onClick={() => openModal(record)}>
             {tCommon('edit')}
           </Button>
           <Popconfirm title={t('levelManage.deleteConfirm')} onConfirm={() => deleteMut.mutate(record.id)}>
@@ -99,10 +112,7 @@ export function LevelManage() {
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => {
-            setEditingRecord(null)
-            setModalOpen(true)
-          }}
+          onClick={() => openModal(null)}
         >
           {t('levelManage.addLevel')}
         </Button>
@@ -126,20 +136,34 @@ export function LevelManage() {
       >
         <Form
           layout="vertical"
-          initialValues={editingRecord ?? {}}
+          initialValues={editingRecord ? { ...editingRecord, color: editingRecord.color || '#000000' } : {}}
           onFinish={(values) => {
-            const payload = {
+            const payload: Record<string, unknown> = {
               ...values,
               color: values.color?.toHexString?.() ?? values.color,
             }
+            const i18n: Record<string, Record<string, string>> = {}
+            for (const locale of i18nRows) {
+              const labelKey = `i18n_${locale}_label`
+              if (values[labelKey]) {
+                if (!i18n[locale]) i18n[locale] = {}
+                i18n[locale].label = values[labelKey] as string
+              }
+            }
+            if (Object.keys(i18n).length > 0) {
+              payload.i18n = i18n
+            }
             if (editingRecord) {
-              updateMut.mutate({ id: editingRecord.id, data: payload })
+              updateMut.mutate({ id: editingRecord.id, data: payload as Partial<UserLevel> })
             } else {
-              createMut.mutate(payload)
+              createMut.mutate(payload as Partial<UserLevel>)
             }
           }}
         >
-          <Form.Item name="name" label={t('levelManage.nameLabel')} rules={[{ required: true }]}>
+          <Form.Item name="code" label={t('levelManage.codeLabel')} rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }} min={0} />
+          </Form.Item>
+          <Form.Item name="label" label={t('levelManage.display')}>
             <Input />
           </Form.Item>
           <Form.Item name="color" label={t('levelManage.colorLabel')}>
@@ -169,6 +193,34 @@ export function LevelManage() {
           <Form.Item name="is_active" label={t('levelManage.activeLabel')} valuePropName="checked">
             <Switch defaultChecked />
           </Form.Item>
+
+          <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+            {t('dictManage.i18nLabel')}
+          </Typography.Text>
+          {i18nRows.map((locale) => (
+            <Space key={locale} style={{ display: 'flex', marginBottom: 8 }} align="start">
+              <Form.Item name={`i18n_${locale}_label`} label={locale} style={{ marginBottom: 0 }}
+                initialValue={editingRecord?.i18n?.[locale]?.label ?? ''}
+              >
+                <Input placeholder="Label" />
+              </Form.Item>
+              <Button type="link" danger onClick={() => setI18nRows(i18nRows.filter((l) => l !== locale))}>
+                {tCommon('delete')}
+              </Button>
+            </Space>
+          ))}
+          <Select
+            style={{ width: 200, marginBottom: 16 }}
+            placeholder={t('dictManage.addLocale')}
+            value={null}
+            onChange={(locale: string) => {
+              if (!i18nRows.includes(locale)) {
+                setI18nRows([...i18nRows, locale])
+              }
+            }}
+            options={locales.filter((l) => !i18nRows.includes(l)).map((l) => ({ value: l, label: l }))}
+          />
+
           <Button type="primary" htmlType="submit" loading={createMut.isPending || updateMut.isPending}>
             {editingRecord ? tCommon('update') : tCommon('create')}
           </Button>

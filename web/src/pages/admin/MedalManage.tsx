@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Table, Button, Modal, Form, Input, InputNumber, Typography, Space, message, Popconfirm } from 'antd'
+import { Table, Button, Modal, Form, Input, InputNumber, Typography, Space, message, Popconfirm, Switch } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { listMedals, createMedal, deleteMedal } from '../../api/medal'
@@ -44,10 +44,30 @@ export function MedalManage() {
   })
 
   const columns: ColumnsType<Medal> = [
-    { title: tCommon('id'), dataIndex: 'id', key: 'id', width: 60 },
-    { title: t('medalManage.name'), dataIndex: 'name', key: 'name' },
-    { title: t('medalManage.description'), dataIndex: 'description', key: 'description' },
+    {
+      title: t('medalManage.code'),
+      dataIndex: 'code',
+      key: 'code',
+      width: 80,
+    },
+    {
+      title: t('medalManage.display'),
+      key: 'display',
+      render: (_: unknown, record: Medal) => tCommon(`medals.${record.code}`, { defaultValue: `Medal ${record.code}` }),
+    },
+    {
+      title: t('medalManage.description'),
+      key: 'description',
+      render: (_: unknown, record: Medal) => tCommon(`medalDescriptions.${record.code}`, { defaultValue: record.description }),
+    },
     { title: t('medalManage.price'), dataIndex: 'price', key: 'price', width: 80 },
+    {
+      title: t('medalManage.active'),
+      dataIndex: 'is_active',
+      key: 'is_active',
+      width: 80,
+      render: (v: boolean) => (v ? tCommon('status.yes') : tCommon('status.no')),
+    },
     {
       title: t('medalManage.created'),
       dataIndex: 'created_at',
@@ -77,9 +97,9 @@ export function MedalManage() {
       <Table columns={columns} dataSource={data} rowKey="id" loading={isLoading} size="small" pagination={false} />
 
       <Modal title={t('medalManage.addTitle')} open={open} onCancel={() => setOpen(false)} footer={null} destroyOnClose>
-        <Form form={form} layout="vertical" onFinish={(values) => createMut.mutate(values)}>
-          <Form.Item name="name" label={t('medalManage.nameLabel')} rules={[{ required: true }]}>
-            <Input />
+        <Form form={form} layout="vertical" initialValues={{ is_active: true }} onFinish={(values) => createMut.mutate(values)}>
+          <Form.Item name="code" label={t('medalManage.codeLabel')} rules={[{ required: true }]}>
+            <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="description" label={t('medalManage.descriptionLabel')}>
             <Input.TextArea rows={3} />
@@ -89,6 +109,9 @@ export function MedalManage() {
           </Form.Item>
           <Form.Item name="price" label={t('medalManage.priceLabel')} rules={[{ required: true }]}>
             <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item name="is_active" label={t('medalManage.activeLabel')} valuePropName="checked">
+            <Switch />
           </Form.Item>
           <Button type="primary" htmlType="submit" block loading={createMut.isPending}>{tCommon('create')}</Button>
         </Form>

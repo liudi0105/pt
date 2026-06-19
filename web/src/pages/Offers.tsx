@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { Table, Button, Tag, Typography, Space, Modal, Input, Select, message, Card, Form, Descriptions, Alert } from 'antd'
+import { Table, Button, Tag, Typography, Space, Modal, Input, Select, message, Card, Form, Alert } from 'antd'
 import { PlusOutlined, CheckCircleOutlined, CloseCircleOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
@@ -23,6 +23,7 @@ export function Offers() {
   const [votesOpen, setVotesOpen] = useState<number | null>(null)
   const [form] = Form.useForm<{ name: string; description?: string; category?: string }>()
   const queryClient = useQueryClient()
+  const { t: tt } = useTranslation('torrent')
   const { t } = useTranslation()
 
   const { data, isLoading } = useQuery({
@@ -44,9 +45,9 @@ export function Offers() {
       queryClient.invalidateQueries({ queryKey: ['offers'] })
       setCreateOpen(false)
       form.resetFields()
-      message.success(t('torrent.uploadSuccess'))
+      message.success(tt('uploadSuccess'))
     },
-    onError: (err: any) => message.error(err.response?.data?.error || t('torrent.uploadFailed')),
+    onError: (err: any) => message.error(err.response?.data?.error || tt('uploadFailed')),
   })
 
   const voteMut = useMutation({
@@ -71,7 +72,7 @@ export function Offers() {
 
   const columns: ColumnsType<Offer> = [
     {
-      title: t('torrent.name'),
+      title: tt('name'),
       dataIndex: 'name',
       key: 'name',
       render: (name: string, r: Offer) => (
@@ -84,14 +85,14 @@ export function Offers() {
       ),
     },
     {
-      title: t('torrent.category'),
+      title: tt('category'),
       dataIndex: 'category',
       key: 'category',
       width: 120,
       render: (cat: string) => (cat ? <Tag>{cat}</Tag> : '-'),
     },
     {
-      title: t('torrent.status'),
+      title: tt('status'),
       dataIndex: 'status',
       key: 'status',
       width: 110,
@@ -122,13 +123,13 @@ export function Offers() {
       ),
     },
     {
-      title: t('torrent.uploader'),
+      title: tt('uploader'),
       dataIndex: 'username',
       key: 'username',
       width: 120,
     },
     {
-      title: t('torrent.created'),
+      title: tt('created'),
       dataIndex: 'created_at',
       key: 'created_at',
       width: 130,
@@ -145,7 +146,7 @@ export function Offers() {
         </div>
         <Space>
           <Select
-            placeholder={t('torrent.status')}
+            placeholder={tt('status')}
             value={status || undefined}
             onChange={setStatus}
             allowClear
@@ -156,7 +157,7 @@ export function Offers() {
               { value: 'denied', label: t('status.denied') },
             ]}
           />
-          <Input.Search placeholder={t('torrent.searchPlaceholder')} onSearch={setKeyword} allowClear style={{ width: 250 }} />
+          <Input.Search placeholder={tt('searchPlaceholder')} onSearch={setKeyword} allowClear style={{ width: 250 }} />
           <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateOpen(true)}>
             {t('nav.candidates')}
           </Button>
@@ -203,19 +204,19 @@ export function Offers() {
           <Form form={form} layout="vertical" preserve={false}>
             <Form.Item
               name="name"
-              label={t('torrent.name')}
-              rules={[{ required: true, message: t('torrent.name') + ' is required' }]}
+              label={tt('name')}
+              rules={[{ required: true, message: tt('name') + ' is required' }]}
             >
               <Input placeholder="请输入候选名称" />
             </Form.Item>
 
             <Form.Item
               name="category"
-              label={t('torrent.category')}
-              rules={[{ required: true, message: t('torrent.category') + ' is required' }]}
+              label={tt('category')}
+              rules={[{ required: true, message: tt('category') + ' is required' }]}
             >
               <Select
-                placeholder={t('torrent.categoryPlaceholder')}
+                placeholder={tt('categoryPlaceholder')}
                 options={[
                   { value: 'movie', label: t('categories.movies') },
                   { value: 'tv', label: t('categories.tv') },
@@ -229,7 +230,7 @@ export function Offers() {
               />
             </Form.Item>
 
-            <Form.Item name="description" label={t('torrent.description')}>
+            <Form.Item name="description" label={tt('description')}>
               <TextArea rows={5} placeholder="补充来源、版本、规格、补充说明" />
             </Form.Item>
           </Form>
@@ -244,7 +245,7 @@ export function Offers() {
             <Text type="secondary" style={{ marginLeft: 8, fontSize: 12 }}>{dayjs(v.created_at).fromNow()}</Text>
           </div>
         ))}
-        {(!votes || votes.length === 0) && <Text type="secondary">{t('torrent.noComments')}</Text>}
+        {(!votes || votes.length === 0) && <Text type="secondary">{tt('noComments')}</Text>}
       </Modal>
     </div>
   )

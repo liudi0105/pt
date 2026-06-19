@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Upload } from '../../pages/Upload'
+import { Publish } from '../../pages/Publish'
 
 export const Route = createFileRoute('/$lang/torrents_/upload')({
   staticData: {
-    title: '上传种子',
+    title: 'common:nav.upload',
+    menuCode: 'upload',
   },
-  component: Upload,
+  component: Publish,
 })

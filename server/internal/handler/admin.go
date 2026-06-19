@@ -1,17 +1,32 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 
+	i18n "pt-server/internal/i18n"
 	"pt-server/internal/model"
 	"pt-server/internal/repository"
 	"pt-server/internal/utils"
-	i18n "pt-server/internal/i18n"
 
 	"github.com/gin-gonic/gin"
 )
+
+// ---- i18n helpers ----
+
+func dictTypeI18nPrefix(name string) string {
+	return "dict_type." + name
+}
+
+func dictDataI18nPrefix(typeName, key string) string {
+	return "dict_data." + typeName + "." + key
+}
+
+func userLevelI18nPrefix(code int) string {
+	return fmt.Sprintf("user_level.%d", code)
+}
 
 // ---- Dict Types ----
 
@@ -21,6 +36,33 @@ func (h *Handler) ListDictTypes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	var keys []string
+	for _, t := range types {
+		prefix := dictTypeI18nPrefix(t.Name)
+		keys = append(keys, prefix+".label", prefix+".remark")
+	}
+
+	entries, _ := h.repo.I18n.LoadByKeys(keys)
+	byKey := repository.GroupByKey(entries)
+
+	for i := range types {
+		prefix := dictTypeI18nPrefix(types[i].Name)
+		i18nMap := make(map[string]map[string]string)
+		for _, field := range []string{"label", "remark"} {
+			key := prefix + "." + field
+			if locales, ok := byKey[key]; ok {
+				for locale, val := range locales {
+					if i18nMap[locale] == nil {
+						i18nMap[locale] = make(map[string]string)
+					}
+					i18nMap[locale][field] = val
+				}
+			}
+		}
+		types[i].I18n = i18nMap
+	}
+
 	c.JSON(http.StatusOK, gin.H{"types": types})
 }
 
@@ -34,11 +76,23 @@ func (h *Handler) CreateDictType(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	if t.I18n != nil {
+		if err := h.repo.I18n.SaveMap(dictTypeI18nPrefix(t.Name), t.I18n); err != nil {
+			log.Printf("Failed to save i18n for dict type %s: %v", t.Name, err)
+		}
+	}
 	c.JSON(http.StatusCreated, t)
 }
 
 func (h *Handler) UpdateDictType(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	old, err := h.repo.DictType.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "dict type not found"})
+		return
+	}
+
 	var t model.DictType
 	if err := c.ShouldBindJSON(&t); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
@@ -49,11 +103,25 @@ func (h *Handler) UpdateDictType(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	oldPrefix := dictTypeI18nPrefix(old.Name)
+	newPrefix := dictTypeI18nPrefix(t.Name)
+	if oldPrefix != newPrefix {
+		h.repo.I18n.DeleteByPrefix(oldPrefix)
+	}
+	if t.I18n != nil {
+		h.repo.I18n.DeleteByPrefix(newPrefix)
+		h.repo.I18n.SaveMap(newPrefix, t.I18n)
+	}
 	c.JSON(http.StatusOK, t)
 }
 
 func (h *Handler) DeleteDictType(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	t, err := h.repo.DictType.GetByID(id)
+	if err == nil {
+		h.repo.I18n.DeleteByPrefix(dictTypeI18nPrefix(t.Name))
+	}
 	if err := h.repo.DictType.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -75,6 +143,11 @@ func (h *Handler) ListDictData(c *gin.Context) {
 	if typeID > 0 {
 		data, err = h.repo.DictData.ListByType(typeID)
 		log.Printf("[DEBUG] ListDictData: ListByType(%d) → %d rows", typeID, len(data))
+		if err == nil && typeName == "" {
+			if dt, e := h.repo.DictType.GetByID(typeID); e == nil {
+				typeName = dt.Name
+			}
+		}
 	} else if typeName != "" {
 		data, err = h.repo.DictData.ListByTypeName(typeName)
 		log.Printf("[DEBUG] ListDictData: ListByTypeName(%s) → %d rows", typeName, len(data))
@@ -87,7 +160,76 @@ func (h *Handler) ListDictData(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	if typeName != "" && len(data) > 0 {
+		var keys []string
+		for _, d := range data {
+			keys = append(keys, dictDataI18nPrefix(typeName, d.Key)+".label")
+		}
+		entries, _ := h.repo.I18n.LoadByKeys(keys)
+		byKey := repository.GroupByKey(entries)
+		for i := range data {
+			prefix := dictDataI18nPrefix(typeName, data[i].Key)
+			i18nMap := make(map[string]map[string]string)
+			key := prefix + ".label"
+			if locales, ok := byKey[key]; ok {
+				for locale, val := range locales {
+					if i18nMap[locale] == nil {
+						i18nMap[locale] = make(map[string]string)
+					}
+					i18nMap[locale]["label"] = val
+				}
+			}
+			data[i].I18n = i18nMap
+		}
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": data})
+}
+
+func (h *Handler) ListDictDataPublic(c *gin.Context) {
+	typeNames := c.QueryArray("type_name")
+	if len(typeNames) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "at least one type_name required"})
+		return
+	}
+
+	all, err := h.repo.DictData.ListByTypeNames(typeNames)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	grouped := make(map[string][]model.DictData)
+	for _, d := range all {
+		grouped[d.TypeName] = append(grouped[d.TypeName], d)
+	}
+
+	for tn, items := range grouped {
+		var keys []string
+		for _, d := range items {
+			keys = append(keys, dictDataI18nPrefix(tn, d.Key)+".label")
+		}
+		entries, _ := h.repo.I18n.LoadByKeys(keys)
+		byKey := repository.GroupByKey(entries)
+		for i := range items {
+			prefix := dictDataI18nPrefix(tn, items[i].Key)
+			i18nMap := make(map[string]map[string]string)
+			key := prefix + ".label"
+			if locales, ok := byKey[key]; ok {
+				for locale, val := range locales {
+					if i18nMap[locale] == nil {
+						i18nMap[locale] = make(map[string]string)
+					}
+					i18nMap[locale]["label"] = val
+				}
+			}
+			items[i].I18n = i18nMap
+		}
+		grouped[tn] = items
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": grouped})
 }
 
 func (h *Handler) CreateDictData(c *gin.Context) {
@@ -100,11 +242,23 @@ func (h *Handler) CreateDictData(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	if d.I18n != nil {
+		if dt, err := h.repo.DictType.GetByID(d.TypeID); err == nil {
+			h.repo.I18n.SaveMap(dictDataI18nPrefix(dt.Name, d.Key), d.I18n)
+		}
+	}
 	c.JSON(http.StatusCreated, d)
 }
 
 func (h *Handler) UpdateDictData(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	old, err := h.repo.DictData.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "dict data not found"})
+		return
+	}
+
 	var d model.DictData
 	if err := c.ShouldBindJSON(&d); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
@@ -115,11 +269,30 @@ func (h *Handler) UpdateDictData(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	if dt, err := h.repo.DictType.GetByID(d.TypeID); err == nil {
+		oldPrefix := dictDataI18nPrefix(dt.Name, old.Key)
+		newPrefix := dictDataI18nPrefix(dt.Name, d.Key)
+		if oldPrefix != newPrefix {
+			h.repo.I18n.DeleteByPrefix(oldPrefix)
+		}
+		if d.I18n != nil {
+			h.repo.I18n.DeleteByPrefix(newPrefix)
+			h.repo.I18n.SaveMap(newPrefix, d.I18n)
+		}
+	}
 	c.JSON(http.StatusOK, d)
 }
 
 func (h *Handler) DeleteDictData(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	if d, err := h.repo.DictData.GetByID(id); err == nil {
+		if dt, e := h.repo.DictType.GetByID(d.TypeID); e == nil {
+			h.repo.I18n.DeleteByPrefix(dictDataI18nPrefix(dt.Name, d.Key))
+		}
+	}
+
 	if err := h.repo.DictData.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -222,12 +395,44 @@ func (h *Handler) AdminUpdateUserTraffic(c *gin.Context) {
 		}
 	}
 	if req.Bonus != nil {
+		user, err := h.repo.User.GetByID(id)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
 		if err := h.repo.User.UpdateBonus(id, *req.Bonus); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+		h.repo.BonusLog.Create(&model.BonusLog{
+			UserID:        id,
+			BusinessType:  model.BonusTypeAdmin,
+			OldTotalValue: user.Bonus,
+			Value:         *req.Bonus - user.Bonus,
+			NewTotalValue: *req.Bonus,
+			Comment:       "管理员调整",
+		})
 	}
 	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (h *Handler) AdminListBonusLogs(c *gin.Context) {
+	userID, _ := strconv.ParseInt(c.DefaultQuery("user_id", "0"), 10, 64)
+	businessType, _ := strconv.Atoi(c.DefaultQuery("business_type", "0"))
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+
+	result, err := h.repo.BonusLog.List(repository.BonusLogFilter{
+		UserID:       userID,
+		BusinessType: businessType,
+		Page:         page,
+		PageSize:     pageSize,
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func (h *Handler) AdminResetPasskey(c *gin.Context) {
@@ -248,6 +453,31 @@ func (h *Handler) ListLevels(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	var keys []string
+	for _, l := range levels {
+		prefix := userLevelI18nPrefix(l.Code)
+		keys = append(keys, prefix+".label")
+	}
+
+	entries, _ := h.repo.I18n.LoadByKeys(keys)
+	byKey := repository.GroupByKey(entries)
+
+	for i := range levels {
+		prefix := userLevelI18nPrefix(levels[i].Code)
+		i18nMap := make(map[string]map[string]string)
+		key := prefix + ".label"
+		if locales, ok := byKey[key]; ok {
+			for locale, val := range locales {
+				if i18nMap[locale] == nil {
+					i18nMap[locale] = make(map[string]string)
+				}
+				i18nMap[locale]["label"] = val
+			}
+		}
+		levels[i].I18n = i18nMap
+	}
+
 	c.JSON(http.StatusOK, gin.H{"levels": levels})
 }
 
@@ -260,6 +490,11 @@ func (h *Handler) CreateLevel(c *gin.Context) {
 	if err := h.repo.Level.Create(&l); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+	if l.I18n != nil {
+		if err := h.repo.I18n.SaveMap(userLevelI18nPrefix(l.Code), l.I18n); err != nil {
+			log.Printf("Failed to save i18n for user level %d: %v", l.Code, err)
+		}
 	}
 	c.JSON(http.StatusCreated, l)
 }
@@ -275,6 +510,11 @@ func (h *Handler) UpdateLevel(c *gin.Context) {
 	if err := h.repo.Level.Update(&l); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+	if l.I18n != nil {
+		prefix := userLevelI18nPrefix(l.Code)
+		h.repo.I18n.DeleteByPrefix(prefix)
+		h.repo.I18n.SaveMap(prefix, l.I18n)
 	}
 	c.JSON(http.StatusOK, l)
 }
@@ -402,8 +642,8 @@ func (h *Handler) UpdateSiteSetting(c *gin.Context) {
 
 func (h *Handler) AdminBatchUpdatePromotion(c *gin.Context) {
 	var req struct {
-		Category string          `json:"category"`
-		Keyword  string          `json:"keyword"`
+		Category  string          `json:"category"`
+		Keyword   string          `json:"keyword"`
 		Promotion model.Promotion `json:"promotion" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -429,4 +669,91 @@ func (h *Handler) AdminBatchUpdatePromotion(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"affected": affected})
+}
+
+// ---- i18n API ----
+
+func (h *Handler) QueryI18n(c *gin.Context) {
+	prefix := c.Query("prefix")
+
+	var entries []model.I18n
+	var err error
+	if prefix != "" {
+		entries, err = h.repo.I18n.LoadByPrefix(prefix)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "prefix is required"})
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	result := make(map[string]map[string]string)
+	for _, e := range entries {
+		if result[e.Key] == nil {
+			result[e.Key] = make(map[string]string)
+		}
+		result[e.Key][e.Locale] = e.Value
+	}
+	c.JSON(http.StatusOK, gin.H{"entries": result})
+}
+
+// ---- Announcements ----
+
+func (h *Handler) ListAnnouncements(c *gin.Context) {
+	announcements, err := h.repo.Announcement.List()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"announcements": announcements})
+}
+
+func (h *Handler) ListActiveAnnouncements(c *gin.Context) {
+	announcements, err := h.repo.Announcement.ListActive()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"announcements": announcements})
+}
+
+func (h *Handler) CreateAnnouncement(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	var a model.Announcement
+	if err := c.ShouldBindJSON(&a); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
+		return
+	}
+	a.CreatedBy = userID.(int64)
+	if err := h.repo.Announcement.Create(&a); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, a)
+}
+
+func (h *Handler) UpdateAnnouncement(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	var a model.Announcement
+	if err := c.ShouldBindJSON(&a); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
+		return
+	}
+	a.ID = id
+	if err := h.repo.Announcement.Update(&a); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, a)
+}
+
+func (h *Handler) DeleteAnnouncement(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err := h.repo.Announcement.Delete(id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
 }

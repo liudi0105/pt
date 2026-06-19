@@ -3,7 +3,7 @@ import { Inbox } from '../../pages/Inbox'
 
 export const Route = createFileRoute('/$lang/messages')({
   staticData: {
-    title: '消息',
+    title: 'common:nav.inbox',
   },
   component: Inbox,
 })
