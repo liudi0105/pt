@@ -1,0 +1,88 @@
+{
+  "title": "User Center",
+  "tabs": {
+    "profile": "Profile",
+    "checkin": "Check-in",
+    "settings": "Settings",
+    "snatches": "Snatches",
+    "seeding": "Seeding",
+    "bookmarks": "Bookmarks",
+    "bonusShop": "Bonus Shop"
+  },
+  "profile": {
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "level": "Level",
+    "bonus": "Bonus",
+    "uploaded": "Uploaded",
+    "downloaded": "Downloaded",
+    "ratio": "Ratio",
+    "snatches": "Snatches",
+    "seeding": "Seeding",
+    "passkey": "Passkey",
+    "joined": "Joined"
+  },
+  "settings": {
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "updatePassword": "Update Password",
+    "enterCurrentPassword": "Please enter current password",
+    "enterNewPassword": "Please enter new password",
+    "passwordMinLength": "At least 6 characters",
+    "passwordSuccess": "Password updated successfully",
+    "passwordFailed": "Failed to update password"
+  },
+  "snatches": {
+    "torrent": "Torrent",
+    "uploaded": "Uploaded",
+    "downloaded": "Downloaded",
+    "ratio": "Ratio",
+    "status": "Status",
+    "lastAnnounce": "Last Announce"
+  },
+  "seedingTab": {
+    "torrent": "Torrent",
+    "size": "Size",
+    "uploaded": "Uploaded",
+    "downloaded": "Downloaded",
+    "ratio": "Ratio",
+    "lastAnnounce": "Last Announce"
+  },
+  "bookmarks": {
+    "torrent": "Torrent",
+    "size": "Size",
+    "seeders": "SE",
+    "leechers": "LE",
+    "bookmarked": "Bookmarked"
+  },
+  "checkin": {
+    "title": "Daily Check-in",
+    "status": "Status",
+    "consecutiveDays": "Consecutive Days",
+    "totalDays": "Total Days",
+    "checkedToday": "Checked in today",
+    "notChecked": "Not checked in",
+    "days": "days",
+    "rewardHint": "Bonus rewards: 3+ day streak = 20 bonus, 7+ day streak = 30 bonus",
+    "alreadyChecked": "Already Checked In",
+    "checkInNow": "Check In Now",
+    "checkinSuccess": "Checked in! Earned {{bonus}} bonus. {{days}} day streak!",
+    "checkinFailed": "Checkin failed"
+  },
+  "bonusShop": {
+    "title": "Bonus Shop",
+    "buyUpload": "Buy Upload Credit",
+    "yourBonus": "Your Bonus",
+    "exchangeRate": "Exchange Rate",
+    "rateText": "{{rate}} bonus = 1 GB upload credit",
+    "spendBonus": "Spend bonus: ",
+    "youReceive": "You will receive: ",
+    "uploadCredit": "upload credit",
+    "buyNow": "Buy Now",
+    "insufficientBonus": "Insufficient bonus",
+    "buySuccess": "Bought {{size}} upload credit for {{bonus}} bonus!",
+    "buyFailed": "Purchase failed"
+  }
+}

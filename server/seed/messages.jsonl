@@ -1,0 +1,4 @@
+{"model":"message","data":{"sender_id":1,"receiver_id":1,"subject":"Welcome to PT Site","body":"Welcome to our private torrent tracker! We are glad to have you here. Please read the rules and start uploading/downloading. Enjoy your stay!","is_read":true}}
+{"model":"message","data":{"sender_id":1,"receiver_id":1,"subject":"Account Activated","body":"Your account has been activated. You can now upload and download torrents. Remember to maintain a good ratio!","is_read":true}}
+{"model":"message","data":{"sender_id":1,"receiver_id":1,"subject":"Upload Reminder","body":"You haven't uploaded any torrents yet. Please contribute to the community by uploading quality content.","is_read":false}}
+{"model":"message","data":{"sender_id":1,"receiver_id":1,"subject":"Ratio Warning","body":"Your download ratio is below the minimum required. Please upload more to improve your ratio.","is_read":false}}

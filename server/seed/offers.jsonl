@@ -1,0 +1,5 @@
+{"model":"offer","data":{"user_id":1,"name":"The Dark Knight Trilogy 4K","description":"Request for The Dark Knight Trilogy in 4K UHD quality with HDR.","category":"movie","status":"allowed","vote_yeah":15,"vote_against":2}}
+{"model":"offer","data":{"user_id":1,"name":"Inception 2010 4K","description":"Request for Inception (2010) in 4K UHD Blu-ray quality.","category":"movie","status":"pending","vote_yeah":8,"vote_against":1}}
+{"model":"offer","data":{"user_id":1,"name":"Stranger Things S04 4K","description":"Request for Stranger Things Season 4 in 4K WEB-DL quality.","category":"tv","status":"allowed","vote_yeah":22,"vote_against":3}}
+{"model":"offer","data":{"user_id":1,"name":"Cyberpunk 2077 Complete","description":"Request for Cyberpunk 2077 with all DLCs.","category":"game","status":"denied","vote_yeah":5,"vote_against":10}}
+{"model":"offer","data":{"user_id":1,"name":"FL Studio 21","description":"Request for FL Studio 21 music production software.","category":"software","status":"pending","vote_yeah":12,"vote_against":0}}

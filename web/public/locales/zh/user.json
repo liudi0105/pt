@@ -1,0 +1,88 @@
+{
+  "title": "用户中心",
+  "tabs": {
+    "profile": "个人资料",
+    "checkin": "签到",
+    "settings": "设置",
+    "snatches": "下载记录",
+    "seeding": "做种",
+    "bookmarks": "收藏",
+    "bonusShop": "积分商店"
+  },
+  "profile": {
+    "username": "用户名",
+    "email": "邮箱",
+    "role": "角色",
+    "level": "等级",
+    "bonus": "积分",
+    "uploaded": "上传量",
+    "downloaded": "下载量",
+    "ratio": "比率",
+    "snatches": "下载次数",
+    "seeding": "做种数",
+    "passkey": "Passkey",
+    "joined": "注册时间"
+  },
+  "settings": {
+    "changePassword": "修改密码",
+    "currentPassword": "当前密码",
+    "newPassword": "新密码",
+    "updatePassword": "更新密码",
+    "enterCurrentPassword": "请输入当前密码",
+    "enterNewPassword": "请输入新密码",
+    "passwordMinLength": "至少6个字符",
+    "passwordSuccess": "密码更新成功",
+    "passwordFailed": "密码更新失败"
+  },
+  "snatches": {
+    "torrent": "种子",
+    "uploaded": "上传量",
+    "downloaded": "下载量",
+    "ratio": "比率",
+    "status": "状态",
+    "lastAnnounce": "最后汇报"
+  },
+  "seedingTab": {
+    "torrent": "种子",
+    "size": "大小",
+    "uploaded": "上传量",
+    "downloaded": "下载量",
+    "ratio": "比率",
+    "lastAnnounce": "最后汇报"
+  },
+  "bookmarks": {
+    "torrent": "种子",
+    "size": "大小",
+    "seeders": "做种",
+    "leechers": "下载",
+    "bookmarked": "收藏时间"
+  },
+  "checkin": {
+    "title": "每日签到",
+    "status": "状态",
+    "consecutiveDays": "连续签到",
+    "totalDays": "累计签到",
+    "checkedToday": "今日已签到",
+    "notChecked": "未签到",
+    "days": "天",
+    "rewardHint": "连续签到奖励：3天以上 = 20积分，7天以上 = 30积分",
+    "alreadyChecked": "今日已签到",
+    "checkInNow": "立即签到",
+    "checkinSuccess": "签到成功！获得 {{bonus}} 积分，已连续签到 {{days}} 天！",
+    "checkinFailed": "签到失败"
+  },
+  "bonusShop": {
+    "title": "积分商店",
+    "buyUpload": "购买上传额度",
+    "yourBonus": "当前积分",
+    "exchangeRate": "兑换比例",
+    "rateText": "{{rate}} 积分 = 1 GB 上传额度",
+    "spendBonus": "消耗积分：",
+    "youReceive": "获得：",
+    "uploadCredit": "上传额度",
+    "buyNow": "立即购买",
+    "insufficientBonus": "积分不足",
+    "buySuccess": "购买成功！消耗 {{bonus}} 积分，获得 {{size}} 上传额度！",
+    "buyFailed": "购买失败"
+  }
+}

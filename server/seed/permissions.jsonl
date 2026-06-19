@@ -1,0 +1,15 @@
+{"model":"permission","data":{"code":"torrent.upload","name":"Upload Torrent","group":"torrent","description":"Can upload new torrents"}}
+{"model":"permission","data":{"code":"torrent.edit","name":"Edit Torrent","group":"torrent","description":"Can edit any torrent"}}
+{"model":"permission","data":{"code":"torrent.delete","name":"Delete Torrent","group":"torrent","description":"Can delete any torrent"}}
+{"model":"permission","data":{"code":"torrent.promotion","name":"Set Promotion","group":"torrent","description":"Can set torrent promotion type"}}
+{"model":"permission","data":{"code":"user.manage","name":"Manage Users","group":"user","description":"Can list and edit users"}}
+{"model":"permission","data":{"code":"user.ban","name":"Ban Users","group":"user","description":"Can ban/suspend users"}}
+{"model":"permission","data":{"code":"system.settings","name":"Site Settings","group":"system","description":"Can change site settings"}}
+{"model":"permission","data":{"code":"system.roles","name":"Manage Roles","group":"system","description":"Can manage roles and permissions"}}
+{"model":"permission","data":{"code":"report.view","name":"View Reports","group":"report","description":"Can view user reports"}}
+{"model":"permission","data":{"code":"report.resolve","name":"Resolve Reports","group":"report","description":"Can resolve user reports"}}
+{"model":"permission","data":{"code":"medal.manage","name":"Manage Medals","group":"medal","description":"Can create/delete medals"}}
+{"model":"permission","data":{"code":"bonus.manage","name":"Manage Bonus","group":"bonus","description":"Can adjust user bonus"}}
+{"model":"permission","data":{"code":"news.manage","name":"Manage News","group":"news","description":"Can create/delete news"}}
+{"model":"permission","data":{"code":"dict.manage","name":"Manage Dictionary","group":"system","description":"Can manage dictionary types and data"}}
+{"model":"permission","data":{"code":"level.manage","name":"Manage Levels","group":"system","description":"Can manage user levels"}}
