@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Form,
   Input,
@@ -8,12 +8,15 @@ import {
   message,
   Typography,
   Card,
+  Descriptions,
+  Alert,
 } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { uploadTorrent } from '../api/torrent'
 import { useAuthStore } from '../store/auth'
 import { useTranslation } from 'react-i18next'
+import { formatSize } from '../utils/format'
 
 const { Title } = Typography
 const { Dragger } = AntUpload
@@ -28,10 +31,15 @@ export function Upload() {
   const { token } = useAuthStore()
   const { t } = useTranslation()
 
-  if (!token) {
-    navigate({ to: `/${lang}/login` })
-    return null
-  }
+  useEffect(() => {
+    if (!token) {
+      navigate({ to: `/${lang}/login`, replace: true })
+    }
+  }, [lang, navigate, token])
+
+  const suggestedTitle = file
+    ? file.name.replace(/\.torrent$/i, '').replace(/[._]+/g, ' ').trim()
+    : ''
 
   const handleSubmit = async () => {
     if (!file) {
@@ -42,7 +50,7 @@ export function Upload() {
     const values = await form.validateFields()
     const formData = new FormData()
     formData.append('torrent_file', file)
-    formData.append('name', values.name)
+    formData.append('name', values.name?.trim() || suggestedTitle)
     formData.append('description', values.description || '')
     formData.append('category', values.category)
 
@@ -63,8 +71,13 @@ export function Upload() {
       <Title level={3}>{t('torrent.uploadTitle')}</Title>
       <Card>
         <Form form={form} layout="vertical">
-          <Form.Item name="name" label={t('torrent.name')} rules={[{ required: true }]}>
-            <Input />
+          <Form.Item
+            name="name"
+            label={t('torrent.name')}
+            rules={[{ required: true }]}
+            tooltip="可留空后自动从种子文件名生成"
+          >
+            <Input placeholder={suggestedTitle || '输入发布标题'} />
           </Form.Item>
 
           <Form.Item name="category" label={t('torrent.category')} rules={[{ required: true }]}>
@@ -73,19 +86,26 @@ export function Upload() {
                 { value: 'movie', label: t('categories.movies') },
                 { value: 'tv', label: t('categories.tv') },
                 { value: 'music', label: t('categories.music') },
+                { value: 'game', label: 'Games' },
                 { value: 'software', label: t('categories.software') },
+                { value: 'documentary', label: 'Documentary' },
+                { value: 'anime', label: 'Anime' },
+                { value: 'ebook', label: 'E-Book' },
               ]}
             />
           </Form.Item>
 
           <Form.Item name="description" label={t('torrent.description')}>
-            <TextArea rows={4} />
+            <TextArea rows={4} placeholder="补充内容、来源、发布说明等" />
           </Form.Item>
 
           <Form.Item label={t('torrent.torrentFile')} required>
             <Dragger
               beforeUpload={(f) => {
                 setFile(f)
+                if (!form.getFieldValue('name')) {
+                  form.setFieldValue('name', f.name.replace(/\.torrent$/i, '').replace(/[._]+/g, ' ').trim())
+                }
                 return false
               }}
               onRemove={() => setFile(null)}
@@ -98,6 +118,22 @@ export function Upload() {
               <p className="ant-upload-text">{t('torrent.clickOrDragTorrent')}</p>
             </Dragger>
           </Form.Item>
+
+          {file && (
+            <Card size="small" style={{ marginBottom: 16 }} title="候选信息">
+              <Descriptions size="small" column={1}>
+                <Descriptions.Item label="文件名">{file.name}</Descriptions.Item>
+                <Descriptions.Item label="文件大小">{formatSize(file.size)}</Descriptions.Item>
+                <Descriptions.Item label="候选标题">{suggestedTitle || '未生成'}</Descriptions.Item>
+              </Descriptions>
+              <Alert
+                style={{ marginTop: 12 }}
+                type="info"
+                showIcon
+                message="发布前请确认标题、分类和种子文件是否正确"
+              />
+            </Card>
+          )}
 
           <Button
             type="primary"

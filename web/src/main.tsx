@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
-import enUS from 'antd/locale/en_US'
 import { useTranslation } from 'react-i18next'
 import { routeTree } from './routeTree.gen'
 
@@ -31,14 +30,12 @@ declare module '@tanstack/react-router' {
   }
 }
 
-const antdLocales: Record<string, typeof zhCN> = {
-  zh: zhCN,
-  en: enUS,
-}
-
 function AppProviders() {
   const { i18n } = useTranslation()
-  const antdLocale = useMemo(() => antdLocales[i18n.language] || zhCN, [i18n.language])
+  const antdLocale = useMemo(
+    () => (i18n.language.startsWith('zh') ? zhCN : undefined),
+    [i18n.language],
+  )
 
   return (
     <ConfigProvider locale={antdLocale} theme={{ token: { colorPrimary: '#1677ff' } }}>

@@ -2,10 +2,9 @@ package repository
 
 import (
 	"pt-server/internal/config"
-	"pt-server/internal/model"
 
+	"github.com/glebarez/sqlite"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -24,8 +23,6 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	db.AutoMigrate(&model.User{}, &model.Torrent{}, &model.Snatch{}, &model.Bookmark{}, &model.Comment{}, &model.Offer{}, &model.OfferVote{}, &model.Attendance{}, &model.Thanks{}, &model.News{}, &model.Subtitle{}, &model.Message{}, &model.Invite{}, &model.Report{}, &model.Medal{}, &model.UserMedal{}, &model.DictType{}, &model.DictData{}, &model.UserLevel{}, 	&model.RoleModel{}, &model.Permission{}, &model.SiteSetting{})
 
 	return db, nil
 }

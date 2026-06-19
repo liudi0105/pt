@@ -6,7 +6,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
-import { Route } from '../../routes/admin.dict'
+import { Route } from '../../routes/$lang/admin.dict'
 import { listDictTypes, createDictType, updateDictType, deleteDictType, listDictData, createDictData, updateDictData, deleteDictData } from '../../api/admin'
 import type { DictType, DictData } from '../../types'
 

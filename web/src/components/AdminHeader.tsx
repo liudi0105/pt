@@ -1,6 +1,6 @@
-import { Link, useRouter, useParams } from '@tanstack/react-router'
-import { Layout, Button, Space, Typography } from 'antd'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { Link, useParams, useNavigate } from '@tanstack/react-router'
+import { Layout, Button, Space, Typography, Dropdown } from 'antd'
+import { LogoutOutlined, UserOutlined, GlobalOutlined, DownOutlined } from '@ant-design/icons'
 import { useAuthStore } from '../store/auth'
 import { useTranslation } from 'react-i18next'
 import { langPath } from '../utils/lang'
@@ -10,14 +10,24 @@ const { Header } = Layout
 
 export function AdminHeader() {
   const { token, user, logout } = useAuthStore()
-  const router = useRouter()
-  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const { lang } = useParams({ from: '/$lang' })
+  const langItems = [
+    { key: 'zh', label: '中文' },
+    { key: 'en', label: 'English' },
+  ]
 
   const handleLogout = () => {
     logout()
-    router.navigate({ to: langPath(lang, '') })
+    navigate({ to: langPath(lang, ''), replace: true })
     NProgress.start()
+  }
+
+  const handleLangChange = (newLang: string) => {
+    const currentPath = window.location.pathname
+    const pathWithoutLang = currentPath.replace(/^\/(zh|en)/, '') || '/'
+    navigate({ to: langPath(newLang, pathWithoutLang), replace: true })
   }
 
   return (
@@ -47,6 +57,11 @@ export function AdminHeader() {
       </Space>
 
       <Space>
+        <Dropdown menu={{ items: langItems, onClick: ({ key }) => handleLangChange(key) }} placement="bottomRight">
+          <Button type="text" style={{ color: 'rgba(255,255,255,0.85)' }} icon={<GlobalOutlined />}>
+            {i18n.language.startsWith('zh') ? '中文' : 'EN'} <DownOutlined />
+          </Button>
+        </Dropdown>
         {token && user && (
           <>
             <UserOutlined style={{ color: 'rgba(255,255,255,0.65)' }} />

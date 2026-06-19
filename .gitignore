@@ -1,3 +1,5 @@
 *.db
 .idea
 *.lockb
+server
+node_modules/

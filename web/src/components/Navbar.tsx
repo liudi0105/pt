@@ -90,7 +90,14 @@ export function Navbar() {
         {token && (
           <Link to={langPath(lang, '/offers')}>
             <Button type="text" style={{ color: '#fff' }} icon={<BulbOutlined />}>
-              {t('nav.offers')}
+              {t('nav.candidates')}
+            </Button>
+          </Link>
+        )}
+        {token && (
+          <Link to={langPath(lang, '/torrents/upload')}>
+            <Button type="text" style={{ color: '#fff' }} icon={<UploadOutlined />}>
+              {t('nav.upload')}
             </Button>
           </Link>
         )}
@@ -99,16 +106,11 @@ export function Navbar() {
       <Space>
         <Dropdown menu={{ items: langItems, onClick: ({ key }) => handleLangChange(key) }} placement="bottomRight">
           <Button type="text" style={{ color: '#fff' }} icon={<GlobalOutlined />}>
-            {i18n.language === 'zh' ? '中文' : 'EN'} <DownOutlined />
+            {i18n.language.startsWith('zh') ? '中文' : 'EN'} <DownOutlined />
           </Button>
         </Dropdown>
         {token ? (
           <>
-            <Link to={langPath(lang, '/torrents/upload')}>
-              <Button type="primary" icon={<UploadOutlined />}>
-                {t('nav.upload')}
-              </Button>
-            </Link>
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
               <Button icon={<UserOutlined />}>
                 {t('nav.userCenter')} <DownOutlined />

@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Layout } from 'antd'
 import { Navbar } from '../components/Navbar'
 import { NProgressProvider } from '../components/NProgressProvider'
+import { normalizeLang } from '../utils/lang'
 import 'nprogress/nprogress.css'
 
 const { Content } = Layout
@@ -11,7 +12,7 @@ const APP_NAME = 'pt-web'
 
 function getLangFromCookie(): string {
   const match = document.cookie.match(/(?:^|;\s*)lang=([^;]*)/)
-  return match ? match[1] : 'zh'
+  return normalizeLang(match ? decodeURIComponent(match[1]) : undefined) ?? 'zh'
 }
 
 export const Route = createRootRoute({

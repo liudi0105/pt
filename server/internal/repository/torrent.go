@@ -22,9 +22,6 @@ func (r *TorrentRepo) Create(t *model.Torrent) error {
 func (r *TorrentRepo) GetByID(id int64) (*model.Torrent, error) {
 	var t model.Torrent
 	err := r.db.Where("is_deleted = ?", false).
-		Preload("User", func(db *gorm.DB) *gorm.DB {
-			return db.Select("username")
-		}).
 		First(&t, id).Error
 	if err != nil {
 		return nil, err
@@ -71,7 +68,7 @@ func (r *TorrentRepo) List(f TorrentFilter) (*TorrentListResult, error) {
 	var torrents []model.Torrent
 	err := query.Order("created_at DESC").
 		Limit(f.PageSize).
-		Offset((f.Page-1)*f.PageSize).
+		Offset((f.Page - 1) * f.PageSize).
 		Find(&torrents).Error
 	if err != nil {
 		return nil, err
