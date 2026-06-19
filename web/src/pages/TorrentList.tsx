@@ -9,23 +9,12 @@ import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTranslation } from 'react-i18next'
+import { getTorrentCategoryLabel, getTorrentCategoryOptions } from '../constants/torrent'
 
 dayjs.extend(relativeTime)
 
 const { Search } = Input
 const { Title } = Typography
-
-const CATEGORY_LABELS: Record<string, string> = {
-  movie: 'Movies',
-  tv: 'TV Series',
-  music: 'Music',
-  game: 'Games',
-  software: 'Software',
-  documentary: 'Documentary',
-  anime: 'Anime',
-  ebook: 'E-Book',
-  unsorted: 'Unsorted',
-}
 
 export function TorrentList() {
   const [keyword, setKeyword] = useState('')
@@ -71,7 +60,7 @@ export function TorrentList() {
       dataIndex: 'category',
       key: 'category',
       width: 120,
-      render: (cat: string) => <Tag color="blue">{CATEGORY_LABELS[cat] || cat}</Tag>,
+      render: (cat: string) => <Tag color="blue">{getTorrentCategoryLabel(cat, t)}</Tag>,
     },
     {
       title: tt('size'),
@@ -131,12 +120,7 @@ export function TorrentList() {
           onChange={setCategory}
           allowClear
           style={{ width: 150 }}
-          options={[
-            { value: 'movie', label: t('categories.movies') },
-            { value: 'tv', label: t('categories.tv') },
-            { value: 'music', label: t('categories.music') },
-            { value: 'software', label: t('categories.software') },
-          ]}
+          options={getTorrentCategoryOptions(t)}
         />
       </Space>
 

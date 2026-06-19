@@ -4,6 +4,7 @@ import { ThunderboltOutlined } from '@ant-design/icons'
 import { useMutation } from '@tanstack/react-query'
 import { adminBatchUpdatePromotion } from '../../api/admin'
 import { useTranslation } from 'react-i18next'
+import { getTorrentCategoryOptions } from '../../constants/torrent'
 
 const { Title, Text } = Typography
 
@@ -45,16 +46,7 @@ export function PromotionManage() {
               onChange={setCategory}
               allowClear
               style={{ width: '100%' }}
-              options={[
-                { value: 'movie', label: tCommon('categories.movie') },
-                { value: 'tv', label: tCommon('categories.tv') },
-                { value: 'music', label: tCommon('categories.music') },
-                { value: 'software', label: tCommon('categories.software') },
-                { value: 'game', label: tCommon('categories.game') },
-                { value: 'documentary', label: tCommon('categories.documentary') },
-                { value: 'anime', label: tCommon('categories.anime') },
-                { value: 'ebook', label: tCommon('categories.ebook') },
-              ]}
+              options={getTorrentCategoryOptions(tCommon)}
             />
           </div>
 

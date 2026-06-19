@@ -20,34 +20,34 @@ func (r *DictDataRepo) Create(d *model.DictData) error {
 
 func (r *DictDataRepo) GetByID(id int64) (*model.DictData, error) {
 	var d model.DictData
-	err := r.db.Preload("Type").First(&d, id).Error
+	err := r.db.First(&d, id).Error
 	return &d, err
 }
 
-func (r *DictDataRepo) ListByType(typeID int64) ([]model.DictData, error) {
+func (r *DictDataRepo) ListByTypeKey(typeKey string) ([]model.DictData, error) {
 	var data []model.DictData
-	err := r.db.Where("type_id = ?", typeID).
+	err := r.db.Where("type_key = ?", typeKey).
 		Order("sort_order ASC, id ASC").
 		Find(&data).Error
 	return data, err
 }
 
-func (r *DictDataRepo) ListByTypeName(typeName string) ([]model.DictData, error) {
+func (r *DictDataRepo) ListByTypeKeys(typeKeys []string) ([]model.DictData, error) {
 	var data []model.DictData
-	err := r.db.Joins("JOIN sys_dict_type ON sys_dict_type.id = sys_dict_data.type_id").
-		Where("sys_dict_type.name = ? AND sys_dict_data.is_active = ?", typeName, true).
-		Order("sys_dict_data.sort_order ASC, sys_dict_data.id ASC").
+	err := r.db.Where("type_key IN ? AND is_active = ?", typeKeys, true).
+		Order("sort_order ASC, id ASC").
 		Find(&data).Error
 	return data, err
 }
 
-func (r *DictDataRepo) ListByTypeNames(typeNames []string) ([]model.DictData, error) {
-	var data []model.DictData
-	err := r.db.Joins("JOIN sys_dict_type ON sys_dict_type.id = sys_dict_data.type_id").
-		Where("sys_dict_type.name IN ? AND sys_dict_data.is_active = ?", typeNames, true).
-		Order("sys_dict_data.sort_order ASC, sys_dict_data.id ASC").
-		Find(&data).Error
-	return data, err
+func (r *DictDataRepo) UpdateTypeKey(oldKey, newKey string) error {
+	return r.db.Model(&model.DictData{}).
+		Where("type_key = ?", oldKey).
+		Update("type_key", newKey).Error
+}
+
+func (r *DictDataRepo) DeleteByTypeKey(typeKey string) error {
+	return r.db.Where("type_key = ?", typeKey).Delete(&model.DictData{}).Error
 }
 
 func (r *DictDataRepo) Update(d *model.DictData) error {

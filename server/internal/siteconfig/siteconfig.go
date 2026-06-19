@@ -12,6 +12,23 @@ import (
 	"pt-server/internal/repository"
 )
 
+const (
+	KeySiteName           = "site_name"
+	KeyTrackerInterval    = "tracker.interval"
+	KeyTrackerMinInterval = "tracker.min_interval"
+	KeyTrackerCleanup     = "tracker.cleanup_interval"
+	KeyTrackerPeerTTL     = "tracker.peer_ttl"
+	KeyTrackerDefaultNum  = "tracker.default_numwant"
+	KeyTrackerAllowed     = "tracker.allowed_clients"
+	KeyTrackerBlacklist   = "tracker.blacklist_ports"
+	KeyBonusPerHour       = "bonus.per_hour"
+	KeyBonusSeedBonus     = "bonus.seed_bonus"
+	KeyBonusSizeBonus     = "bonus.size_bonus"
+	KeyHREnabled          = "hr.enabled"
+	KeyHRSeedHours        = "hr.seed_hours"
+	KeyHRCheckInterval    = "hr.check_interval"
+)
+
 type Settings struct {
 	mu       sync.RWMutex
 	SiteName string
@@ -81,11 +98,10 @@ func Bootstrap(repo *repository.Repository, defaults *Settings) error {
 	}
 
 	for _, setting := range defaultSiteSettings(defaults) {
-		if _, err := repo.SiteSetting.GetByKey(setting.Key); err == nil {
-			continue
-		}
-		if err := repo.SiteSetting.Upsert(&setting); err != nil {
-			return err
+		if _, err := repo.SiteSetting.GetByKey(setting.Key); err != nil {
+			if err := repo.SiteSetting.Upsert(&setting); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
@@ -94,73 +110,73 @@ func Bootstrap(repo *repository.Repository, defaults *Settings) error {
 func Load(repo *repository.Repository) (*Settings, error) {
 	settings := NewDefault()
 
-	if s, err := repo.SiteSetting.GetByKey("site_name"); err == nil && s.Value != "" {
+	if s, err := repo.SiteSetting.GetByKey(KeySiteName); err == nil && s.Value != "" {
 		settings.SiteName = s.Value
 	}
 
-	if s, err := repo.SiteSetting.GetByKey("tracker.interval"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerInterval); err == nil {
 		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
 			settings.Tracker.Interval = d
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.min_interval"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerMinInterval); err == nil {
 		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
 			settings.Tracker.MinInterval = d
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.cleanup_interval"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerCleanup); err == nil {
 		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
 			settings.Tracker.CleanupInterval = d
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.peer_ttl"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerPeerTTL); err == nil {
 		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
 			settings.Tracker.PeerTTL = d
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.default_numwant"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerDefaultNum); err == nil {
 		if n, parseErr := strconv.Atoi(s.Value); parseErr == nil && n > 0 {
 			settings.Tracker.DefaultNumwant = n
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.allowed_clients"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerAllowed); err == nil {
 		if parsed, parseErr := parseAllowedClients(s.Value); parseErr == nil && len(parsed) > 0 {
 			settings.Tracker.AllowedClients = parsed
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("tracker.blacklist_ports"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyTrackerBlacklist); err == nil {
 		if parsed, parseErr := parseBlacklistPorts(s.Value); parseErr == nil && len(parsed) > 0 {
 			settings.Tracker.BlacklistPorts = parsed
 		}
 	}
 
-	if s, err := repo.SiteSetting.GetByKey("bonus.per_hour"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusPerHour); err == nil {
 		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil {
 			settings.Bonus.PerHour = v
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("bonus.seed_bonus"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusSeedBonus); err == nil {
 		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil {
 			settings.Bonus.SeedBonus = v
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("bonus.size_bonus"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusSizeBonus); err == nil {
 		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil {
 			settings.Bonus.SizeBonus = v
 		}
 	}
 
-	if s, err := repo.SiteSetting.GetByKey("hr.enabled"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyHREnabled); err == nil {
 		if v, parseErr := strconv.ParseBool(s.Value); parseErr == nil {
 			settings.HR.Enabled = v
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("hr.seed_hours"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyHRSeedHours); err == nil {
 		if v, parseErr := strconv.Atoi(s.Value); parseErr == nil {
 			settings.HR.SeedHours = v
 		}
 	}
-	if s, err := repo.SiteSetting.GetByKey("hr.check_interval"); err == nil {
+	if s, err := repo.SiteSetting.GetByKey(KeyHRCheckInterval); err == nil {
 		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
 			settings.HR.CheckInterval = d
 		}
@@ -189,59 +205,59 @@ func (s *Settings) ApplySiteSetting(key, value string) {
 	defer s.mu.Unlock()
 
 	switch key {
-	case "site_name":
+	case KeySiteName:
 		if strings.TrimSpace(value) != "" {
 			s.SiteName = value
 		}
-	case "tracker.interval":
+	case KeyTrackerInterval:
 		if d, err := time.ParseDuration(value); err == nil {
 			s.Tracker.Interval = d
 		}
-	case "tracker.min_interval":
+	case KeyTrackerMinInterval:
 		if d, err := time.ParseDuration(value); err == nil {
 			s.Tracker.MinInterval = d
 		}
-	case "tracker.cleanup_interval":
+	case KeyTrackerCleanup:
 		if d, err := time.ParseDuration(value); err == nil {
 			s.Tracker.CleanupInterval = d
 		}
-	case "tracker.peer_ttl":
+	case KeyTrackerPeerTTL:
 		if d, err := time.ParseDuration(value); err == nil {
 			s.Tracker.PeerTTL = d
 		}
-	case "tracker.default_numwant":
+	case KeyTrackerDefaultNum:
 		if n, err := strconv.Atoi(value); err == nil && n > 0 {
 			s.Tracker.DefaultNumwant = n
 		}
-	case "tracker.allowed_clients":
+	case KeyTrackerAllowed:
 		if parsed, err := parseAllowedClients(value); err == nil && len(parsed) > 0 {
 			s.Tracker.AllowedClients = parsed
 		}
-	case "tracker.blacklist_ports":
+	case KeyTrackerBlacklist:
 		if parsed, err := parseBlacklistPorts(value); err == nil && len(parsed) > 0 {
 			s.Tracker.BlacklistPorts = parsed
 		}
-	case "bonus.per_hour":
+	case KeyBonusPerHour:
 		if v, err := strconv.ParseFloat(value, 64); err == nil {
 			s.Bonus.PerHour = v
 		}
-	case "bonus.seed_bonus":
+	case KeyBonusSeedBonus:
 		if v, err := strconv.ParseFloat(value, 64); err == nil {
 			s.Bonus.SeedBonus = v
 		}
-	case "bonus.size_bonus":
+	case KeyBonusSizeBonus:
 		if v, err := strconv.ParseFloat(value, 64); err == nil {
 			s.Bonus.SizeBonus = v
 		}
-	case "hr.enabled":
+	case KeyHREnabled:
 		if v, err := strconv.ParseBool(value); err == nil {
 			s.HR.Enabled = v
 		}
-	case "hr.seed_hours":
+	case KeyHRSeedHours:
 		if n, err := strconv.Atoi(value); err == nil {
 			s.HR.SeedHours = n
 		}
-	case "hr.check_interval":
+	case KeyHRCheckInterval:
 		if d, err := time.ParseDuration(value); err == nil {
 			s.HR.CheckInterval = d
 		}
@@ -278,20 +294,20 @@ func defaultSiteSettings(s *Settings) []model.SiteSetting {
 	}
 
 	return []model.SiteSetting{
-		{Key: "site_name", Value: s.SiteName, Type: "string", Description: "站点名称", IsActive: true},
-		{Key: "tracker.interval", Value: s.Tracker.Interval.String(), Type: "duration", Description: "Tracker announce 间隔", IsActive: true},
-		{Key: "tracker.min_interval", Value: s.Tracker.MinInterval.String(), Type: "duration", Description: "Tracker 最小 announce 间隔", IsActive: true},
-		{Key: "tracker.cleanup_interval", Value: s.Tracker.CleanupInterval.String(), Type: "duration", Description: "Tracker 运行态清理间隔", IsActive: true},
-		{Key: "tracker.peer_ttl", Value: s.Tracker.PeerTTL.String(), Type: "duration", Description: "Tracker Peer TTL", IsActive: true},
-		{Key: "tracker.default_numwant", Value: strconv.Itoa(s.Tracker.DefaultNumwant), Type: "int", Description: "Tracker 默认返回 Peer 数量", IsActive: true},
-		{Key: "tracker.allowed_clients", Value: toJSONArray(allowedClients), Type: "json", Description: "Tracker 允许的客户端白名单", IsActive: true},
-		{Key: "tracker.blacklist_ports", Value: toJSONArray(blacklistPorts), Type: "json", Description: "Tracker 拒绝的端口列表", IsActive: true},
-		{Key: "bonus.per_hour", Value: strconv.FormatFloat(s.Bonus.PerHour, 'f', -1, 64), Type: "float", Description: "每小时基础魔力值", IsActive: true},
-		{Key: "bonus.seed_bonus", Value: strconv.FormatFloat(s.Bonus.SeedBonus, 'f', -1, 64), Type: "float", Description: "做种加成魔力值", IsActive: true},
-		{Key: "bonus.size_bonus", Value: strconv.FormatFloat(s.Bonus.SizeBonus, 'f', -1, 64), Type: "float", Description: "体积加成魔力值", IsActive: true},
-		{Key: "hr.enabled", Value: strconv.FormatBool(s.HR.Enabled), Type: "bool", Description: "是否启用 H&R", IsActive: true},
-		{Key: "hr.seed_hours", Value: strconv.Itoa(s.HR.SeedHours), Type: "int", Description: "H&R 需要的最短做种小时数", IsActive: true},
-		{Key: "hr.check_interval", Value: s.HR.CheckInterval.String(), Type: "duration", Description: "H&R 检查间隔", IsActive: true},
+		{Key: KeySiteName, Value: s.SiteName, Type: "string", Description: "站点名称", IsActive: true},
+		{Key: KeyTrackerInterval, Value: s.Tracker.Interval.String(), Type: "duration", Description: "Tracker announce 间隔", IsActive: true},
+		{Key: KeyTrackerMinInterval, Value: s.Tracker.MinInterval.String(), Type: "duration", Description: "Tracker 最小 announce 间隔", IsActive: true},
+		{Key: KeyTrackerCleanup, Value: s.Tracker.CleanupInterval.String(), Type: "duration", Description: "Tracker 运行态清理间隔", IsActive: true},
+		{Key: KeyTrackerPeerTTL, Value: s.Tracker.PeerTTL.String(), Type: "duration", Description: "Tracker Peer TTL", IsActive: true},
+		{Key: KeyTrackerDefaultNum, Value: strconv.Itoa(s.Tracker.DefaultNumwant), Type: "int", Description: "Tracker 默认返回 Peer 数量", IsActive: true},
+		{Key: KeyTrackerAllowed, Value: toJSONArray(allowedClients), Type: "json", Description: "Tracker 允许的客户端白名单", IsActive: true},
+		{Key: KeyTrackerBlacklist, Value: toJSONArray(blacklistPorts), Type: "json", Description: "Tracker 拒绝的端口列表", IsActive: true},
+		{Key: KeyBonusPerHour, Value: strconv.FormatFloat(s.Bonus.PerHour, 'f', -1, 64), Type: "float", Description: "每小时基础魔力值", IsActive: true},
+		{Key: KeyBonusSeedBonus, Value: strconv.FormatFloat(s.Bonus.SeedBonus, 'f', -1, 64), Type: "float", Description: "做种加成魔力值", IsActive: true},
+		{Key: KeyBonusSizeBonus, Value: strconv.FormatFloat(s.Bonus.SizeBonus, 'f', -1, 64), Type: "float", Description: "体积加成魔力值", IsActive: true},
+		{Key: KeyHREnabled, Value: strconv.FormatBool(s.HR.Enabled), Type: "bool", Description: "是否启用 H&R", IsActive: true},
+		{Key: KeyHRSeedHours, Value: strconv.Itoa(s.HR.SeedHours), Type: "int", Description: "H&R 需要的最短做种小时数", IsActive: true},
+		{Key: KeyHRCheckInterval, Value: s.HR.CheckInterval.String(), Type: "duration", Description: "H&R 检查间隔", IsActive: true},
 	}
 }
 

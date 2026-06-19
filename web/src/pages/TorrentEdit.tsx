@@ -4,6 +4,7 @@ import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons'
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { getTorrent, editTorrent } from '../api/torrent'
+import { getTorrentCategoryOptions } from '../constants/torrent'
 
 const { Title } = Typography
 const { TextArea } = Input
@@ -53,19 +54,7 @@ export function TorrentEdit() {
             <Input />
           </Form.Item>
           <Form.Item name="category" label={t('category')} rules={[{ required: true }]}>
-            <Select
-              options={[
-                { value: 'movie', label: tCommon('categories.movies') },
-                { value: 'tv', label: tCommon('categories.tv') },
-                { value: 'music', label: tCommon('categories.music') },
-                { value: 'software', label: tCommon('categories.software') },
-                { value: 'game', label: tCommon('categories.games') },
-                { value: 'documentary', label: tCommon('categories.documentary') },
-                { value: 'anime', label: tCommon('categories.anime') },
-                { value: 'ebook', label: tCommon('categories.ebooks') },
-                { value: 'unsorted', label: tCommon('categories.unsorted') },
-              ]}
-            />
+            <Select options={getTorrentCategoryOptions(tCommon)} />
           </Form.Item>
           <Form.Item name="description" label={t('description')}>
             <TextArea rows={8} />

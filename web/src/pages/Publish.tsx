@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
-  Form, Input, Select, Button, Upload as AntUpload, message,
+  Form, Input, Select, Button, Switch, Upload as AntUpload, message,
   Typography, Card, Descriptions, Alert, Collapse, Space,
 } from 'antd'
 import { InboxOutlined, FileTextOutlined } from '@ant-design/icons'
@@ -12,16 +12,15 @@ import type { DictData } from '../types'
 import { useAuthStore } from '../store/auth'
 import { useTranslation } from 'react-i18next'
 import { formatSize } from '../utils/format'
+import { getTorrentCategoryOptions, PUBLISH_DICT_TYPES, PUBLISH_META_FIELDS } from '../constants/torrent'
 
 const { Title } = Typography
 const { Dragger } = AntUpload
 const { TextArea } = Input
 const { Panel } = Collapse
 
-const DICT_TYPES = ['source', 'codec', 'resolution', 'processing', 'team', 'audio'] as const
-
-function dictOptions(data: Record<string, DictData[]> | undefined, typeName: string, lang: string) {
-  const items = data?.[typeName] ?? []
+function dictOptions(data: Record<string, DictData[]> | undefined, typeKey: string, lang: string) {
+  const items = data?.[typeKey] ?? []
   return items.map(d => ({
     value: d.key,
     label: d.i18n?.[lang]?.label || d.label,
@@ -37,11 +36,12 @@ export function Publish() {
   const { lang } = useParams({ from: '/$lang' })
   const { token } = useAuthStore()
   const { t: tt } = useTranslation('torrent')
+  const { t: tCommon } = useTranslation('common')
   const { t } = useTranslation()
 
   const { data: dictData } = useQuery({
-    queryKey: ['dict-data', DICT_TYPES],
-    queryFn: () => getDictData([...DICT_TYPES]),
+    queryKey: ['dict-data', PUBLISH_DICT_TYPES],
+    queryFn: () => getDictData([...PUBLISH_DICT_TYPES]),
     select: (res) => res.data.data,
     staleTime: 5 * 60 * 1000,
   })
@@ -69,7 +69,7 @@ export function Publish() {
     formData.append('description', values.description || '')
     formData.append('category', values.category)
 
-    const metaFields = ['source', 'codec', 'standard', 'processing', 'team', 'audiocodec'] as const
+    const metaFields = [...PUBLISH_META_FIELDS]
     for (const field of metaFields) {
       const v = values[field]
       if (v) formData.append(field, v)
@@ -112,18 +112,7 @@ export function Publish() {
           </Form.Item>
 
           <Form.Item name="category" label={tt('category')} rules={[{ required: true }]}>
-            <Select
-              options={[
-                { value: 'movie', label: t('categories.movies') },
-                { value: 'tv', label: t('categories.tv') },
-                { value: 'music', label: t('categories.music') },
-                { value: 'game', label: 'Games' },
-                { value: 'software', label: t('categories.software') },
-                { value: 'documentary', label: 'Documentary' },
-                { value: 'anime', label: 'Anime' },
-                { value: 'ebook', label: 'E-Book' },
-              ]}
-            />
+            <Select options={getTorrentCategoryOptions(tCommon)} />
           </Form.Item>
         </Card>
 
@@ -235,10 +224,7 @@ export function Publish() {
             />
             <Space wrap>
               <Form.Item name="hr" label={tt('publish.hr')} valuePropName="checked">
-                <Select style={{ width: 120 }}>
-                  <Select.Option value="">{t('status.no')}</Select.Option>
-                  <Select.Option value="yes">{t('status.yes')}</Select.Option>
-                </Select>
+                <Switch />
               </Form.Item>
               <Form.Item name="sticky" label={tt('publish.sticky')}>
                 <Select style={{ width: 120 }}>

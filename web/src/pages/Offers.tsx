@@ -8,6 +8,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTranslation } from 'react-i18next'
 import { listOffers, createOffer, voteOffer, getOfferVotes } from '../api/offer'
 import type { Offer, OfferVote } from '../types'
+import { getTorrentCategoryOptions } from '../constants/torrent'
 
 dayjs.extend(relativeTime)
 
@@ -25,6 +26,7 @@ export function Offers() {
   const queryClient = useQueryClient()
   const { t: tt } = useTranslation('torrent')
   const { t } = useTranslation()
+  const { t: tCommon } = useTranslation('common')
 
   const { data, isLoading } = useQuery({
     queryKey: ['offers', page, status, keyword],
@@ -217,16 +219,7 @@ export function Offers() {
             >
               <Select
                 placeholder={tt('categoryPlaceholder')}
-                options={[
-                  { value: 'movie', label: t('categories.movies') },
-                  { value: 'tv', label: t('categories.tv') },
-                  { value: 'music', label: t('categories.music') },
-                  { value: 'game', label: t('categories.games') },
-                  { value: 'software', label: t('categories.software') },
-                  { value: 'documentary', label: t('categories.documentary') },
-                  { value: 'anime', label: t('categories.anime') },
-                  { value: 'ebook', label: t('categories.ebooks') },
-                ]}
+                options={getTorrentCategoryOptions(tCommon)}
               />
             </Form.Item>
 

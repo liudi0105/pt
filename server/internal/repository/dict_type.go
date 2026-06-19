@@ -24,6 +24,12 @@ func (r *DictTypeRepo) GetByID(id int64) (*model.DictType, error) {
 	return &t, err
 }
 
+func (r *DictTypeRepo) GetByKey(key string) (*model.DictType, error) {
+	var t model.DictType
+	err := r.db.Where("key = ?", key).First(&t).Error
+	return &t, err
+}
+
 func (r *DictTypeRepo) List() ([]model.DictType, error) {
 	var types []model.DictType
 	err := r.db.Order("sort_order ASC, id ASC").Find(&types).Error

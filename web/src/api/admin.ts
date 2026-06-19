@@ -16,9 +16,9 @@ export function deleteDictType(id: number) {
 }
 
 // ---- Dict Data ----
-export function listDictData(typeId?: number, typeName?: string) {
+export function listDictData(typeKey?: string) {
   return api.get<{ data: DictData[] }>('/admin/dict-data', {
-    params: { type_id: typeId, type_name: typeName },
+    params: { type_key: typeKey },
   })
 }
 export function createDictData(data: Partial<DictData>) {

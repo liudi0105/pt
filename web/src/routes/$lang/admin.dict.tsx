@@ -6,8 +6,8 @@ export const Route = createFileRoute('/$lang/admin/dict')({
     title: 'admin:menu.dictionary',
     menuCode: 'dict',
   },
-  validateSearch: (search: Record<string, string>): { type_id?: number } => ({
-    type_id: search.type_id ? Number(search.type_id) : undefined,
+  validateSearch: (search: Record<string, string>): { type_key?: string } => ({
+    type_key: search.type_key || undefined,
   }),
   component: DictManage,
 })

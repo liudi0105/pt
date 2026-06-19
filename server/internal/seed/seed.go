@@ -26,6 +26,8 @@ type Entry struct {
 
 var silent = logger.Discard
 
+const seedBatchSize = 100
+
 func strVal(m map[string]any, key string) string {
 	v, _ := m[key].(string)
 	return v
@@ -124,9 +126,43 @@ func InsertAll(db *gorm.DB, entries []Entry) error {
 		return modelOrder[entries[i].Model] < modelOrder[entries[j].Model]
 	})
 
+	grouped := make(map[string][]Entry)
 	for _, entry := range entries {
-		if err := insertEntry(db, entry); err != nil {
-			log.Printf("Warning: %v", err)
+		grouped[entry.Model] = append(grouped[entry.Model], entry)
+	}
+
+	for _, modelName := range order {
+		switch modelName {
+		case "permission":
+			if err := insertPermissionsBatch(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		case "role":
+			if err := insertRolesBatch(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		case "dict_type":
+			if err := insertDictTypes(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		case "dict_data":
+			if err := insertDictDataBatch(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		case "site_setting":
+			if err := insertSiteSettingsBatch(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		case "user_level":
+			if err := insertUserLevelsBatch(db, grouped[modelName]); err != nil {
+				log.Printf("Warning: %v", err)
+			}
+		default:
+			for _, entry := range grouped[modelName] {
+				if err := insertEntry(db, entry); err != nil {
+					log.Printf("Warning: %v", err)
+				}
+			}
 		}
 	}
 	log.Println("Seed data initialized successfully")
@@ -179,10 +215,10 @@ func insertEntry(db *gorm.DB, entry Entry) error {
 	}
 }
 
-func lookupType(db *gorm.DB, name string) (model.DictType, error) {
+func lookupType(db *gorm.DB, key string) (model.DictType, error) {
 	var dt model.DictType
 	err := db.Session(&gorm.Session{Logger: silent}).
-		Where("name = ?", name).Take(&dt).Error
+		Where("key = ?", key).Take(&dt).Error
 	return dt, err
 }
 
@@ -193,6 +229,509 @@ func saveI18n(db *gorm.DB, key, locale, value string) {
 	db.Where("key = ? AND locale = ?", key, locale).
 		Assign(model.I18n{Value: value}).
 		FirstOrCreate(&model.I18n{Key: key, Locale: locale})
+}
+
+type dictTypeSeed struct {
+	item model.DictType
+	i18n map[string]map[string]string
+}
+
+type dictDataSeed struct {
+	item model.DictData
+	i18n map[string]map[string]string
+}
+
+func existingKeys(db *gorm.DB, table string, keys []string, column string) (map[string]struct{}, error) {
+	if len(keys) == 0 {
+		return map[string]struct{}{}, nil
+	}
+	type row struct {
+		Value string
+	}
+	var rows []row
+	if err := db.Table(table).Select(column+" AS value").Where(column+" IN ?", keys).Find(&rows).Error; err != nil {
+		return nil, err
+	}
+	out := make(map[string]struct{}, len(rows))
+	for _, r := range rows {
+		out[r.Value] = struct{}{}
+	}
+	return out, nil
+}
+
+func existingDictDataPairs(db *gorm.DB, typeKeys []string) (map[string]struct{}, error) {
+	if len(typeKeys) == 0 {
+		return map[string]struct{}{}, nil
+	}
+	type row struct {
+		TypeKey string
+		Key     string
+	}
+	var rows []row
+	if err := db.Table("sys_dict_data").Select("type_key, key").Where("type_key IN ?", typeKeys).Find(&rows).Error; err != nil {
+		return nil, err
+	}
+	out := make(map[string]struct{}, len(rows))
+	for _, r := range rows {
+		out[r.TypeKey+"\x00"+r.Key] = struct{}{}
+	}
+	return out, nil
+}
+
+func existingStrings(db *gorm.DB, table, column string, values []string) (map[string]struct{}, error) {
+	if len(values) == 0 {
+		return map[string]struct{}{}, nil
+	}
+	type row struct {
+		Value string
+	}
+	var rows []row
+	if err := db.Table(table).Select(column+" AS value").Where(column+" IN ?", values).Find(&rows).Error; err != nil {
+		return nil, err
+	}
+	out := make(map[string]struct{}, len(rows))
+	for _, r := range rows {
+		out[r.Value] = struct{}{}
+	}
+	return out, nil
+}
+
+func existingUserLevelCodes(db *gorm.DB, codes []int) (map[int]struct{}, error) {
+	if len(codes) == 0 {
+		return map[int]struct{}{}, nil
+	}
+	type row struct {
+		Code int
+	}
+	var rows []row
+	if err := db.Table("sys_user_level").Select("code").Where("code IN ?", codes).Find(&rows).Error; err != nil {
+		return nil, err
+	}
+	out := make(map[int]struct{}, len(rows))
+	for _, r := range rows {
+		out[r.Code] = struct{}{}
+	}
+	return out, nil
+}
+
+func insertPermissionsBatch(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	type permSeed struct {
+		item model.Permission
+	}
+	seeds := make([]permSeed, 0, len(entries))
+	codes := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		code := strVal(entry.Data, "code")
+		if code == "" {
+			continue
+		}
+		seeds = append(seeds, permSeed{item: model.Permission{
+			Code:        code,
+			Name:        strVal(entry.Data, "name"),
+			Group:       strVal(entry.Data, "group"),
+			Description: strVal(entry.Data, "description"),
+		}})
+		codes = append(codes, code)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+	existing, err := existingStrings(db, "permissions", "code", codes)
+	if err != nil {
+		return err
+	}
+	toInsert := make([]model.Permission, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existing[seed.item.Code]; ok {
+			log.Printf("  Permission '%s' already exists, skipping", seed.item.Code)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	return db.CreateInBatches(&toInsert, seedBatchSize).Error
+}
+
+func insertSiteSettingsBatch(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	type settingSeed struct {
+		item model.SiteSetting
+	}
+	seeds := make([]settingSeed, 0, len(entries))
+	keys := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		key := strVal(entry.Data, "key")
+		if key == "" {
+			continue
+		}
+		item := model.SiteSetting{
+			Key:         key,
+			Value:       strVal(entry.Data, "value"),
+			Type:        strVal(entry.Data, "type"),
+			Description: strVal(entry.Data, "description"),
+			IsActive:    boolVal(entry.Data, "is_active"),
+		}
+		if item.Type == "" {
+			item.Type = "string"
+		}
+		seeds = append(seeds, settingSeed{item: item})
+		keys = append(keys, key)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+	existing, err := existingStrings(db, "site_settings", "key", keys)
+	if err != nil {
+		return err
+	}
+	toInsert := make([]model.SiteSetting, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existing[seed.item.Key]; ok {
+			log.Printf("  SiteSetting '%s' already exists, skipping", seed.item.Key)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	return db.CreateInBatches(&toInsert, seedBatchSize).Error
+}
+
+func insertUserLevelsBatch(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	type levelSeed struct {
+		item model.UserLevel
+	}
+	seeds := make([]levelSeed, 0, len(entries))
+	codes := make([]int, 0, len(entries))
+	for _, entry := range entries {
+		if _, ok := entry.Data["code"]; !ok {
+			continue
+		}
+		code := intVal(entry.Data, "code")
+		if code < 0 {
+			continue
+		}
+		seeds = append(seeds, levelSeed{item: model.UserLevel{
+			Code:         code,
+			Label:        strVal(entry.Data, "label"),
+			MinUpload:    int64Val(entry.Data, "min_upload"),
+			MinDownload:  int64Val(entry.Data, "min_download"),
+			MinRatio:     floatVal(entry.Data, "min_ratio"),
+			MinBonus:     floatVal(entry.Data, "min_bonus"),
+			MinSeedCount: intVal(entry.Data, "min_seed_count"),
+			Color:        strVal(entry.Data, "color"),
+			Icon:         strVal(entry.Data, "icon"),
+			SortOrder:    intVal(entry.Data, "sort_order"),
+			IsActive:     boolVal(entry.Data, "is_active"),
+		}})
+		codes = append(codes, code)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+	existing, err := existingUserLevelCodes(db, codes)
+	if err != nil {
+		return err
+	}
+	toInsert := make([]model.UserLevel, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existing[seed.item.Code]; ok {
+			log.Printf("  UserLevel '%d' already exists, skipping", seed.item.Code)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	return db.CreateInBatches(&toInsert, seedBatchSize).Error
+}
+
+func insertRolesBatch(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	type roleSeed struct {
+		item  model.RoleModel
+		perms []string
+	}
+	seeds := make([]roleSeed, 0, len(entries))
+	names := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		key := strVal(entry.Data, "key")
+		if key == "" {
+			continue
+		}
+		perms := []string{}
+		if raw, ok := entry.Data["permissions"].([]any); ok {
+			perms = make([]string, 0, len(raw))
+			for _, p := range raw {
+				if code, ok := p.(string); ok && code != "" {
+					perms = append(perms, code)
+				}
+			}
+		}
+		seeds = append(seeds, roleSeed{
+			item: model.RoleModel{
+				Key:         key,
+				DisplayName: strVal(entry.Data, "display_name"),
+				Description: strVal(entry.Data, "description"),
+				IsSystem:    boolVal(entry.Data, "is_system"),
+				SortOrder:   intVal(entry.Data, "sort_order"),
+			},
+			perms: perms,
+		})
+		names = append(names, key)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+	existing, err := existingStrings(db, "role_models", "key", names)
+	if err != nil {
+		return err
+	}
+	toInsert := make([]model.RoleModel, 0, len(seeds))
+	remaining := make([]roleSeed, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existing[seed.item.Key]; ok {
+			log.Printf("  Role '%s' already exists, skipping", seed.item.Key)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+		remaining = append(remaining, seed)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
+		return err
+	}
+	insertedByName := make(map[string]model.RoleModel, len(toInsert))
+	for _, role := range toInsert {
+		insertedByName[role.Key] = role
+	}
+
+	permCodes := make(map[string]struct{})
+	for _, seed := range remaining {
+		for _, code := range seed.perms {
+			permCodes[code] = struct{}{}
+		}
+	}
+	codes := make([]string, 0, len(permCodes))
+	for code := range permCodes {
+		codes = append(codes, code)
+	}
+	var perms []model.Permission
+	if len(codes) > 0 {
+		if err := db.Where("code IN ?", codes).Find(&perms).Error; err != nil {
+			return err
+		}
+	}
+	permByCode := make(map[string]model.Permission, len(perms))
+	for _, perm := range perms {
+		permByCode[perm.Code] = perm
+	}
+	for _, seed := range remaining {
+		if len(seed.perms) == 0 {
+			continue
+		}
+		var matched []model.Permission
+		for _, code := range seed.perms {
+			if perm, ok := permByCode[code]; ok {
+				matched = append(matched, perm)
+			} else {
+				log.Printf("  Permission '%s' not found, skipping", code)
+			}
+		}
+		if len(matched) > 0 {
+			role, ok := insertedByName[seed.item.Key]
+			if !ok {
+				continue
+			}
+			if err := db.Model(&role).Association("Permissions").Replace(&matched); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func insertDictTypes(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	seeds := make([]dictTypeSeed, 0, len(entries))
+	keys := make([]string, 0, len(entries))
+	for _, entry := range entries {
+		key := strVal(entry.Data, "key")
+		if key == "" {
+			continue
+		}
+		seeds = append(seeds, dictTypeSeed{
+			item: model.DictType{
+				Key:       key,
+				Label:     strVal(entry.Data, "label"),
+				Remark:    strVal(entry.Data, "remark"),
+				SortOrder: intVal(entry.Data, "sort_order"),
+				IsSystem:  boolVal(entry.Data, "is_system"),
+				IsActive:  boolVal(entry.Data, "is_active"),
+			},
+			i18n: map[string]map[string]string{
+				"zh": {
+					"label":  strVal(entry.Data, "label_zh"),
+					"remark": strVal(entry.Data, "remark_zh"),
+				},
+				"en": {
+					"label":  strVal(entry.Data, "label_en"),
+					"remark": strVal(entry.Data, "remark_en"),
+				},
+			},
+		})
+		keys = append(keys, key)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+
+	existing, err := existingKeys(db, "sys_dict_type", keys, "key")
+	if err != nil {
+		return err
+	}
+
+	toInsert := make([]model.DictType, 0, len(seeds))
+	remaining := make([]dictTypeSeed, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existing[seed.item.Key]; ok {
+			log.Printf("  DictType '%s' already exists, skipping", seed.item.Key)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+		remaining = append(remaining, seed)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
+		return err
+	}
+	for _, seed := range remaining {
+		prefix := "dict_type." + seed.item.Key
+		for _, lf := range []struct {
+			locale string
+			field  string
+			val    string
+		}{
+			{"zh", "label", seed.i18n["zh"]["label"]},
+			{"en", "label", seed.i18n["en"]["label"]},
+			{"zh", "remark", seed.i18n["zh"]["remark"]},
+			{"en", "remark", seed.i18n["en"]["remark"]},
+		} {
+			if lf.val != "" {
+				saveI18n(db, prefix+"."+lf.field, lf.locale, lf.val)
+			}
+		}
+	}
+	return nil
+}
+
+func insertDictDataBatch(db *gorm.DB, entries []Entry) error {
+	if len(entries) == 0 {
+		return nil
+	}
+	var typeKeys []string
+	seeds := make([]dictDataSeed, 0, len(entries))
+	for _, entry := range entries {
+		typeKey := strVal(entry.Data, "type_key")
+		key := strVal(entry.Data, "key")
+		if typeKey == "" || key == "" {
+			continue
+		}
+		seeds = append(seeds, dictDataSeed{
+			item: model.DictData{
+				TypeKey:   typeKey,
+				Key:       key,
+				Value:     strVal(entry.Data, "value"),
+				Label:     strVal(entry.Data, "label"),
+				SortOrder: intVal(entry.Data, "sort_order"),
+				IsDefault: boolVal(entry.Data, "is_default"),
+				IsActive:  boolVal(entry.Data, "is_active"),
+			},
+			i18n: map[string]map[string]string{
+				"zh": {"label": strVal(entry.Data, "label_zh")},
+				"en": {"label": strVal(entry.Data, "label_en")},
+			},
+		})
+		typeKeys = append(typeKeys, typeKey)
+	}
+	if len(seeds) == 0 {
+		return nil
+	}
+
+	typeSet := make(map[string]struct{}, len(typeKeys))
+	for _, typeKey := range typeKeys {
+		typeSet[typeKey] = struct{}{}
+	}
+	uniqueTypeKeys := make([]string, 0, len(typeSet))
+	for typeKey := range typeSet {
+		uniqueTypeKeys = append(uniqueTypeKeys, typeKey)
+	}
+
+	existingTypes, err := existingKeys(db, "sys_dict_type", uniqueTypeKeys, "key")
+	if err != nil {
+		return err
+	}
+	existingPairs, err := existingDictDataPairs(db, uniqueTypeKeys)
+	if err != nil {
+		return err
+	}
+
+	toInsert := make([]model.DictData, 0, len(seeds))
+	remaining := make([]dictDataSeed, 0, len(seeds))
+	for _, seed := range seeds {
+		if _, ok := existingTypes[seed.item.TypeKey]; !ok {
+			log.Printf("  DictType '%s' not found, skipping DictData '%s/%s'", seed.item.TypeKey, seed.item.TypeKey, seed.item.Key)
+			continue
+		}
+		pair := seed.item.TypeKey + "\x00" + seed.item.Key
+		if _, ok := existingPairs[pair]; ok {
+			log.Printf("  DictData '%s/%s' already exists, skipping", seed.item.TypeKey, seed.item.Key)
+			continue
+		}
+		toInsert = append(toInsert, seed.item)
+		remaining = append(remaining, seed)
+	}
+	if len(toInsert) == 0 {
+		return nil
+	}
+	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
+		return err
+	}
+	for _, seed := range remaining {
+		prefix := "dict_data." + seed.item.TypeKey + "." + seed.item.Key
+		for _, lf := range []struct {
+			locale string
+			val    string
+		}{
+			{"zh", seed.i18n["zh"]["label"]},
+			{"en", seed.i18n["en"]["label"]},
+		} {
+			if lf.val != "" {
+				saveI18n(db, prefix+".label", lf.locale, lf.val)
+			}
+		}
+	}
+	return nil
 }
 
 func insertPermission(db *gorm.DB, data map[string]any) error {
@@ -216,18 +755,18 @@ func insertPermission(db *gorm.DB, data map[string]any) error {
 }
 
 func insertRole(db *gorm.DB, data map[string]any) error {
-	name := strVal(data, "name")
-	if name == "" {
+	key := strVal(data, "key")
+	if key == "" {
 		return nil
 	}
 	var c int64
-	db.Model(&model.RoleModel{}).Where("name = ?", name).Count(&c)
+	db.Model(&model.RoleModel{}).Where("key = ?", key).Count(&c)
 	if c > 0 {
-		log.Printf("  Role '%s' already exists, skipping", name)
+		log.Printf("  Role '%s' already exists, skipping", key)
 		return nil
 	}
 	role := model.RoleModel{
-		Name:        name,
+		Key:         key,
 		DisplayName: strVal(data, "display_name"),
 		Description: strVal(data, "description"),
 		IsSystem:    boolVal(data, "is_system"),
@@ -259,18 +798,18 @@ func insertRole(db *gorm.DB, data map[string]any) error {
 }
 
 func insertDictType(db *gorm.DB, data map[string]any) error {
-	name := strVal(data, "name")
-	if name == "" {
+	key := strVal(data, "key")
+	if key == "" {
 		return nil
 	}
 	var c int64
-	db.Model(&model.DictType{}).Where("name = ?", name).Count(&c)
+	db.Model(&model.DictType{}).Where("key = ?", key).Count(&c)
 	if c > 0 {
-		log.Printf("  DictType '%s' already exists, skipping", name)
+		log.Printf("  DictType '%s' already exists, skipping", key)
 		return nil
 	}
 	d := model.DictType{
-		Name:      name,
+		Key:       key,
 		Label:     strVal(data, "label"),
 		Remark:    strVal(data, "remark"),
 		SortOrder: intVal(data, "sort_order"),
@@ -281,7 +820,7 @@ func insertDictType(db *gorm.DB, data map[string]any) error {
 		return err
 	}
 
-	prefix := "dict_type." + name
+	prefix := "dict_type." + key
 	localeFields := []struct{ locale, field, val string }{
 		{"zh", "label", strVal(data, "label_zh")},
 		{"en", "label", strVal(data, "label_en")},
@@ -297,23 +836,23 @@ func insertDictType(db *gorm.DB, data map[string]any) error {
 }
 
 func insertDictData(db *gorm.DB, data map[string]any) error {
-	typeName := strVal(data, "type_name")
+	typeKey := strVal(data, "type_key")
 	key := strVal(data, "key")
-	if typeName == "" || key == "" {
+	if typeKey == "" || key == "" {
 		return nil
 	}
-	dt, err := lookupType(db, typeName)
+	dt, err := lookupType(db, typeKey)
 	if err != nil {
-		return fmt.Errorf("dict type '%s' not found", typeName)
+		return fmt.Errorf("dict type '%s' not found", typeKey)
 	}
 	var c int64
-	db.Model(&model.DictData{}).Where("type_id = ? AND key = ?", dt.ID, key).Count(&c)
+	db.Model(&model.DictData{}).Where("type_key = ? AND key = ?", dt.Key, key).Count(&c)
 	if c > 0 {
-		log.Printf("  DictData '%s/%s' already exists, skipping", typeName, key)
+		log.Printf("  DictData '%s/%s' already exists, skipping", typeKey, key)
 		return nil
 	}
 	d := model.DictData{
-		TypeID:    dt.ID,
+		TypeKey:   dt.Key,
 		Key:       key,
 		Value:     strVal(data, "value"),
 		Label:     strVal(data, "label"),
@@ -325,7 +864,7 @@ func insertDictData(db *gorm.DB, data map[string]any) error {
 		return err
 	}
 
-	prefix := "dict_data." + typeName + "." + key
+	prefix := "dict_data." + typeKey + "." + key
 	localeFields := []struct{ locale, field, val string }{
 		{"zh", "label", strVal(data, "label_zh")},
 		{"en", "label", strVal(data, "label_en")},
@@ -360,7 +899,10 @@ func insertSiteSetting(db *gorm.DB, data map[string]any) error {
 	if s.Type == "" {
 		s.Type = "string"
 	}
-	return db.Create(&s).Error
+	if err := db.Create(&s).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func insertUserLevel(db *gorm.DB, data map[string]any) error {
@@ -435,7 +977,7 @@ func insertUser(db *gorm.DB, data map[string]any) error {
 	roleName := strVal(data, "role")
 	if roleName != "" {
 		var role model.RoleModel
-		if err := db.Where("name = ?", roleName).First(&role).Error; err == nil {
+		if err := db.Where("key = ?", roleName).First(&role).Error; err == nil {
 			user.RoleID = &role.ID
 		}
 	}

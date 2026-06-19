@@ -26,9 +26,9 @@ func (r *RoleRepo) GetByID(id int64) (*model.RoleModel, error) {
 	return &role, err
 }
 
-func (r *RoleRepo) GetByName(name string) (*model.RoleModel, error) {
+func (r *RoleRepo) GetByKey(key string) (*model.RoleModel, error) {
 	var role model.RoleModel
-	err := r.db.Where("name = ?", name).Preload("Permissions").First(&role).Error
+	err := r.db.Where("key = ?", key).Preload("Permissions").First(&role).Error
 	return &role, err
 }
 

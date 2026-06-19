@@ -70,7 +70,7 @@ func (m *Middleware) Auth() gin.HandlerFunc {
 		if roleID, ok := claims["role_id"].(float64); ok {
 			c.Set("role_id", int64(roleID))
 		} else if m.repo != nil && m.repo.Role != nil {
-			roleObj, err := m.repo.Role.GetByName(role)
+			roleObj, err := m.repo.Role.GetByKey(role)
 			if err == nil {
 				c.Set("role_id", roleObj.ID)
 			}

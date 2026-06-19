@@ -20,7 +20,7 @@ CREATE TABLE `permissions` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` varcha
 
 CREATE TABLE `reports` (`id` integer PRIMARY KEY AUTOINCREMENT,`reporter_id` integer NOT NULL,`target_type` varchar(32) NOT NULL,`target_id` integer NOT NULL,`reason` text NOT NULL,`status` varchar(16) DEFAULT "pending",`created_at` datetime);
 
-CREATE TABLE `role_models` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(32) NOT NULL,`display_name` varchar(64),`description` varchar(255),`is_system` numeric DEFAULT false,`sort_order` integer DEFAULT 0,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `role_models` (`id` integer PRIMARY KEY AUTOINCREMENT,`key` varchar(32) NOT NULL,`display_name` varchar(64),`description` varchar(255),`is_system` numeric DEFAULT false,`sort_order` integer DEFAULT 0,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `role_permissions` (`role_model_id` integer,`permission_id` integer,PRIMARY KEY (`role_model_id`,`permission_id`),CONSTRAINT `fk_role_permissions_role_model` FOREIGN KEY (`role_model_id`) REFERENCES `role_models`(`id`),CONSTRAINT `fk_role_permissions_permission` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`));
 
@@ -30,13 +30,13 @@ CREATE TABLE `snatches` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` intege
 
 CREATE TABLE `subs` (`id` integer PRIMARY KEY AUTOINCREMENT,`torrent_id` integer NOT NULL,`user_id` integer NOT NULL,`language` varchar(32) NOT NULL,`title` varchar(255),`file_name` varchar(255) NOT NULL,`file_size` integer DEFAULT 0,`hits` integer DEFAULT 0,`created_at` datetime);
 
-CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_id` integer NOT NULL,`key` varchar(128) NOT NULL,`value` text,`label` varchar(255),`sort_order` integer DEFAULT 0,`is_default` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_key` varchar(64) NOT NULL,`key` varchar(128) NOT NULL,`value` text,`label` varchar(255),`sort_order` integer DEFAULT 0,`is_default` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `announcements` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` varchar(255) NOT NULL,`content` text,`is_sticky` numeric DEFAULT false,`expires_at` datetime,`is_active` numeric DEFAULT true,`created_by` integer NOT NULL,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `bonus_logs` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`business_type` integer NOT NULL DEFAULT 0,`old_total_value` decimal(20,1),`value` decimal(20,1),`new_total_value` decimal(20,1),`comment` text,`created_at` datetime);
 
-CREATE TABLE `sys_dict_type` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(64) NOT NULL,`label` varchar(128) NOT NULL,`remark` varchar(255),`sort_order` integer DEFAULT 0,`is_system` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime,CONSTRAINT `uni_sys_dict_type_name` UNIQUE (`name`));
+CREATE TABLE `sys_dict_type` (`id` integer PRIMARY KEY AUTOINCREMENT,`key` varchar(64) NOT NULL,`label` varchar(128) NOT NULL,`remark` varchar(255),`sort_order` integer DEFAULT 0,`is_system` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime,CONSTRAINT `uni_sys_dict_type_key` UNIQUE (`key`));
 
 CREATE TABLE `sys_i18n` (`key` varchar(255) NOT NULL,`locale` varchar(10) NOT NULL,`value` text NOT NULL,`created_at` datetime,`updated_at` datetime,PRIMARY KEY (`key`,`locale`));
 
@@ -65,13 +65,13 @@ CREATE INDEX `idx_offers_user_id` ON `offers`(`user_id`);
 CREATE UNIQUE INDEX `idx_permissions_code` ON `permissions`(`code`);
 CREATE INDEX `idx_permissions_group` ON `permissions`(`group`);
 CREATE INDEX `idx_reports_reporter_id` ON `reports`(`reporter_id`);
-CREATE UNIQUE INDEX `idx_role_models_name` ON `role_models`(`name`);
+CREATE UNIQUE INDEX `idx_role_models_key` ON `role_models`(`key`);
 CREATE UNIQUE INDEX `idx_site_settings_key` ON `site_settings`(`key`);
 CREATE INDEX `idx_snatches_is_hr` ON `snatches`(`is_hr`);
 CREATE INDEX `idx_snatches_is_seeding` ON `snatches`(`is_seeding`);
 CREATE INDEX `idx_subs_torrent_id` ON `subs`(`torrent_id`);
 CREATE INDEX `idx_subs_user_id` ON `subs`(`user_id`);
-CREATE INDEX `idx_sys_dict_data_type_id` ON `sys_dict_data`(`type_id`);
+CREATE INDEX `idx_sys_dict_data_type_key` ON `sys_dict_data`(`type_key`);
 CREATE UNIQUE INDEX `idx_thanks_user_torrent` ON `thanks`(`user_id`,`torrent_id`);
 CREATE INDEX `idx_torrents_category` ON `torrents`(`category`);
 CREATE INDEX `idx_torrents_created_at` ON `torrents`(`created_at`);

@@ -89,7 +89,7 @@ export function RoleManage() {
 
   const columns: ColumnsType<RoleModel> = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
-    { title: t('roleManage.name'), dataIndex: 'name', key: 'name', width: 120 },
+    { title: t('roleManage.key'), dataIndex: 'key', key: 'key', width: 120 },
     { title: t('roleManage.displayName'), dataIndex: 'display_name', key: 'display_name', width: 120 },
     { title: t('roleManage.description'), dataIndex: 'description', key: 'description' },
     {
@@ -149,7 +149,7 @@ export function RoleManage() {
             createMut.mutate(values)
           }
         }}>
-          <Form.Item name="name" label={t('roleManage.nameLabel')} rules={[{ required: true }]}>
+          <Form.Item name="key" label={t('roleManage.keyLabel')} rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item name="display_name" label={t('roleManage.displayNameLabel')}>
@@ -167,7 +167,7 @@ export function RoleManage() {
         </Form>
       </Modal>
 
-      <Modal title={t('roleManage.permTitle', { name: permOpen?.display_name || permOpen?.name })} open={!!permOpen} onCancel={() => setPermOpen(null)} footer={null} width={600}>
+      <Modal title={t('roleManage.permTitle', { name: permOpen?.display_name || permOpen?.key })} open={!!permOpen} onCancel={() => setPermOpen(null)} footer={null} width={600}>
         {permOpen && (
           <div>
             {Object.entries(grouped).map(([group, perms]) => (

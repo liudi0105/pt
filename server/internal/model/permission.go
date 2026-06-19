@@ -4,7 +4,7 @@ import "time"
 
 type RoleModel struct {
 	ID          int64        `gorm:"primaryKey" json:"id"`
-	Name        string       `gorm:"size:32;uniqueIndex;not null" json:"name"`
+	Key         string       `gorm:"size:32;uniqueIndex;not null" json:"key"`
 	DisplayName string       `gorm:"size:64" json:"display_name"`
 	Description string       `gorm:"size:255" json:"description"`
 	IsSystem    bool         `gorm:"default:false" json:"is_system"`

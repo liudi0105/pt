@@ -4,7 +4,7 @@ import "time"
 
 type DictType struct {
 	ID        int64                        `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name      string                       `gorm:"size:64;not null;unique" json:"name"`
+	Key       string                       `gorm:"size:64;not null;unique" json:"key"`
 	Label     string                       `gorm:"size:128;not null" json:"label"`
 	Remark    string                       `gorm:"size:255" json:"remark"`
 	SortOrder int                          `gorm:"default:0" json:"sort_order"`
@@ -19,7 +19,7 @@ func (DictType) TableName() string { return "sys_dict_type" }
 
 type DictData struct {
 	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id"`
-	TypeID    int64     `gorm:"index;not null" json:"type_id"`
+	TypeKey   string    `gorm:"size:64;index;not null" json:"type_key"`
 	Key       string    `gorm:"size:128;not null" json:"key"`
 	Value     string    `gorm:"type:text" json:"value"`
 	Label     string    `gorm:"size:255" json:"label"`
@@ -29,8 +29,7 @@ type DictData struct {
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
-	TypeName string                       `gorm:"-" json:"type_name,omitempty"`
-	I18n     map[string]map[string]string `gorm:"-" json:"i18n,omitempty"`
+	I18n map[string]map[string]string `gorm:"-" json:"i18n,omitempty"`
 }
 
 func (DictData) TableName() string { return "sys_dict_data" }

@@ -103,7 +103,7 @@ export interface LoginResponse {
 
 export interface DictType {
   id: number
-  name: string
+  key: string
   label: string
   remark: string
   sort_order: number
@@ -116,7 +116,7 @@ export interface DictType {
 
 export interface DictData {
   id: number
-  type_id: number
+  type_key: string
   key: string
   value: string
   label: string
@@ -125,7 +125,6 @@ export interface DictData {
   is_active: boolean
   created_at: string
   updated_at: string
-  type_name?: string
   i18n?: Record<string, Record<string, string>>
 }
 
@@ -270,7 +269,7 @@ export interface HRItem {
 
 export interface RoleModel {
   id: number
-  name: string
+  key: string
   display_name: string
   description: string
   is_system: boolean

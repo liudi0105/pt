@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
+	i18n "pt-server/internal/i18n"
 	"pt-server/internal/model"
 	"pt-server/internal/utils"
-	i18n "pt-server/internal/i18n"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -86,7 +86,7 @@ func (h *Handler) RegisterWithInvite(c *gin.Context) {
 		Role:         model.RoleUser,
 	}
 
-	role, err := h.repo.Role.GetByName(string(model.RoleUser))
+	role, err := h.repo.Role.GetByKey(string(model.RoleUser))
 	if err == nil {
 		user.RoleID = &role.ID
 	}

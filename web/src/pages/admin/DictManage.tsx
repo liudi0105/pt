@@ -61,8 +61,8 @@ export function DictManage() {
   const { t: tCommon } = useTranslation('common')
   const navigate = useNavigate()
   const { lang } = useParams({ from: '/$lang' })
-  const { type_id } = Route.useSearch()
-  const activeType = type_id ?? null
+  const { type_key } = Route.useSearch()
+  const activeTypeKey = type_key ?? null
   const [typeModal, setTypeModal] = useState<{ open: boolean; record?: DictType }>({ open: false })
   const [dataModal, setDataModal] = useState<{ open: boolean; record?: DictData }>({ open: false })
   const [typeLocaleRows, setTypeLocaleRows] = useState<LocaleRow[]>([])
@@ -91,8 +91,8 @@ export function DictManage() {
     setDataLocaleRows([])
   }, [])
 
-  const setActiveType = (id: number | null) => {
-    navigate({ to: '/$lang/admin/dict', params: { lang }, search: id ? { type_id: id } : {} })
+  const setActiveType = (key: string | null) => {
+    navigate({ to: '/$lang/admin/dict', params: { lang }, search: key ? { type_key: key } : {} })
   }
 
   const { data: types } = useQuery({
@@ -102,26 +102,30 @@ export function DictManage() {
   })
 
   const { data: dictData, isLoading } = useQuery({
-    queryKey: ['admin', 'dict-data', activeType],
-    queryFn: () => listDictData(activeType ?? undefined),
-    enabled: !!activeType,
+    queryKey: ['admin', 'dict-data', activeTypeKey],
+    queryFn: () => listDictData(activeTypeKey ?? undefined),
+    enabled: !!activeTypeKey,
     select: (res) => res.data.data,
   })
 
-  const selectedType = types?.find((t) => t.id === activeType)
+  const selectedType = types?.find((t) => t.key === activeTypeKey)
 
   const createTypeMut = useMutation({
     mutationFn: createDictType,
-    onSuccess: () => {
+    onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-types'] })
+      setActiveType(created.data.key)
       closeTypeModal()
       message.success(t('dictManage.typeCreated'))
     },
   })
   const updateTypeMut = useMutation({
     mutationFn: ({ id, data }: { id: number; data: Partial<DictType> }) => updateDictType(id, data),
-    onSuccess: () => {
+    onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-types'] })
+      if (updated.data.key !== activeTypeKey) {
+        setActiveType(updated.data.key)
+      }
       closeTypeModal()
       message.success(t('dictManage.typeUpdated'))
     },
@@ -136,7 +140,7 @@ export function DictManage() {
   })
 
   const createDataMut = useMutation({
-    mutationFn: (data: Partial<DictData>) => createDictData({ ...data, type_id: activeType! }),
+    mutationFn: (data: Partial<DictData>) => createDictData({ ...data, type_key: activeTypeKey! }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-data'] })
       closeDataModal()
@@ -193,7 +197,7 @@ export function DictManage() {
     },
   ]
 
-  if (!mounted && activeType === null) {
+  if (!mounted && activeTypeKey === null) {
     return <Spin style={{ display: 'block', margin: '40px auto' }} />
   }
 
@@ -208,13 +212,13 @@ export function DictManage() {
 
       <Select
         placeholder={t('dictManage.selectType')}
-        value={activeType}
-        onChange={setActiveType}
+        value={activeTypeKey}
+        onChange={(value) => setActiveType(value ?? null)}
         allowClear
         showSearch
         style={{ width: 360, marginBottom: 16 }}
         optionFilterProp="label"
-        options={types?.map((t) => ({ value: t.id, label: `${localizedLabel(t, lang)} (${t.name})` }))}
+        options={types?.map((t) => ({ value: t.key, label: `${localizedLabel(t, lang)} (${t.key})` }))}
       />
 
       {selectedType && (
@@ -234,7 +238,7 @@ export function DictManage() {
             </Space>
           }
           extra={
-            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={() => openDataModal()}>
+            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={() => openDataModal()} disabled={!activeTypeKey}>
               {t('dictManage.addEntry')}
             </Button>
           }
@@ -257,7 +261,7 @@ export function DictManage() {
         footer={null}
         width={600}
       >
-        <Form
+          <Form
           layout="vertical"
           initialValues={typeModal.record}
           onFinish={(values) => {
@@ -269,7 +273,7 @@ export function DictManage() {
             }
           }}
         >
-          <Form.Item name="name" label={t('dictManage.nameLabel')} rules={[{ required: true }]}>
+          <Form.Item name="key" label={t('dictManage.keyLabel')} rules={[{ required: true }]}>
             <Input />
           </Form.Item>
           <Form.Item name="label" label={t('dictManage.labelLabel')} rules={[{ required: true }]}>
@@ -361,6 +365,9 @@ export function DictManage() {
             }
           }}
         >
+          <Form.Item name="type_key" initialValue={activeTypeKey} hidden>
+            <Input />
+          </Form.Item>
           <Form.Item name="key" label={t('dictManage.keyLabel')} rules={[{ required: true }]}>
             <Input />
           </Form.Item>

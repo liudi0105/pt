@@ -50,7 +50,7 @@ func (h *Handler) Register(c *gin.Context) {
 		Role:         model.RoleUser,
 	}
 
-	role, err := h.repo.Role.GetByName(string(model.RoleUser))
+	role, err := h.repo.Role.GetByKey(string(model.RoleUser))
 	if err == nil {
 		user.RoleID = &role.ID
 	}
@@ -85,7 +85,7 @@ func (h *Handler) Login(c *gin.Context) {
 	if user.RoleID != nil {
 		roleID = user.RoleID
 	} else {
-		role, err := h.repo.Role.GetByName(string(user.Role))
+		role, err := h.repo.Role.GetByKey(string(user.Role))
 		if err == nil {
 			roleID = &role.ID
 			h.repo.User.UpdateRoleID(user.ID, role.ID)

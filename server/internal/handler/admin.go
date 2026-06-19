@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	i18n "pt-server/internal/i18n"
 	"pt-server/internal/model"
@@ -16,12 +17,29 @@ import (
 
 // ---- i18n helpers ----
 
-func dictTypeI18nPrefix(name string) string {
-	return "dict_type." + name
+func dictTypeI18nPrefix(key string) string {
+	return "dict_type." + key
 }
 
-func dictDataI18nPrefix(typeName, key string) string {
-	return "dict_data." + typeName + "." + key
+func dictDataI18nPrefix(typeKey, key string) string {
+	return "dict_data." + typeKey + "." + key
+}
+
+func moveI18nPrefix(repo *repository.I18nRepo, oldPrefix, newPrefix string) error {
+	if oldPrefix == newPrefix {
+		return nil
+	}
+	entries, err := repo.LoadByPrefix(oldPrefix)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		newKey := newPrefix + strings.TrimPrefix(entry.Key, oldPrefix)
+		if err := repo.Save(newKey, entry.Locale, entry.Value); err != nil {
+			return err
+		}
+	}
+	return repo.DeleteByPrefix(oldPrefix)
 }
 
 func userLevelI18nPrefix(code int) string {
@@ -39,7 +57,7 @@ func (h *Handler) ListDictTypes(c *gin.Context) {
 
 	var keys []string
 	for _, t := range types {
-		prefix := dictTypeI18nPrefix(t.Name)
+		prefix := dictTypeI18nPrefix(t.Key)
 		keys = append(keys, prefix+".label", prefix+".remark")
 	}
 
@@ -47,7 +65,7 @@ func (h *Handler) ListDictTypes(c *gin.Context) {
 	byKey := repository.GroupByKey(entries)
 
 	for i := range types {
-		prefix := dictTypeI18nPrefix(types[i].Name)
+		prefix := dictTypeI18nPrefix(types[i].Key)
 		i18nMap := make(map[string]map[string]string)
 		for _, field := range []string{"label", "remark"} {
 			key := prefix + "." + field
@@ -72,13 +90,17 @@ func (h *Handler) CreateDictType(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
 		return
 	}
+	if t.Key == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "key required"})
+		return
+	}
 	if err := h.repo.DictType.Create(&t); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	if t.I18n != nil {
-		if err := h.repo.I18n.SaveMap(dictTypeI18nPrefix(t.Name), t.I18n); err != nil {
-			log.Printf("Failed to save i18n for dict type %s: %v", t.Name, err)
+		if err := h.repo.I18n.SaveMap(dictTypeI18nPrefix(t.Key), t.I18n); err != nil {
+			log.Printf("Failed to save i18n for dict type %s: %v", t.Key, err)
 		}
 	}
 	c.JSON(http.StatusCreated, t)
@@ -98,20 +120,41 @@ func (h *Handler) UpdateDictType(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
 		return
 	}
+	if t.Key == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "key required"})
+		return
+	}
 	t.ID = id
+	oldData, _ := h.repo.DictData.ListByTypeKey(old.Key)
 	if err := h.repo.DictType.Update(&t); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	oldPrefix := dictTypeI18nPrefix(old.Name)
-	newPrefix := dictTypeI18nPrefix(t.Name)
-	if oldPrefix != newPrefix {
-		h.repo.I18n.DeleteByPrefix(oldPrefix)
+	oldPrefix := dictTypeI18nPrefix(old.Key)
+	newPrefix := dictTypeI18nPrefix(t.Key)
+	if err := moveI18nPrefix(h.repo.I18n, oldPrefix, newPrefix); err != nil {
+		log.Printf("Failed to move dict type i18n from %s to %s: %v", oldPrefix, newPrefix, err)
 	}
 	if t.I18n != nil {
-		h.repo.I18n.DeleteByPrefix(newPrefix)
-		h.repo.I18n.SaveMap(newPrefix, t.I18n)
+		if err := h.repo.I18n.SaveMap(newPrefix, t.I18n); err != nil {
+			log.Printf("Failed to save i18n for dict type %s: %v", t.Key, err)
+		}
+	}
+	if old.Key != t.Key {
+		if err := h.repo.DictData.UpdateTypeKey(old.Key, t.Key); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		for _, item := range oldData {
+			if err := moveI18nPrefix(
+				h.repo.I18n,
+				dictDataI18nPrefix(old.Key, item.Key),
+				dictDataI18nPrefix(t.Key, item.Key),
+			); err != nil {
+				log.Printf("Failed to move dict data i18n for %s/%s: %v", old.Key, item.Key, err)
+			}
+		}
 	}
 	c.JSON(http.StatusOK, t)
 }
@@ -120,7 +163,16 @@ func (h *Handler) DeleteDictType(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	t, err := h.repo.DictType.GetByID(id)
 	if err == nil {
-		h.repo.I18n.DeleteByPrefix(dictTypeI18nPrefix(t.Name))
+		if data, e := h.repo.DictData.ListByTypeKey(t.Key); e == nil {
+			for _, item := range data {
+				h.repo.I18n.DeleteByPrefix(dictDataI18nPrefix(t.Key, item.Key))
+			}
+		}
+		if err := h.repo.DictData.DeleteByTypeKey(t.Key); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		h.repo.I18n.DeleteByPrefix(dictTypeI18nPrefix(t.Key))
 	}
 	if err := h.repo.DictType.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -132,27 +184,18 @@ func (h *Handler) DeleteDictType(c *gin.Context) {
 // ---- Dict Data ----
 
 func (h *Handler) ListDictData(c *gin.Context) {
-	typeID, _ := strconv.ParseInt(c.Query("type_id"), 10, 64)
-	typeName := c.Query("type_name")
+	typeKey := c.Query("type_key")
 
-	log.Printf("[DEBUG] ListDictData: raw_query=%q type_id=%d typeName=%q",
-		c.Request.URL.RawQuery, typeID, typeName)
+	log.Printf("[DEBUG] ListDictData: raw_query=%q typeKey=%q",
+		c.Request.URL.RawQuery, typeKey)
 
 	var data []model.DictData
 	var err error
-	if typeID > 0 {
-		data, err = h.repo.DictData.ListByType(typeID)
-		log.Printf("[DEBUG] ListDictData: ListByType(%d) → %d rows", typeID, len(data))
-		if err == nil && typeName == "" {
-			if dt, e := h.repo.DictType.GetByID(typeID); e == nil {
-				typeName = dt.Name
-			}
-		}
-	} else if typeName != "" {
-		data, err = h.repo.DictData.ListByTypeName(typeName)
-		log.Printf("[DEBUG] ListDictData: ListByTypeName(%s) → %d rows", typeName, len(data))
+	if typeKey != "" {
+		data, err = h.repo.DictData.ListByTypeKey(typeKey)
+		log.Printf("[DEBUG] ListDictData: ListByTypeKey(%s) → %d rows", typeKey, len(data))
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "type_id or type_name required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "type_key required"})
 		return
 	}
 	if err != nil {
@@ -161,15 +204,15 @@ func (h *Handler) ListDictData(c *gin.Context) {
 		return
 	}
 
-	if typeName != "" && len(data) > 0 {
+	if typeKey != "" && len(data) > 0 {
 		var keys []string
 		for _, d := range data {
-			keys = append(keys, dictDataI18nPrefix(typeName, d.Key)+".label")
+			keys = append(keys, dictDataI18nPrefix(typeKey, d.Key)+".label")
 		}
 		entries, _ := h.repo.I18n.LoadByKeys(keys)
 		byKey := repository.GroupByKey(entries)
 		for i := range data {
-			prefix := dictDataI18nPrefix(typeName, data[i].Key)
+			prefix := dictDataI18nPrefix(typeKey, data[i].Key)
 			i18nMap := make(map[string]map[string]string)
 			key := prefix + ".label"
 			if locales, ok := byKey[key]; ok {
@@ -188,13 +231,13 @@ func (h *Handler) ListDictData(c *gin.Context) {
 }
 
 func (h *Handler) ListDictDataPublic(c *gin.Context) {
-	typeNames := c.QueryArray("type_name")
-	if len(typeNames) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "at least one type_name required"})
+	typeKeys := c.QueryArray("type_key")
+	if len(typeKeys) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "at least one type_key required"})
 		return
 	}
 
-	all, err := h.repo.DictData.ListByTypeNames(typeNames)
+	all, err := h.repo.DictData.ListByTypeKeys(typeKeys)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -202,18 +245,18 @@ func (h *Handler) ListDictDataPublic(c *gin.Context) {
 
 	grouped := make(map[string][]model.DictData)
 	for _, d := range all {
-		grouped[d.TypeName] = append(grouped[d.TypeName], d)
+		grouped[d.TypeKey] = append(grouped[d.TypeKey], d)
 	}
 
-	for tn, items := range grouped {
+	for typeKey, items := range grouped {
 		var keys []string
 		for _, d := range items {
-			keys = append(keys, dictDataI18nPrefix(tn, d.Key)+".label")
+			keys = append(keys, dictDataI18nPrefix(typeKey, d.Key)+".label")
 		}
 		entries, _ := h.repo.I18n.LoadByKeys(keys)
 		byKey := repository.GroupByKey(entries)
 		for i := range items {
-			prefix := dictDataI18nPrefix(tn, items[i].Key)
+			prefix := dictDataI18nPrefix(typeKey, items[i].Key)
 			i18nMap := make(map[string]map[string]string)
 			key := prefix + ".label"
 			if locales, ok := byKey[key]; ok {
@@ -226,7 +269,7 @@ func (h *Handler) ListDictDataPublic(c *gin.Context) {
 			}
 			items[i].I18n = i18nMap
 		}
-		grouped[tn] = items
+		grouped[typeKey] = items
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": grouped})
@@ -238,13 +281,21 @@ func (h *Handler) CreateDictData(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
 		return
 	}
+	if d.TypeKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "type_key required"})
+		return
+	}
+	if _, err := h.repo.DictType.GetByKey(d.TypeKey); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "dict type not found"})
+		return
+	}
 	if err := h.repo.DictData.Create(&d); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	if d.I18n != nil {
-		if dt, err := h.repo.DictType.GetByID(d.TypeID); err == nil {
-			h.repo.I18n.SaveMap(dictDataI18nPrefix(dt.Name, d.Key), d.I18n)
+		if d.TypeKey != "" {
+			h.repo.I18n.SaveMap(dictDataI18nPrefix(d.TypeKey, d.Key), d.I18n)
 		}
 	}
 	c.JSON(http.StatusCreated, d)
@@ -264,22 +315,28 @@ func (h *Handler) UpdateDictData(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
 		return
 	}
+	if d.TypeKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "type_key required"})
+		return
+	}
+	if _, err := h.repo.DictType.GetByKey(d.TypeKey); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "dict type not found"})
+		return
+	}
 	d.ID = id
 	if err := h.repo.DictData.Update(&d); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if dt, err := h.repo.DictType.GetByID(d.TypeID); err == nil {
-		oldPrefix := dictDataI18nPrefix(dt.Name, old.Key)
-		newPrefix := dictDataI18nPrefix(dt.Name, d.Key)
-		if oldPrefix != newPrefix {
-			h.repo.I18n.DeleteByPrefix(oldPrefix)
-		}
-		if d.I18n != nil {
-			h.repo.I18n.DeleteByPrefix(newPrefix)
-			h.repo.I18n.SaveMap(newPrefix, d.I18n)
-		}
+	oldPrefix := dictDataI18nPrefix(old.TypeKey, old.Key)
+	newPrefix := dictDataI18nPrefix(d.TypeKey, d.Key)
+	if oldPrefix != newPrefix {
+		h.repo.I18n.DeleteByPrefix(oldPrefix)
+	}
+	if d.I18n != nil {
+		h.repo.I18n.DeleteByPrefix(newPrefix)
+		h.repo.I18n.SaveMap(newPrefix, d.I18n)
 	}
 	c.JSON(http.StatusOK, d)
 }
@@ -288,9 +345,7 @@ func (h *Handler) DeleteDictData(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	if d, err := h.repo.DictData.GetByID(id); err == nil {
-		if dt, e := h.repo.DictType.GetByID(d.TypeID); e == nil {
-			h.repo.I18n.DeleteByPrefix(dictDataI18nPrefix(dt.Name, d.Key))
-		}
+		h.repo.I18n.DeleteByPrefix(dictDataI18nPrefix(d.TypeKey, d.Key))
 	}
 
 	if err := h.repo.DictData.Delete(id); err != nil {

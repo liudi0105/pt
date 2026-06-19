@@ -1,8 +1,8 @@
 import { api } from './client'
 import type { DictData } from '../types'
 
-export function getDictData(typeNames: string[]) {
+export function getDictData(typeKeys: string[]) {
   const params = new URLSearchParams()
-  typeNames.forEach(n => params.append('type_name', n))
+  typeKeys.forEach((key) => params.append('type_key', key))
   return api.get<{ data: Record<string, DictData[]> }>('/dict-data', { params })
 }
