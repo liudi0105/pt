@@ -12,7 +12,7 @@ sidebar_position: 1
 2. [系统架构](./panda-next-panda-php/architecture)
 3. [功能模块与业务流程](./panda-next-panda-php/modules)
 4. [核心数据模型](./panda-next-panda-php/data-model)
-5. [数据库设计](./database-design/overview)
+5. [数据库设计](./database-design/tables/users)
 6. [接口与运维说明](./panda-next-panda-php/api-and-ops)
 
 ## 文档覆盖范围

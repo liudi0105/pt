@@ -89,15 +89,9 @@ const config: Config = {
         },
         {
           type: 'doc',
-          docId: 'database-design/overview',
+          docId: 'database-design/tables/user/users',
           position: 'left',
           label: '数据库设计',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'databaseSidebar',
-          position: 'left',
-          label: '数据库设计目录',
         },
         {
           to: '/docs/intro',
@@ -105,8 +99,8 @@ const config: Config = {
           position: 'right',
         },
         {
-          to: '/docs/database-design/overview',
-          label: '数据库总览',
+          to: '/docs/database-design/tables/users',
+          label: '数据库设计',
           position: 'right',
         },
       ],
