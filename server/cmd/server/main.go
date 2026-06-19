@@ -2,11 +2,14 @@ package main
 
 import (
 	"log"
+	"time"
+
 	"pt-server/internal/config"
 	"pt-server/internal/handler"
 	i18n "pt-server/internal/i18n"
 	"pt-server/internal/middleware"
 	"pt-server/internal/repository"
+	"pt-server/internal/siteconfig"
 	"pt-server/internal/tracker"
 
 	"github.com/gin-gonic/gin"
@@ -26,11 +29,22 @@ func main() {
 		log.Fatalf("Database schema validation failed: %v", err)
 	}
 
-	peerStore := tracker.NewPeerStore()
-	go peerStore.CleanupLoop(cfg.Tracker.CleanupInterval)
-
 	repo := repository.New(db)
-	h := handler.New(repo, peerStore, cfg)
+	siteCfg := siteconfig.NewDefault()
+	if err := siteconfig.Bootstrap(repo, siteCfg); err != nil {
+		log.Fatalf("Failed to bootstrap site settings: %v", err)
+	}
+	if err := siteCfg.Reload(repo); err != nil {
+		log.Fatalf("Failed to load site settings: %v", err)
+	}
+
+	peerStore := tracker.NewPeerStore(siteCfg.Tracker.PeerTTL)
+	go peerStore.CleanupLoop(
+		func() time.Duration { return siteCfg.TrackerSnapshot().CleanupInterval },
+		func() time.Duration { return siteCfg.TrackerSnapshot().PeerTTL },
+	)
+
+	h := handler.New(repo, peerStore, cfg, siteCfg)
 	mw := middleware.New(cfg, repo)
 
 	r := gin.Default()

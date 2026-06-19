@@ -34,6 +34,20 @@ func (r *TorrentRepo) GetByID(id int64) (*model.Torrent, error) {
 	return &t, nil
 }
 
+func (r *TorrentRepo) GetByInfoHash(infoHash []byte) (*model.Torrent, error) {
+	var t model.Torrent
+	err := r.db.Where("info_hash = ? AND is_deleted = ?", infoHash, false).First(&t).Error
+	if err != nil {
+		return nil, err
+	}
+
+	var uploader string
+	r.db.Raw(`SELECT COALESCE(u.username, '') FROM users u WHERE u.id = ?`, t.UserID).Scan(&uploader)
+	t.Uploader = uploader
+	t.InfoHashHex = fmt.Sprintf("%x", t.InfoHash)
+	return &t, nil
+}
+
 type TorrentFilter struct {
 	Category string
 	Keyword  string

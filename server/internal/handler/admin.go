@@ -635,6 +635,9 @@ func (h *Handler) UpdateSiteSetting(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	if h.siteCfg != nil {
+		h.siteCfg.ApplySiteSetting(key, req.Value)
+	}
 	c.JSON(http.StatusOK, gin.H{"ok": true})
 }
 

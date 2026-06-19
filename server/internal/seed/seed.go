@@ -115,7 +115,7 @@ func readFile(path string) ([]Entry, error) {
 }
 
 func InsertAll(db *gorm.DB, entries []Entry) error {
-	order := []string{"permission", "dict_type", "dict_data", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal", "announcement"}
+	order := []string{"permission", "dict_type", "dict_data", "site_setting", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal", "announcement"}
 	modelOrder := make(map[string]int, len(order))
 	for i, m := range order {
 		modelOrder[m] = i
@@ -143,6 +143,8 @@ func insertEntry(db *gorm.DB, entry Entry) error {
 		return insertDictType(db, entry.Data)
 	case "dict_data":
 		return insertDictData(db, entry.Data)
+	case "site_setting":
+		return insertSiteSetting(db, entry.Data)
 	case "user_level":
 		return insertUserLevel(db, entry.Data)
 	case "user":
@@ -334,6 +336,31 @@ func insertDictData(db *gorm.DB, data map[string]any) error {
 		}
 	}
 	return nil
+}
+
+func insertSiteSetting(db *gorm.DB, data map[string]any) error {
+	key := strVal(data, "key")
+	if key == "" {
+		return nil
+	}
+	var c int64
+	db.Model(&model.SiteSetting{}).Where("key = ?", key).Count(&c)
+	if c > 0 {
+		log.Printf("  SiteSetting '%s' already exists, skipping", key)
+		return nil
+	}
+
+	s := model.SiteSetting{
+		Key:         key,
+		Value:       strVal(data, "value"),
+		Type:        strVal(data, "type"),
+		Description: strVal(data, "description"),
+		IsActive:    boolVal(data, "is_active"),
+	}
+	if s.Type == "" {
+		s.Type = "string"
+	}
+	return db.Create(&s).Error
 }
 
 func insertUserLevel(db *gorm.DB, data map[string]any) error {

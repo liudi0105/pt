@@ -8,21 +8,4 @@ dsn: pt.db
 
 listen_addr: ":8080"
 jwt_secret: "change-me-to-a-random-secret"
-site_name: "My PT Site"
-
-tracker:
-  interval: 30m
-  min_interval: 15m
-  cleanup_interval: 5m
-  peer_ttl: 35m
-  default_numwant: 50
-
-bonus:
-  per_hour: 1.0
-  seed_bonus: 0.5
-  size_bonus: 0.1
-
-hr:
-  enabled: true
-  seed_hours: 72
-  check_interval: 1h
+upload_dir: "./uploads/torrents"

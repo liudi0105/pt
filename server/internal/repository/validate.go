@@ -168,6 +168,9 @@ func validateColumnType(db *gorm.DB, table string, field *schema.Field, ct gorm.
 func expectedColumnType(db *gorm.DB, field *schema.Field) (string, []string) {
 	switch field.GORMDataType {
 	case "string":
+		if field.DataType != "" && field.DataType != "string" {
+			return normalizeColumnType(string(field.DataType))
+		}
 		if db.Dialector.Name() == "postgres" {
 			if field.Size > 0 {
 				return "varchar", []string{strconv.FormatInt(int64(field.Size), 10)}

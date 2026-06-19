@@ -17,8 +17,21 @@ func NewSnatchRepo(db *gorm.DB) *SnatchRepo {
 
 func (r *SnatchRepo) Upsert(s *model.Snatch) error {
 	return r.db.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "user_id"}, {Name: "torrent_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"uploaded", "downloaded", "ip", "port", "peer_id", "last_announce", "is_seeding", "finished_at"}),
+		Columns: []clause.Column{{Name: "user_id"}, {Name: "torrent_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{
+			"uploaded",
+			"downloaded",
+			"left",
+			"ip",
+			"port",
+			"peer_id",
+			"seed_time",
+			"leech_time",
+			"is_seeding",
+			"started_at",
+			"last_announce",
+			"finished_at",
+		}),
 	}).Create(s).Error
 }
 

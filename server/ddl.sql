@@ -4,51 +4,51 @@ CREATE TABLE `bookmarks` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integ
 
 CREATE TABLE `comments` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`torrent_id` integer NOT NULL,`content` text NOT NULL,`created_at` datetime,`updated_at` datetime);
 
-CREATE TABLE `invites` (`id` integer PRIMARY KEY AUTOINCREMENT,`sender_id` integer NOT NULL,`code` text NOT NULL,`email` text,`is_used` numeric DEFAULT false,`used_by_id` integer DEFAULT null,`expires_at` datetime,`created_at` datetime);
+CREATE TABLE `invites` (`id` integer PRIMARY KEY AUTOINCREMENT,`sender_id` integer NOT NULL,`code` varchar(64) NOT NULL,`email` varchar(255),`is_used` numeric DEFAULT false,`used_by_id` integer DEFAULT null,`expires_at` datetime,`created_at` datetime);
 
-CREATE TABLE `medals` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`description` text,`image` text,`price` decimal(12,2) DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_medals_code` UNIQUE (`code`));
+CREATE TABLE `medals` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`description` text,`image` varchar(255),`price` decimal(12,2) DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_medals_code` UNIQUE (`code`));
 
-CREATE TABLE `messages` (`id` integer PRIMARY KEY AUTOINCREMENT,`sender_id` integer NOT NULL,`receiver_id` integer NOT NULL,`subject` text NOT NULL,`body` text NOT NULL,`is_read` numeric DEFAULT false,`is_deleted` numeric DEFAULT false,`created_at` datetime);
+CREATE TABLE `messages` (`id` integer PRIMARY KEY AUTOINCREMENT,`sender_id` integer NOT NULL,`receiver_id` integer NOT NULL,`subject` varchar(255) NOT NULL,`body` text NOT NULL,`is_read` numeric DEFAULT false,`is_deleted` numeric DEFAULT false,`created_at` datetime);
 
-CREATE TABLE `news` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` text NOT NULL,`content` text NOT NULL,`user_id` integer NOT NULL,`created_at` datetime);
+CREATE TABLE `news` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` varchar(255) NOT NULL,`content` text NOT NULL,`user_id` integer NOT NULL,`created_at` datetime);
 
 CREATE TABLE `offer_votes` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`offer_id` integer NOT NULL,`is_yeah` numeric NOT NULL,`created_at` datetime);
 
-CREATE TABLE `offers` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`name` text NOT NULL,`description` text,`category` text,`status` varchar(16) DEFAULT "pending",`vote_yeah` integer DEFAULT 0,`vote_against` integer DEFAULT 0,`created_at` datetime);
+CREATE TABLE `offers` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`name` varchar(255) NOT NULL,`description` text,`category` varchar(32),`status` varchar(16) DEFAULT "pending",`vote_yeah` integer DEFAULT 0,`vote_against` integer DEFAULT 0,`created_at` datetime);
 
-CREATE TABLE `permissions` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` text NOT NULL,`name` text,`group` text NOT NULL,`description` text,`created_at` datetime);
+CREATE TABLE `permissions` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` varchar(64) NOT NULL,`name` varchar(64),`group` varchar(32) NOT NULL,`description` varchar(255),`created_at` datetime);
 
-CREATE TABLE `reports` (`id` integer PRIMARY KEY AUTOINCREMENT,`reporter_id` integer NOT NULL,`target_type` text NOT NULL,`target_id` integer NOT NULL,`reason` text NOT NULL,`status` varchar(16) DEFAULT "pending",`created_at` datetime);
+CREATE TABLE `reports` (`id` integer PRIMARY KEY AUTOINCREMENT,`reporter_id` integer NOT NULL,`target_type` varchar(32) NOT NULL,`target_id` integer NOT NULL,`reason` text NOT NULL,`status` varchar(16) DEFAULT "pending",`created_at` datetime);
 
-CREATE TABLE `role_models` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` text NOT NULL,`display_name` text,`description` text,`is_system` numeric DEFAULT false,`sort_order` integer DEFAULT 0,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `role_models` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(32) NOT NULL,`display_name` varchar(64),`description` varchar(255),`is_system` numeric DEFAULT false,`sort_order` integer DEFAULT 0,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `role_permissions` (`role_model_id` integer,`permission_id` integer,PRIMARY KEY (`role_model_id`,`permission_id`),CONSTRAINT `fk_role_permissions_role_model` FOREIGN KEY (`role_model_id`) REFERENCES `role_models`(`id`),CONSTRAINT `fk_role_permissions_permission` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`));
 
-CREATE TABLE `site_settings` (`id` integer PRIMARY KEY AUTOINCREMENT,`key` text NOT NULL,`value` text NOT NULL,`type` text DEFAULT "string",`description` text,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `site_settings` (`id` integer PRIMARY KEY AUTOINCREMENT,`key` varchar(64) NOT NULL,`value` varchar(255) NOT NULL,`type` varchar(32) DEFAULT 'string',`description` varchar(255),`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
 
-CREATE TABLE `snatches` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`torrent_id` integer NOT NULL,`uploaded` integer DEFAULT 0,`downloaded` integer DEFAULT 0,`left` integer DEFAULT 0,`ip` text DEFAULT "",`port` integer DEFAULT 0,`peer_id` text DEFAULT "",`seed_time` integer DEFAULT 0,`leech_time` integer DEFAULT 0,`is_seeding` numeric DEFAULT false,`is_hr` numeric DEFAULT false,`started_at` datetime,`last_announce` datetime,`finished_at` datetime);
+CREATE TABLE `snatches` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`torrent_id` integer NOT NULL,`uploaded` integer DEFAULT 0,`downloaded` integer DEFAULT 0,`left` integer DEFAULT 0,`ip` varchar(45) DEFAULT '',`port` integer DEFAULT 0,`peer_id` varchar(64) DEFAULT '',`seed_time` integer DEFAULT 0,`leech_time` integer DEFAULT 0,`is_seeding` numeric DEFAULT false,`is_hr` numeric DEFAULT false,`started_at` datetime,`last_announce` datetime,`finished_at` datetime);
 
-CREATE TABLE `subs` (`id` integer PRIMARY KEY AUTOINCREMENT,`torrent_id` integer NOT NULL,`user_id` integer NOT NULL,`language` text NOT NULL,`title` text,`file_name` text NOT NULL,`file_size` integer DEFAULT 0,`hits` integer DEFAULT 0,`created_at` datetime);
+CREATE TABLE `subs` (`id` integer PRIMARY KEY AUTOINCREMENT,`torrent_id` integer NOT NULL,`user_id` integer NOT NULL,`language` varchar(32) NOT NULL,`title` varchar(255),`file_name` varchar(255) NOT NULL,`file_size` integer DEFAULT 0,`hits` integer DEFAULT 0,`created_at` datetime);
 
-CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_id` integer NOT NULL,`key` text NOT NULL,`value` text,`label` text,`sort_order` integer DEFAULT 0,`is_default` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_id` integer NOT NULL,`key` varchar(128) NOT NULL,`value` text,`label` varchar(255),`sort_order` integer DEFAULT 0,`is_default` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
 
-CREATE TABLE `announcements` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` text NOT NULL,`content` text,`is_sticky` numeric DEFAULT false,`expires_at` datetime,`is_active` numeric DEFAULT true,`created_by` integer NOT NULL,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `announcements` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` varchar(255) NOT NULL,`content` text,`is_sticky` numeric DEFAULT false,`expires_at` datetime,`is_active` numeric DEFAULT true,`created_by` integer NOT NULL,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `bonus_logs` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`business_type` integer NOT NULL DEFAULT 0,`old_total_value` decimal(20,1),`value` decimal(20,1),`new_total_value` decimal(20,1),`comment` text,`created_at` datetime);
 
-CREATE TABLE `sys_dict_type` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` text NOT NULL,`label` text NOT NULL,`remark` text,`sort_order` integer DEFAULT 0,`is_system` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime,CONSTRAINT `uni_sys_dict_type_name` UNIQUE (`name`));
+CREATE TABLE `sys_dict_type` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(64) NOT NULL,`label` varchar(128) NOT NULL,`remark` varchar(255),`sort_order` integer DEFAULT 0,`is_system` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime,CONSTRAINT `uni_sys_dict_type_name` UNIQUE (`name`));
 
-CREATE TABLE `sys_i18n` (`key` text NOT NULL,`locale` text NOT NULL,`value` text NOT NULL,`created_at` datetime,`updated_at` datetime,PRIMARY KEY (`key`,`locale`));
+CREATE TABLE `sys_i18n` (`key` varchar(255) NOT NULL,`locale` varchar(10) NOT NULL,`value` text NOT NULL,`created_at` datetime,`updated_at` datetime,PRIMARY KEY (`key`,`locale`));
 
-CREATE TABLE `sys_user_level` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`label` text DEFAULT '',`min_upload` integer DEFAULT 0,`min_download` integer DEFAULT 0,`min_ratio` decimal(10,3) DEFAULT 0,`min_bonus` decimal(12,2) DEFAULT 0,`min_seed_count` integer DEFAULT 0,`color` text,`icon` text,`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_sys_user_level_code` UNIQUE (`code`));
+CREATE TABLE `sys_user_level` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`label` varchar(128) DEFAULT '',`min_upload` integer DEFAULT 0,`min_download` integer DEFAULT 0,`min_ratio` decimal(10,3) DEFAULT 0,`min_bonus` decimal(12,2) DEFAULT 0,`min_seed_count` integer DEFAULT 0,`color` varchar(32),`icon` varchar(64),`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_sys_user_level_code` UNIQUE (`code`));
 
 CREATE TABLE `thanks` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`torrent_id` integer NOT NULL,`created_at` datetime);
 
-CREATE TABLE `torrents` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`info_hash` bytea NOT NULL,`name` text NOT NULL,`description` text,`file_name` text DEFAULT "",`size` integer DEFAULT 0,`file_count` integer DEFAULT 0,`category` text DEFAULT "",`source` text DEFAULT "",`medium` text DEFAULT "",`codec` text DEFAULT "",`standard` text DEFAULT "",`processing` text DEFAULT "",`team` text DEFAULT "",`audiocodec` text DEFAULT "",`small_descr` text,`technical_info` text,`cover` text,`nfo` text,`tags` text DEFAULT "",`promotion` varchar(16) DEFAULT "none",`seed_hours` integer DEFAULT 0,`seeders` integer DEFAULT 0,`leechers` integer DEFAULT 0,`completed` integer DEFAULT 0,`created_at` datetime,`is_deleted` numeric DEFAULT false);
+CREATE TABLE `torrents` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`info_hash` bytea NOT NULL,`name` varchar(255) NOT NULL,`description` text,`file_name` varchar(255) DEFAULT '',`size` integer DEFAULT 0,`file_count` integer DEFAULT 0,`category` varchar(32) DEFAULT '',`source` text DEFAULT '',`medium` text DEFAULT '',`codec` text DEFAULT '',`standard` text DEFAULT '',`processing` text DEFAULT '',`team` text DEFAULT '',`audio_codec` text DEFAULT '',`small_descr` text,`technical_info` text,`cover` text,`nfo` text,`tags` text DEFAULT '',`promotion` varchar(16) DEFAULT "none",`seed_hours` integer DEFAULT 0,`seeders` integer DEFAULT 0,`leechers` integer DEFAULT 0,`completed` integer DEFAULT 0,`created_at` datetime,`is_deleted` numeric DEFAULT false);
 
 CREATE TABLE `user_medals` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`medal_id` integer NOT NULL,`expire_at` datetime,`created_at` datetime);
 
-CREATE TABLE `users` (`id` integer PRIMARY KEY AUTOINCREMENT,`username` text NOT NULL,`email` text NOT NULL,`password_hash` text NOT NULL,`passkey` text NOT NULL,`role` varchar(16) DEFAULT "user",`role_id` integer,`status` integer DEFAULT 0,`upload_bytes` integer DEFAULT 0,`download_bytes` integer DEFAULT 0,`bonus` decimal(12,2) DEFAULT 0,`level_id` integer,`created_at` datetime);
+CREATE TABLE `users` (`id` integer PRIMARY KEY AUTOINCREMENT,`username` varchar(64) NOT NULL,`email` varchar(128) NOT NULL,`password_hash` varchar(255) NOT NULL,`passkey` varchar(64) NOT NULL,`role` varchar(16) DEFAULT "user",`role_id` integer,`status` integer DEFAULT 0,`upload_bytes` integer DEFAULT 0,`download_bytes` integer DEFAULT 0,`bonus` decimal(12,2) DEFAULT 0,`level_id` integer,`created_at` datetime);
 
 CREATE UNIQUE INDEX `idx_attendances_user_id` ON `attendances`(`user_id`);
 CREATE UNIQUE INDEX `idx_bookmark_user_torrent` ON `bookmarks`(`user_id`,`torrent_id`);

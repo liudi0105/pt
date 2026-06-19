@@ -319,24 +319,9 @@ func (h *Handler) ListPeers(c *gin.Context) {
 }
 
 func (h *Handler) Announce(c *gin.Context) {
-	// Delegates to tracker
-	// This is a simplified version; full logic is in tracker/announce.go
-	passkey := c.Query("passkey")
-	if passkey == "" {
-		c.String(http.StatusOK, "d14:failure reason12:invalid passkeye")
-		return
-	}
-
-	user, err := h.repo.User.GetByPasskey(passkey)
-	if err != nil {
-		c.String(http.StatusOK, "d14:failure reason12:invalid passkeye")
-		return
-	}
-	_ = user
-
-	c.String(http.StatusOK, "d8:completei0e10:incompletei0e8:intervali1800e12:min intervali900e5:peers0:e")
+	h.tracker.Handle(c)
 }
 
 func (h *Handler) Scrape(c *gin.Context) {
-	c.String(http.StatusOK, "d5:filesde")
+	h.tracker.Scrape(c)
 }

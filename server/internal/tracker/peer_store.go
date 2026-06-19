@@ -1,7 +1,7 @@
 package tracker
 
 import (
-	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -12,12 +12,14 @@ type PeerStore struct {
 	mu       sync.RWMutex
 	peers    map[string]map[string]*model.Peer
 	complete map[string]int
+	peerTTL  time.Duration
 }
 
-func NewPeerStore() *PeerStore {
+func NewPeerStore(peerTTL time.Duration) *PeerStore {
 	return &PeerStore{
 		peers:    make(map[string]map[string]*model.Peer),
 		complete: make(map[string]int),
+		peerTTL:  peerTTL,
 	}
 }
 
@@ -32,11 +34,11 @@ func (s *PeerStore) Upsert(infoHash string, peer *model.Peer) {
 	key := peerKey(peer.PeerID, peer.IP, peer.Port)
 	old, exists := s.peers[infoHash][key]
 
-	if peer.Event == "completed" {
+	if peer.Event == "completed" && (!exists || old.Left > 0) {
 		s.complete[infoHash]++
 	}
 
-	if peer.Left == 0 && peer.Event == "stopped" {
+	if peer.Event == "stopped" {
 		delete(s.peers[infoHash], key)
 		if len(s.peers[infoHash]) == 0 {
 			delete(s.peers, infoHash)
@@ -70,6 +72,10 @@ func (s *PeerStore) Remove(infoHash, peerID, ip string, port int) {
 func (s *PeerStore) GetPeers(infoHash string, numWant int, excludePeerID string) []*model.Peer {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
+	if numWant <= 0 {
+		return nil
+	}
 
 	peers, ok := s.peers[infoHash]
 	if !ok {
@@ -114,20 +120,29 @@ func (s *PeerStore) GetComplete(infoHash string) int {
 	return s.complete[infoHash]
 }
 
-func (s *PeerStore) CleanupLoop(interval time.Duration) {
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		s.cleanup()
+func (s *PeerStore) CleanupLoop(intervalFn func() time.Duration, ttlFn func() time.Duration) {
+	for {
+		interval := intervalFn()
+		if interval <= 0 {
+			interval = 5 * time.Minute
+		}
+		time.Sleep(interval)
+		ttl := ttlFn()
+		if ttl <= 0 {
+			ttl = s.peerTTL
+		}
+		s.cleanup(ttl)
 	}
 }
 
-func (s *PeerStore) cleanup() {
+func (s *PeerStore) cleanup(ttl time.Duration) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	threshold := time.Now().Add(-35 * time.Minute)
+	if ttl <= 0 {
+		ttl = 35 * time.Minute
+	}
+	threshold := time.Now().Add(-ttl)
 
 	for infoHash, peers := range s.peers {
 		for key, p := range peers {
@@ -142,7 +157,5 @@ func (s *PeerStore) cleanup() {
 }
 
 func peerKey(peerID, ip string, port int) string {
-	return peerID + ":" + ip + ":" + string(rune(port))
+	return fmt.Sprintf("%s:%s:%d", peerID, ip, port)
 }
-
-var _ context.Context = nil
