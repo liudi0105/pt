@@ -9,7 +9,7 @@ export const i18nReady = i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'zh',
-    ns: ['common', 'auth', 'torrent', 'user', 'admin', 'errors'],
+    ns: ['common', 'auth', 'torrent', 'forum', 'user', 'admin', 'errors'],
     defaultNS: 'common',
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',

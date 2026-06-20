@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"pt-server/internal/model"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -49,10 +50,21 @@ func (r *TorrentRepo) GetByInfoHash(infoHash []byte) (*model.Torrent, error) {
 }
 
 type TorrentFilter struct {
-	Category string
-	Keyword  string
-	Page     int
-	PageSize int
+	Categories  []string
+	Keyword     string
+	Incldead    int
+	Spstate     int
+	Sources     []string
+	Codecs      []string
+	Standards   []string
+	Media       []string
+	Processings []string
+	Teams       []string
+	AudioCodecs []string
+	Sort        string
+	Order       string
+	Page        int
+	PageSize    int
 }
 
 type TorrentListResult struct {
@@ -69,18 +81,64 @@ func (r *TorrentRepo) List(f TorrentFilter) (*TorrentListResult, error) {
 	}
 
 	query := r.db.Where("is_deleted = ?", false)
-	if f.Category != "" {
-		query = query.Where("category = ?", f.Category)
-	}
-	if f.Keyword != "" {
-		query = query.Where("name LIKE ?", "%"+f.Keyword+"%")
+
+	// Multi-category filter
+	if len(f.Categories) > 0 {
+		query = query.Where("category IN ?", f.Categories)
 	}
 
+	// Keyword search (name matches)
+	if f.Keyword != "" {
+		keywordCond := "name LIKE ?"
+		args := []interface{}{"%" + f.Keyword + "%"}
+		query = query.Where(keywordCond, args...)
+	}
+
+	// Incldead: 1 = active only (seeders > 0)
+	if f.Incldead == 1 {
+		query = query.Where("seeders > 0")
+	}
+
+	// Spstate: 2 = free, 3 = 2x upload
+	switch f.Spstate {
+	case 2:
+		query = query.Where("promotion IN ?", []string{"free", "free_twoup", "thirty_percent"})
+	case 3:
+		query = query.Where("promotion IN ?", []string{"twoup", "free_twoup"})
+	}
+
+	// Taxonomy filters (exact match for each value, OR within same field)
+	if len(f.Sources) > 0 {
+		query = query.Where("source IN ?", f.Sources)
+	}
+	if len(f.Codecs) > 0 {
+		query = query.Where("codec IN ?", f.Codecs)
+	}
+	if len(f.Standards) > 0 {
+		query = query.Where("standard IN ?", f.Standards)
+	}
+	if len(f.Media) > 0 {
+		query = query.Where("medium IN ?", f.Media)
+	}
+	if len(f.Processings) > 0 {
+		query = query.Where("processing IN ?", f.Processings)
+	}
+	if len(f.Teams) > 0 {
+		query = query.Where("team IN ?", f.Teams)
+	}
+	if len(f.AudioCodecs) > 0 {
+		query = query.Where("audiocodec IN ?", f.AudioCodecs)
+	}
+
+	// Count total matching
 	var total int64
 	query.Model(&model.Torrent{}).Count(&total)
 
+	// Build order clause
+	orderClause := f.buildOrder()
+
 	var torrents []model.Torrent
-	err := query.Order("created_at DESC").
+	err := query.Order(orderClause).
 		Limit(f.PageSize).
 		Offset((f.Page - 1) * f.PageSize).
 		Find(&torrents).Error
@@ -103,6 +161,31 @@ func (r *TorrentRepo) List(f TorrentFilter) (*TorrentListResult, error) {
 		Torrents: torrents,
 		Total:    int(total),
 	}, nil
+}
+
+func (f TorrentFilter) buildOrder() string {
+	sortField := ""
+	switch strings.ToLower(f.Sort) {
+	case "created_at", "added":
+		sortField = "created_at"
+	case "seeders":
+		sortField = "seeders"
+	case "leechers":
+		sortField = "leechers"
+	case "size":
+		sortField = "size"
+	case "completed", "times_completed":
+		sortField = "completed"
+	case "name":
+		sortField = "name"
+	default:
+		sortField = "created_at"
+	}
+	order := "DESC"
+	if strings.ToLower(f.Order) == "asc" {
+		order = "ASC"
+	}
+	return sortField + " " + order
 }
 
 func (r *TorrentRepo) Latest(limit int) ([]model.Torrent, error) {
@@ -148,8 +231,8 @@ func (r *TorrentRepo) Delete(id int64) error {
 
 func (r *TorrentRepo) BatchUpdatePromotion(filter TorrentFilter, promo model.Promotion) (int64, error) {
 	query := r.db.Model(&model.Torrent{}).Where("is_deleted = ?", false)
-	if filter.Category != "" {
-		query = query.Where("category = ?", filter.Category)
+	if len(filter.Categories) > 0 {
+		query = query.Where("category IN ?", filter.Categories)
 	}
 	if filter.Keyword != "" {
 		query = query.Where("name LIKE ?", "%"+filter.Keyword+"%")

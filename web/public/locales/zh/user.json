@@ -71,9 +71,38 @@
     "checkinSuccess": "签到成功！获得 {{bonus}} 积分，已连续签到 {{days}} 天！",
     "checkinFailed": "签到失败"
   },
+  "menu": {
+    "profile": "个人资料",
+    "checkin": "签到",
+    "seeding": "做种",
+    "snatches": "下载记录",
+    "bookmarks": "收藏",
+    "bonus": "积分商店",
+    "bonusLogs": "积分流水",
+    "settings": "设置",
+    "messages": "消息",
+    "invites": "邀请",
+    "medals": "勋章",
+    "hr": "Hit & Run"
+  },
+  "bonusLogs": {
+    "title": "积分流水",
+    "time": "时间",
+    "type": "类型",
+    "change": "变动",
+    "balance": "余额",
+    "comment": "说明"
+  },
   "bonusShop": {
     "title": "积分商店",
+    "bonusPerHour": "每小时收获",
+    "seedingCount": "做种数",
+    "seedingSize": "做种体积",
+    "rateLabel": "兑换比例",
     "buyUpload": "购买上传额度",
+    "buyDownload": "购买下载额度",
+    "downloadCredit": "下载额度",
+    "buyDownloadSuccess": "购买成功！消耗 {{bonus}} 积分，获得 {{size}} 下载额度！",
     "yourBonus": "当前积分",
     "exchangeRate": "兑换比例",
     "rateText": "{{rate}} 积分 = 1 GB 上传额度",

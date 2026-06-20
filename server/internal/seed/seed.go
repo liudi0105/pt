@@ -117,7 +117,7 @@ func readFile(path string) ([]Entry, error) {
 }
 
 func InsertAll(db *gorm.DB, entries []Entry) error {
-	order := []string{"permission", "dict_type", "dict_data", "site_setting", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal", "announcement"}
+	order := []string{"permission", "dict_type", "dict_data", "site_setting", "role", "user_level", "user", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "medal", "user_medal", "announcement", "shop_item", "lucky_draw_prize"}
 	modelOrder := make(map[string]int, len(order))
 	for i, m := range order {
 		modelOrder[m] = i
@@ -209,6 +209,10 @@ func insertEntry(db *gorm.DB, entry Entry) error {
 		return insertUserMedal(db, entry.Data)
 	case "announcement":
 		return insertAnnouncement(db, entry.Data)
+	case "shop_item":
+		return insertShopItem(db, entry.Data)
+	case "lucky_draw_prize":
+		return insertLuckyDrawPrize(db, entry.Data)
 	default:
 		log.Printf("Unknown model: %s", entry.Model)
 		return nil
@@ -1000,6 +1004,29 @@ func insertUser(db *gorm.DB, data map[string]any) error {
 	return db.Create(&user).Error
 }
 
+func resolveUserByEmail(db *gorm.DB, email string) int64 {
+	if email == "" {
+		return 0
+	}
+	var user model.User
+	if err := db.Where("email = ?", email).First(&user).Error; err == nil {
+		return user.ID
+	}
+	return 0
+}
+
+func resolveUserID(db *gorm.DB, data map[string]any) int64 {
+	if email := strVal(data, "email"); email != "" {
+		if id := resolveUserByEmail(db, email); id != 0 {
+			return id
+		}
+	}
+	if id := int64Val(data, "user_id"); id != 0 {
+		return id
+	}
+	return 1
+}
+
 func insertTorrent(db *gorm.DB, data map[string]any) error {
 	name := strVal(data, "name")
 	if name == "" {
@@ -1012,10 +1039,7 @@ func insertTorrent(db *gorm.DB, data map[string]any) error {
 		return nil
 	}
 
-	userID := int64Val(data, "user_id")
-	if userID == 0 {
-		userID = 1
-	}
+	userID := resolveUserID(db, data)
 
 	t := model.Torrent{
 		UserID:      userID,
@@ -1047,10 +1071,7 @@ func insertNews(db *gorm.DB, data map[string]any) error {
 		return nil
 	}
 
-	userID := int64Val(data, "user_id")
-	if userID == 0 {
-		userID = 1
-	}
+	userID := resolveUserID(db, data)
 
 	n := model.News{
 		Title:   title,
@@ -1066,7 +1087,7 @@ func insertComment(db *gorm.DB, data map[string]any) error {
 		return nil
 	}
 
-	userID := int64Val(data, "user_id")
+	userID := resolveUserID(db, data)
 	torrentID := int64Val(data, "torrent_id")
 	if userID == 0 || torrentID == 0 {
 		return nil
@@ -1088,7 +1109,7 @@ func insertComment(db *gorm.DB, data map[string]any) error {
 }
 
 func insertBookmark(db *gorm.DB, data map[string]any) error {
-	userID := int64Val(data, "user_id")
+	userID := resolveUserID(db, data)
 	torrentID := int64Val(data, "torrent_id")
 	if userID == 0 || torrentID == 0 {
 		return nil
@@ -1109,7 +1130,7 @@ func insertBookmark(db *gorm.DB, data map[string]any) error {
 }
 
 func insertThanks(db *gorm.DB, data map[string]any) error {
-	userID := int64Val(data, "user_id")
+	userID := resolveUserID(db, data)
 	torrentID := int64Val(data, "torrent_id")
 	if userID == 0 || torrentID == 0 {
 		return nil
@@ -1130,7 +1151,7 @@ func insertThanks(db *gorm.DB, data map[string]any) error {
 }
 
 func insertSnatch(db *gorm.DB, data map[string]any) error {
-	userID := int64Val(data, "user_id")
+	userID := resolveUserID(db, data)
 	torrentID := int64Val(data, "torrent_id")
 	if userID == 0 || torrentID == 0 {
 		return nil
@@ -1172,10 +1193,7 @@ func insertOffer(db *gorm.DB, data map[string]any) error {
 		return nil
 	}
 
-	userID := int64Val(data, "user_id")
-	if userID == 0 {
-		userID = 1
-	}
+	userID := resolveUserID(db, data)
 
 	o := model.Offer{
 		UserID:      userID,
@@ -1196,7 +1214,17 @@ func insertMessage(db *gorm.DB, data map[string]any) error {
 	}
 
 	senderID := int64Val(data, "sender_id")
+	if email := strVal(data, "sender_email"); email != "" {
+		if id := resolveUserByEmail(db, email); id != 0 {
+			senderID = id
+		}
+	}
 	receiverID := int64Val(data, "receiver_id")
+	if email := strVal(data, "receiver_email"); email != "" {
+		if id := resolveUserByEmail(db, email); id != 0 {
+			receiverID = id
+		}
+	}
 	if senderID == 0 || receiverID == 0 {
 		return nil
 	}
@@ -1231,6 +1259,11 @@ func insertInvite(db *gorm.DB, data map[string]any) error {
 	}
 
 	userID := int64Val(data, "user_id")
+	if email := strVal(data, "sender_email"); email != "" {
+		if id := resolveUserByEmail(db, email); id != 0 {
+			userID = id
+		}
+	}
 	if userID == 0 {
 		userID = 1
 	}
@@ -1289,7 +1322,7 @@ func insertAnnouncement(db *gorm.DB, data map[string]any) error {
 		IsSticky:  boolVal(data, "is_sticky"),
 		ExpiresAt: expiresAt,
 		IsActive:  boolVal(data, "is_active"),
-		CreatedBy: int64Val(data, "created_by"),
+		CreatedBy: resolveUserID(db, data),
 	}
 	return db.Create(&a).Error
 }
@@ -1309,7 +1342,7 @@ func parseTimePtr(s string) *time.Time {
 }
 
 func insertUserMedal(db *gorm.DB, data map[string]any) error {
-	userID := int64Val(data, "user_id")
+	userID := resolveUserID(db, data)
 	medalID := int64Val(data, "medal_id")
 	if userID == 0 || medalID == 0 {
 		return nil
@@ -1327,4 +1360,52 @@ func insertUserMedal(db *gorm.DB, data map[string]any) error {
 		MedalID: medalID,
 	}
 	return db.Create(&um).Error
+}
+
+func insertShopItem(db *gorm.DB, data map[string]any) error {
+	name := strVal(data, "name")
+	if name == "" {
+		return nil
+	}
+	var c int64
+	db.Model(&model.ShopItem{}).Where("name = ?", name).Count(&c)
+	if c > 0 {
+		log.Printf("  ShopItem '%s' already exists, skipping", name)
+		return nil
+	}
+	item := model.ShopItem{
+		Name:        name,
+		Description: strVal(data, "description"),
+		Price:       floatVal(data, "price"),
+		Stock:       intVal(data, "stock"),
+		Type:        strVal(data, "type"),
+		Metadata:    strVal(data, "metadata"),
+		SortOrder:   intVal(data, "sort_order"),
+		IsActive:    boolVal(data, "is_active"),
+	}
+	return db.Create(&item).Error
+}
+
+func insertLuckyDrawPrize(db *gorm.DB, data map[string]any) error {
+	name := strVal(data, "name")
+	if name == "" {
+		return nil
+	}
+	var c int64
+	db.Model(&model.LuckyDrawPrize{}).Where("name = ?", name).Count(&c)
+	if c > 0 {
+		log.Printf("  LuckyDrawPrize '%s' already exists, skipping", name)
+		return nil
+	}
+	p := model.LuckyDrawPrize{
+		Name:        name,
+		Description: strVal(data, "description"),
+		Price:       floatVal(data, "price"),
+		Probability: floatVal(data, "probability"),
+		Stock:       intVal(data, "stock"),
+		Image:       strVal(data, "image"),
+		IsActive:    boolVal(data, "is_active"),
+		SortOrder:   intVal(data, "sort_order"),
+	}
+	return db.Create(&p).Error
 }

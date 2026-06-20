@@ -1,3 +1,3 @@
-{"model":"user_medal","data":{"user_id":1,"medal_id":1}}
-{"model":"user_medal","data":{"user_id":1,"medal_id":3}}
-{"model":"user_medal","data":{"user_id":1,"medal_id":5}}
+{"model":"user_medal","data":{"email":"alice@pt.local","medal_id":1}}
+{"model":"user_medal","data":{"email":"bob@pt.local","medal_id":3}}
+{"model":"user_medal","data":{"email":"charlie@pt.local","medal_id":5}}

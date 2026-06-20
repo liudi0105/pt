@@ -1,1 +1,11 @@
 {"model":"user","data":{"username":"admin","email":"admin@pt.local","password":"admin123","role":"admin","status":1,"level_code":0}}
+{"model":"user","data":{"username":"alice","email":"alice@pt.local","password":"alice123","role":"user","status":1,"level_code":2}}
+{"model":"user","data":{"username":"bob","email":"bob@pt.local","password":"bob123","role":"user","status":1,"level_code":3}}
+{"model":"user","data":{"username":"charlie","email":"charlie@pt.local","password":"charlie123","role":"user","status":1,"level_code":1}}
+{"model":"user","data":{"username":"diana","email":"diana@pt.local","password":"diana123","role":"vip","status":1,"level_code":5}}
+{"model":"user","data":{"username":"eve","email":"eve@pt.local","password":"eve123","role":"user","status":1,"level_code":0}}
+{"model":"user","data":{"username":"frank","email":"frank@pt.local","password":"frank123","role":"user","status":1,"level_code":2}}
+{"model":"user","data":{"username":"grace","email":"grace@pt.local","password":"grace123","role":"user","status":1,"level_code":4}}
+{"model":"user","data":{"username":"henry","email":"henry@pt.local","password":"henry123","role":"vip","status":1,"level_code":6}}
+{"model":"user","data":{"username":"irene","email":"irene@pt.local","password":"irene123","role":"user","status":1,"level_code":1}}
+{"model":"user","data":{"username":"jack","email":"jack@pt.local","password":"jack123","role":"user","status":1,"level_code":3}}

@@ -12,31 +12,50 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as LangIndexRouteImport } from './routes/$lang/index'
 import { Route as LangUserRouteImport } from './routes/$lang/user_'
-import { Route as LangTorrentsRouteImport } from './routes/$lang/torrents'
 import { Route as LangRegisterRouteImport } from './routes/$lang/register'
-import { Route as LangOffersRouteImport } from './routes/$lang/offers'
-import { Route as LangMessagesRouteImport } from './routes/$lang/messages'
-import { Route as LangMedalsRouteImport } from './routes/$lang/medals'
 import { Route as LangLoginRouteImport } from './routes/$lang/login'
-import { Route as LangInvitesRouteImport } from './routes/$lang/invites'
-import { Route as LangHrRouteImport } from './routes/$lang/hr'
-import { Route as LangAdminRouteImport } from './routes/$lang/admin'
-import { Route as LangAdminIndexRouteImport } from './routes/$lang/admin.index'
-import { Route as LangTorrentsUploadRouteImport } from './routes/$lang/torrents_.upload'
-import { Route as LangTorrentsIdRouteImport } from './routes/$lang/torrents_.$id'
-import { Route as LangAdminUsersRouteImport } from './routes/$lang/admin.users'
-import { Route as LangAdminSettingsRouteImport } from './routes/$lang/admin.settings'
-import { Route as LangAdminRolesRouteImport } from './routes/$lang/admin.roles'
-import { Route as LangAdminReportsRouteImport } from './routes/$lang/admin.reports'
-import { Route as LangAdminPromotionsRouteImport } from './routes/$lang/admin.promotions'
-import { Route as LangAdminOperationsResourcesRouteImport } from './routes/$lang/admin.operations-resources'
-import { Route as LangAdminMedalsRouteImport } from './routes/$lang/admin.medals'
-import { Route as LangAdminLevelsRouteImport } from './routes/$lang/admin.levels'
-import { Route as LangAdminDictRouteImport } from './routes/$lang/admin.dict'
-import { Route as LangAdminClientRiskControlRouteImport } from './routes/$lang/admin.client-risk-control'
-import { Route as LangAdminBonusRouteImport } from './routes/$lang/admin.bonus'
-import { Route as LangAdminAnnouncementsRouteImport } from './routes/$lang/admin.announcements'
-import { Route as LangTorrentsIdEditRouteImport } from './routes/$lang/torrents_.$id.edit'
+import { Route as LangUserCenterRouteRouteImport } from './routes/$lang/user-center/route'
+import { Route as LangTorrentsRouteRouteImport } from './routes/$lang/torrents/route'
+import { Route as LangOffersRouteRouteImport } from './routes/$lang/offers/route'
+import { Route as LangForumRouteRouteImport } from './routes/$lang/forum/route'
+import { Route as LangAdminRouteRouteImport } from './routes/$lang/admin/route'
+import { Route as LangUserCenterIndexRouteImport } from './routes/$lang/user-center/index'
+import { Route as LangTorrentsIndexRouteImport } from './routes/$lang/torrents/index'
+import { Route as LangForumIndexRouteImport } from './routes/$lang/forum/index'
+import { Route as LangAdminIndexRouteImport } from './routes/$lang/admin/index'
+import { Route as LangUserCenterSnatchesRouteImport } from './routes/$lang/user-center/snatches'
+import { Route as LangUserCenterSettingsRouteImport } from './routes/$lang/user-center/settings'
+import { Route as LangUserCenterSeedingRouteImport } from './routes/$lang/user-center/seeding'
+import { Route as LangUserCenterMessagesRouteImport } from './routes/$lang/user-center/messages'
+import { Route as LangUserCenterMedalsRouteImport } from './routes/$lang/user-center/medals'
+import { Route as LangUserCenterInvitesRouteImport } from './routes/$lang/user-center/invites'
+import { Route as LangUserCenterHrRouteImport } from './routes/$lang/user-center/hr'
+import { Route as LangUserCenterCheckinRouteImport } from './routes/$lang/user-center/checkin'
+import { Route as LangUserCenterBookmarksRouteImport } from './routes/$lang/user-center/bookmarks'
+import { Route as LangTorrentsUploadRouteImport } from './routes/$lang/torrents/upload'
+import { Route as LangTorrentsIdRouteImport } from './routes/$lang/torrents/$id'
+import { Route as LangForumSearchRouteImport } from './routes/$lang/forum/search'
+import { Route as LangForumNewRouteImport } from './routes/$lang/forum/new'
+import { Route as LangAdminUsersRouteImport } from './routes/$lang/admin/users'
+import { Route as LangAdminSettingsRouteImport } from './routes/$lang/admin/settings'
+import { Route as LangAdminRolesRouteImport } from './routes/$lang/admin/roles'
+import { Route as LangAdminReportsRouteImport } from './routes/$lang/admin/reports'
+import { Route as LangAdminPromotionsRouteImport } from './routes/$lang/admin/promotions'
+import { Route as LangAdminOperationsResourcesRouteImport } from './routes/$lang/admin/operations-resources'
+import { Route as LangAdminMedalsRouteImport } from './routes/$lang/admin/medals'
+import { Route as LangAdminLevelsRouteImport } from './routes/$lang/admin/levels'
+import { Route as LangAdminDictRouteImport } from './routes/$lang/admin/dict'
+import { Route as LangAdminClientRiskControlRouteImport } from './routes/$lang/admin/client-risk-control'
+import { Route as LangAdminBonusRouteImport } from './routes/$lang/admin/bonus'
+import { Route as LangAdminAnnouncementsRouteImport } from './routes/$lang/admin/announcements'
+import { Route as LangUserCenterBonusRouteRouteImport } from './routes/$lang/user-center/bonus/route'
+import { Route as LangUserCenterBonusIndexRouteImport } from './routes/$lang/user-center/bonus/index'
+import { Route as LangUserCenterBonusShopRouteImport } from './routes/$lang/user-center/bonus/shop'
+import { Route as LangUserCenterBonusLuckyDrawRouteImport } from './routes/$lang/user-center/bonus/lucky-draw'
+import { Route as LangUserCenterBonusLogsRouteImport } from './routes/$lang/user-center/bonus/logs'
+import { Route as LangUserCenterBonusBigSmallRouteImport } from './routes/$lang/user-center/bonus/big-small'
+import { Route as LangTorrentsIdEditRouteImport } from './routes/$lang/torrents/$id.edit'
+import { Route as LangForumTopicIdRouteImport } from './routes/$lang/forum/topic.$id'
 
 const LangRoute = LangRouteImport.update({
   id: '/$lang',
@@ -53,29 +72,9 @@ const LangUserRoute = LangUserRouteImport.update({
   path: '/user',
   getParentRoute: () => LangRoute,
 } as any)
-const LangTorrentsRoute = LangTorrentsRouteImport.update({
-  id: '/torrents',
-  path: '/torrents',
-  getParentRoute: () => LangRoute,
-} as any)
 const LangRegisterRoute = LangRegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => LangRoute,
-} as any)
-const LangOffersRoute = LangOffersRouteImport.update({
-  id: '/offers',
-  path: '/offers',
-  getParentRoute: () => LangRoute,
-} as any)
-const LangMessagesRoute = LangMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => LangRoute,
-} as any)
-const LangMedalsRoute = LangMedalsRouteImport.update({
-  id: '/medals',
-  path: '/medals',
   getParentRoute: () => LangRoute,
 } as any)
 const LangLoginRoute = LangLoginRouteImport.update({
@@ -83,117 +82,235 @@ const LangLoginRoute = LangLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => LangRoute,
 } as any)
-const LangInvitesRoute = LangInvitesRouteImport.update({
-  id: '/invites',
-  path: '/invites',
+const LangUserCenterRouteRoute = LangUserCenterRouteRouteImport.update({
+  id: '/user-center',
+  path: '/user-center',
   getParentRoute: () => LangRoute,
 } as any)
-const LangHrRoute = LangHrRouteImport.update({
-  id: '/hr',
-  path: '/hr',
+const LangTorrentsRouteRoute = LangTorrentsRouteRouteImport.update({
+  id: '/torrents',
+  path: '/torrents',
   getParentRoute: () => LangRoute,
 } as any)
-const LangAdminRoute = LangAdminRouteImport.update({
+const LangOffersRouteRoute = LangOffersRouteRouteImport.update({
+  id: '/offers',
+  path: '/offers',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangForumRouteRoute = LangForumRouteRouteImport.update({
+  id: '/forum',
+  path: '/forum',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangAdminRouteRoute = LangAdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => LangRoute,
 } as any)
+const LangUserCenterIndexRoute = LangUserCenterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangTorrentsIndexRoute = LangTorrentsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LangTorrentsRouteRoute,
+} as any)
+const LangForumIndexRoute = LangForumIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LangForumRouteRoute,
+} as any)
 const LangAdminIndexRoute = LangAdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
+} as any)
+const LangUserCenterSnatchesRoute = LangUserCenterSnatchesRouteImport.update({
+  id: '/snatches',
+  path: '/snatches',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterSettingsRoute = LangUserCenterSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterSeedingRoute = LangUserCenterSeedingRouteImport.update({
+  id: '/seeding',
+  path: '/seeding',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterMessagesRoute = LangUserCenterMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterMedalsRoute = LangUserCenterMedalsRouteImport.update({
+  id: '/medals',
+  path: '/medals',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterInvitesRoute = LangUserCenterInvitesRouteImport.update({
+  id: '/invites',
+  path: '/invites',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterHrRoute = LangUserCenterHrRouteImport.update({
+  id: '/hr',
+  path: '/hr',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterCheckinRoute = LangUserCenterCheckinRouteImport.update({
+  id: '/checkin',
+  path: '/checkin',
+  getParentRoute: () => LangUserCenterRouteRoute,
+} as any)
+const LangUserCenterBookmarksRoute = LangUserCenterBookmarksRouteImport.update({
+  id: '/bookmarks',
+  path: '/bookmarks',
+  getParentRoute: () => LangUserCenterRouteRoute,
 } as any)
 const LangTorrentsUploadRoute = LangTorrentsUploadRouteImport.update({
-  id: '/torrents_/upload',
-  path: '/torrents/upload',
-  getParentRoute: () => LangRoute,
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => LangTorrentsRouteRoute,
 } as any)
 const LangTorrentsIdRoute = LangTorrentsIdRouteImport.update({
-  id: '/torrents_/$id',
-  path: '/torrents/$id',
-  getParentRoute: () => LangRoute,
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LangTorrentsRouteRoute,
+} as any)
+const LangForumSearchRoute = LangForumSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => LangForumRouteRoute,
+} as any)
+const LangForumNewRoute = LangForumNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => LangForumRouteRoute,
 } as any)
 const LangAdminUsersRoute = LangAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminSettingsRoute = LangAdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminRolesRoute = LangAdminRolesRouteImport.update({
   id: '/roles',
   path: '/roles',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminReportsRoute = LangAdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminPromotionsRoute = LangAdminPromotionsRouteImport.update({
   id: '/promotions',
   path: '/promotions',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminOperationsResourcesRoute =
   LangAdminOperationsResourcesRouteImport.update({
     id: '/operations-resources',
     path: '/operations-resources',
-    getParentRoute: () => LangAdminRoute,
+    getParentRoute: () => LangAdminRouteRoute,
   } as any)
 const LangAdminMedalsRoute = LangAdminMedalsRouteImport.update({
   id: '/medals',
   path: '/medals',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminLevelsRoute = LangAdminLevelsRouteImport.update({
   id: '/levels',
   path: '/levels',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminDictRoute = LangAdminDictRouteImport.update({
   id: '/dict',
   path: '/dict',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminClientRiskControlRoute =
   LangAdminClientRiskControlRouteImport.update({
     id: '/client-risk-control',
     path: '/client-risk-control',
-    getParentRoute: () => LangAdminRoute,
+    getParentRoute: () => LangAdminRouteRoute,
   } as any)
 const LangAdminBonusRoute = LangAdminBonusRouteImport.update({
   id: '/bonus',
   path: '/bonus',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
 const LangAdminAnnouncementsRoute = LangAdminAnnouncementsRouteImport.update({
   id: '/announcements',
   path: '/announcements',
-  getParentRoute: () => LangAdminRoute,
+  getParentRoute: () => LangAdminRouteRoute,
 } as any)
+const LangUserCenterBonusRouteRoute =
+  LangUserCenterBonusRouteRouteImport.update({
+    id: '/bonus',
+    path: '/bonus',
+    getParentRoute: () => LangUserCenterRouteRoute,
+  } as any)
+const LangUserCenterBonusIndexRoute =
+  LangUserCenterBonusIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => LangUserCenterBonusRouteRoute,
+  } as any)
+const LangUserCenterBonusShopRoute = LangUserCenterBonusShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => LangUserCenterBonusRouteRoute,
+} as any)
+const LangUserCenterBonusLuckyDrawRoute =
+  LangUserCenterBonusLuckyDrawRouteImport.update({
+    id: '/lucky-draw',
+    path: '/lucky-draw',
+    getParentRoute: () => LangUserCenterBonusRouteRoute,
+  } as any)
+const LangUserCenterBonusLogsRoute = LangUserCenterBonusLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => LangUserCenterBonusRouteRoute,
+} as any)
+const LangUserCenterBonusBigSmallRoute =
+  LangUserCenterBonusBigSmallRouteImport.update({
+    id: '/big-small',
+    path: '/big-small',
+    getParentRoute: () => LangUserCenterBonusRouteRoute,
+  } as any)
 const LangTorrentsIdEditRoute = LangTorrentsIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => LangTorrentsIdRoute,
 } as any)
+const LangForumTopicIdRoute = LangForumTopicIdRouteImport.update({
+  id: '/topic/$id',
+  path: '/topic/$id',
+  getParentRoute: () => LangForumRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/$lang': typeof LangRouteWithChildren
-  '/$lang/admin': typeof LangAdminRouteWithChildren
-  '/$lang/hr': typeof LangHrRoute
-  '/$lang/invites': typeof LangInvitesRoute
+  '/$lang/admin': typeof LangAdminRouteRouteWithChildren
+  '/$lang/forum': typeof LangForumRouteRouteWithChildren
+  '/$lang/offers': typeof LangOffersRouteRoute
+  '/$lang/torrents': typeof LangTorrentsRouteRouteWithChildren
+  '/$lang/user-center': typeof LangUserCenterRouteRouteWithChildren
   '/$lang/login': typeof LangLoginRoute
-  '/$lang/medals': typeof LangMedalsRoute
-  '/$lang/messages': typeof LangMessagesRoute
-  '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
-  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
+  '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
   '/$lang/admin/bonus': typeof LangAdminBonusRoute
   '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
@@ -206,20 +323,35 @@ export interface FileRoutesByFullPath {
   '/$lang/admin/roles': typeof LangAdminRolesRoute
   '/$lang/admin/settings': typeof LangAdminSettingsRoute
   '/$lang/admin/users': typeof LangAdminUsersRoute
+  '/$lang/forum/new': typeof LangForumNewRoute
+  '/$lang/forum/search': typeof LangForumSearchRoute
   '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
   '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
+  '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
+  '/$lang/user-center/hr': typeof LangUserCenterHrRoute
+  '/$lang/user-center/invites': typeof LangUserCenterInvitesRoute
+  '/$lang/user-center/medals': typeof LangUserCenterMedalsRoute
+  '/$lang/user-center/messages': typeof LangUserCenterMessagesRoute
+  '/$lang/user-center/seeding': typeof LangUserCenterSeedingRoute
+  '/$lang/user-center/settings': typeof LangUserCenterSettingsRoute
+  '/$lang/user-center/snatches': typeof LangUserCenterSnatchesRoute
   '/$lang/admin/': typeof LangAdminIndexRoute
+  '/$lang/forum/': typeof LangForumIndexRoute
+  '/$lang/torrents/': typeof LangTorrentsIndexRoute
+  '/$lang/user-center/': typeof LangUserCenterIndexRoute
+  '/$lang/forum/topic/$id': typeof LangForumTopicIdRoute
   '/$lang/torrents/$id/edit': typeof LangTorrentsIdEditRoute
+  '/$lang/user-center/bonus/big-small': typeof LangUserCenterBonusBigSmallRoute
+  '/$lang/user-center/bonus/logs': typeof LangUserCenterBonusLogsRoute
+  '/$lang/user-center/bonus/lucky-draw': typeof LangUserCenterBonusLuckyDrawRoute
+  '/$lang/user-center/bonus/shop': typeof LangUserCenterBonusShopRoute
+  '/$lang/user-center/bonus/': typeof LangUserCenterBonusIndexRoute
 }
 export interface FileRoutesByTo {
-  '/$lang/hr': typeof LangHrRoute
-  '/$lang/invites': typeof LangInvitesRoute
+  '/$lang/offers': typeof LangOffersRouteRoute
   '/$lang/login': typeof LangLoginRoute
-  '/$lang/medals': typeof LangMedalsRoute
-  '/$lang/messages': typeof LangMessagesRoute
-  '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
-  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
@@ -234,25 +366,44 @@ export interface FileRoutesByTo {
   '/$lang/admin/roles': typeof LangAdminRolesRoute
   '/$lang/admin/settings': typeof LangAdminSettingsRoute
   '/$lang/admin/users': typeof LangAdminUsersRoute
+  '/$lang/forum/new': typeof LangForumNewRoute
+  '/$lang/forum/search': typeof LangForumSearchRoute
   '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
   '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
+  '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
+  '/$lang/user-center/hr': typeof LangUserCenterHrRoute
+  '/$lang/user-center/invites': typeof LangUserCenterInvitesRoute
+  '/$lang/user-center/medals': typeof LangUserCenterMedalsRoute
+  '/$lang/user-center/messages': typeof LangUserCenterMessagesRoute
+  '/$lang/user-center/seeding': typeof LangUserCenterSeedingRoute
+  '/$lang/user-center/settings': typeof LangUserCenterSettingsRoute
+  '/$lang/user-center/snatches': typeof LangUserCenterSnatchesRoute
   '/$lang/admin': typeof LangAdminIndexRoute
+  '/$lang/forum': typeof LangForumIndexRoute
+  '/$lang/torrents': typeof LangTorrentsIndexRoute
+  '/$lang/user-center': typeof LangUserCenterIndexRoute
+  '/$lang/forum/topic/$id': typeof LangForumTopicIdRoute
   '/$lang/torrents/$id/edit': typeof LangTorrentsIdEditRoute
+  '/$lang/user-center/bonus/big-small': typeof LangUserCenterBonusBigSmallRoute
+  '/$lang/user-center/bonus/logs': typeof LangUserCenterBonusLogsRoute
+  '/$lang/user-center/bonus/lucky-draw': typeof LangUserCenterBonusLuckyDrawRoute
+  '/$lang/user-center/bonus/shop': typeof LangUserCenterBonusShopRoute
+  '/$lang/user-center/bonus': typeof LangUserCenterBonusIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/$lang': typeof LangRouteWithChildren
-  '/$lang/admin': typeof LangAdminRouteWithChildren
-  '/$lang/hr': typeof LangHrRoute
-  '/$lang/invites': typeof LangInvitesRoute
+  '/$lang/admin': typeof LangAdminRouteRouteWithChildren
+  '/$lang/forum': typeof LangForumRouteRouteWithChildren
+  '/$lang/offers': typeof LangOffersRouteRoute
+  '/$lang/torrents': typeof LangTorrentsRouteRouteWithChildren
+  '/$lang/user-center': typeof LangUserCenterRouteRouteWithChildren
   '/$lang/login': typeof LangLoginRoute
-  '/$lang/medals': typeof LangMedalsRoute
-  '/$lang/messages': typeof LangMessagesRoute
-  '/$lang/offers': typeof LangOffersRoute
   '/$lang/register': typeof LangRegisterRoute
-  '/$lang/torrents': typeof LangTorrentsRoute
   '/$lang/user_': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
+  '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
   '/$lang/admin/bonus': typeof LangAdminBonusRoute
   '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
@@ -265,26 +416,45 @@ export interface FileRoutesById {
   '/$lang/admin/roles': typeof LangAdminRolesRoute
   '/$lang/admin/settings': typeof LangAdminSettingsRoute
   '/$lang/admin/users': typeof LangAdminUsersRoute
-  '/$lang/torrents_/$id': typeof LangTorrentsIdRouteWithChildren
-  '/$lang/torrents_/upload': typeof LangTorrentsUploadRoute
+  '/$lang/forum/new': typeof LangForumNewRoute
+  '/$lang/forum/search': typeof LangForumSearchRoute
+  '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
+  '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
+  '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
+  '/$lang/user-center/hr': typeof LangUserCenterHrRoute
+  '/$lang/user-center/invites': typeof LangUserCenterInvitesRoute
+  '/$lang/user-center/medals': typeof LangUserCenterMedalsRoute
+  '/$lang/user-center/messages': typeof LangUserCenterMessagesRoute
+  '/$lang/user-center/seeding': typeof LangUserCenterSeedingRoute
+  '/$lang/user-center/settings': typeof LangUserCenterSettingsRoute
+  '/$lang/user-center/snatches': typeof LangUserCenterSnatchesRoute
   '/$lang/admin/': typeof LangAdminIndexRoute
-  '/$lang/torrents_/$id/edit': typeof LangTorrentsIdEditRoute
+  '/$lang/forum/': typeof LangForumIndexRoute
+  '/$lang/torrents/': typeof LangTorrentsIndexRoute
+  '/$lang/user-center/': typeof LangUserCenterIndexRoute
+  '/$lang/forum/topic/$id': typeof LangForumTopicIdRoute
+  '/$lang/torrents/$id/edit': typeof LangTorrentsIdEditRoute
+  '/$lang/user-center/bonus/big-small': typeof LangUserCenterBonusBigSmallRoute
+  '/$lang/user-center/bonus/logs': typeof LangUserCenterBonusLogsRoute
+  '/$lang/user-center/bonus/lucky-draw': typeof LangUserCenterBonusLuckyDrawRoute
+  '/$lang/user-center/bonus/shop': typeof LangUserCenterBonusShopRoute
+  '/$lang/user-center/bonus/': typeof LangUserCenterBonusIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/$lang'
     | '/$lang/admin'
-    | '/$lang/hr'
-    | '/$lang/invites'
-    | '/$lang/login'
-    | '/$lang/medals'
-    | '/$lang/messages'
+    | '/$lang/forum'
     | '/$lang/offers'
-    | '/$lang/register'
     | '/$lang/torrents'
+    | '/$lang/user-center'
+    | '/$lang/login'
+    | '/$lang/register'
     | '/$lang/user'
     | '/$lang/'
+    | '/$lang/user-center/bonus'
     | '/$lang/admin/announcements'
     | '/$lang/admin/bonus'
     | '/$lang/admin/client-risk-control'
@@ -297,20 +467,35 @@ export interface FileRouteTypes {
     | '/$lang/admin/roles'
     | '/$lang/admin/settings'
     | '/$lang/admin/users'
+    | '/$lang/forum/new'
+    | '/$lang/forum/search'
     | '/$lang/torrents/$id'
     | '/$lang/torrents/upload'
+    | '/$lang/user-center/bookmarks'
+    | '/$lang/user-center/checkin'
+    | '/$lang/user-center/hr'
+    | '/$lang/user-center/invites'
+    | '/$lang/user-center/medals'
+    | '/$lang/user-center/messages'
+    | '/$lang/user-center/seeding'
+    | '/$lang/user-center/settings'
+    | '/$lang/user-center/snatches'
     | '/$lang/admin/'
+    | '/$lang/forum/'
+    | '/$lang/torrents/'
+    | '/$lang/user-center/'
+    | '/$lang/forum/topic/$id'
     | '/$lang/torrents/$id/edit'
+    | '/$lang/user-center/bonus/big-small'
+    | '/$lang/user-center/bonus/logs'
+    | '/$lang/user-center/bonus/lucky-draw'
+    | '/$lang/user-center/bonus/shop'
+    | '/$lang/user-center/bonus/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/$lang/hr'
-    | '/$lang/invites'
-    | '/$lang/login'
-    | '/$lang/medals'
-    | '/$lang/messages'
     | '/$lang/offers'
+    | '/$lang/login'
     | '/$lang/register'
-    | '/$lang/torrents'
     | '/$lang/user'
     | '/$lang'
     | '/$lang/admin/announcements'
@@ -325,24 +510,43 @@ export interface FileRouteTypes {
     | '/$lang/admin/roles'
     | '/$lang/admin/settings'
     | '/$lang/admin/users'
+    | '/$lang/forum/new'
+    | '/$lang/forum/search'
     | '/$lang/torrents/$id'
     | '/$lang/torrents/upload'
+    | '/$lang/user-center/bookmarks'
+    | '/$lang/user-center/checkin'
+    | '/$lang/user-center/hr'
+    | '/$lang/user-center/invites'
+    | '/$lang/user-center/medals'
+    | '/$lang/user-center/messages'
+    | '/$lang/user-center/seeding'
+    | '/$lang/user-center/settings'
+    | '/$lang/user-center/snatches'
     | '/$lang/admin'
+    | '/$lang/forum'
+    | '/$lang/torrents'
+    | '/$lang/user-center'
+    | '/$lang/forum/topic/$id'
     | '/$lang/torrents/$id/edit'
+    | '/$lang/user-center/bonus/big-small'
+    | '/$lang/user-center/bonus/logs'
+    | '/$lang/user-center/bonus/lucky-draw'
+    | '/$lang/user-center/bonus/shop'
+    | '/$lang/user-center/bonus'
   id:
     | '__root__'
     | '/$lang'
     | '/$lang/admin'
-    | '/$lang/hr'
-    | '/$lang/invites'
-    | '/$lang/login'
-    | '/$lang/medals'
-    | '/$lang/messages'
+    | '/$lang/forum'
     | '/$lang/offers'
-    | '/$lang/register'
     | '/$lang/torrents'
+    | '/$lang/user-center'
+    | '/$lang/login'
+    | '/$lang/register'
     | '/$lang/user_'
     | '/$lang/'
+    | '/$lang/user-center/bonus'
     | '/$lang/admin/announcements'
     | '/$lang/admin/bonus'
     | '/$lang/admin/client-risk-control'
@@ -355,10 +559,30 @@ export interface FileRouteTypes {
     | '/$lang/admin/roles'
     | '/$lang/admin/settings'
     | '/$lang/admin/users'
-    | '/$lang/torrents_/$id'
-    | '/$lang/torrents_/upload'
+    | '/$lang/forum/new'
+    | '/$lang/forum/search'
+    | '/$lang/torrents/$id'
+    | '/$lang/torrents/upload'
+    | '/$lang/user-center/bookmarks'
+    | '/$lang/user-center/checkin'
+    | '/$lang/user-center/hr'
+    | '/$lang/user-center/invites'
+    | '/$lang/user-center/medals'
+    | '/$lang/user-center/messages'
+    | '/$lang/user-center/seeding'
+    | '/$lang/user-center/settings'
+    | '/$lang/user-center/snatches'
     | '/$lang/admin/'
-    | '/$lang/torrents_/$id/edit'
+    | '/$lang/forum/'
+    | '/$lang/torrents/'
+    | '/$lang/user-center/'
+    | '/$lang/forum/topic/$id'
+    | '/$lang/torrents/$id/edit'
+    | '/$lang/user-center/bonus/big-small'
+    | '/$lang/user-center/bonus/logs'
+    | '/$lang/user-center/bonus/lucky-draw'
+    | '/$lang/user-center/bonus/shop'
+    | '/$lang/user-center/bonus/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -388,39 +612,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangUserRouteImport
       parentRoute: typeof LangRoute
     }
-    '/$lang/torrents': {
-      id: '/$lang/torrents'
-      path: '/torrents'
-      fullPath: '/$lang/torrents'
-      preLoaderRoute: typeof LangTorrentsRouteImport
-      parentRoute: typeof LangRoute
-    }
     '/$lang/register': {
       id: '/$lang/register'
       path: '/register'
       fullPath: '/$lang/register'
       preLoaderRoute: typeof LangRegisterRouteImport
-      parentRoute: typeof LangRoute
-    }
-    '/$lang/offers': {
-      id: '/$lang/offers'
-      path: '/offers'
-      fullPath: '/$lang/offers'
-      preLoaderRoute: typeof LangOffersRouteImport
-      parentRoute: typeof LangRoute
-    }
-    '/$lang/messages': {
-      id: '/$lang/messages'
-      path: '/messages'
-      fullPath: '/$lang/messages'
-      preLoaderRoute: typeof LangMessagesRouteImport
-      parentRoute: typeof LangRoute
-    }
-    '/$lang/medals': {
-      id: '/$lang/medals'
-      path: '/medals'
-      fullPath: '/$lang/medals'
-      preLoaderRoute: typeof LangMedalsRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/login': {
@@ -430,143 +626,304 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangLoginRouteImport
       parentRoute: typeof LangRoute
     }
-    '/$lang/invites': {
-      id: '/$lang/invites'
-      path: '/invites'
-      fullPath: '/$lang/invites'
-      preLoaderRoute: typeof LangInvitesRouteImport
+    '/$lang/user-center': {
+      id: '/$lang/user-center'
+      path: '/user-center'
+      fullPath: '/$lang/user-center'
+      preLoaderRoute: typeof LangUserCenterRouteRouteImport
       parentRoute: typeof LangRoute
     }
-    '/$lang/hr': {
-      id: '/$lang/hr'
-      path: '/hr'
-      fullPath: '/$lang/hr'
-      preLoaderRoute: typeof LangHrRouteImport
+    '/$lang/torrents': {
+      id: '/$lang/torrents'
+      path: '/torrents'
+      fullPath: '/$lang/torrents'
+      preLoaderRoute: typeof LangTorrentsRouteRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/offers': {
+      id: '/$lang/offers'
+      path: '/offers'
+      fullPath: '/$lang/offers'
+      preLoaderRoute: typeof LangOffersRouteRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/forum': {
+      id: '/$lang/forum'
+      path: '/forum'
+      fullPath: '/$lang/forum'
+      preLoaderRoute: typeof LangForumRouteRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/admin': {
       id: '/$lang/admin'
       path: '/admin'
       fullPath: '/$lang/admin'
-      preLoaderRoute: typeof LangAdminRouteImport
+      preLoaderRoute: typeof LangAdminRouteRouteImport
       parentRoute: typeof LangRoute
+    }
+    '/$lang/user-center/': {
+      id: '/$lang/user-center/'
+      path: '/'
+      fullPath: '/$lang/user-center/'
+      preLoaderRoute: typeof LangUserCenterIndexRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/torrents/': {
+      id: '/$lang/torrents/'
+      path: '/'
+      fullPath: '/$lang/torrents/'
+      preLoaderRoute: typeof LangTorrentsIndexRouteImport
+      parentRoute: typeof LangTorrentsRouteRoute
+    }
+    '/$lang/forum/': {
+      id: '/$lang/forum/'
+      path: '/'
+      fullPath: '/$lang/forum/'
+      preLoaderRoute: typeof LangForumIndexRouteImport
+      parentRoute: typeof LangForumRouteRoute
     }
     '/$lang/admin/': {
       id: '/$lang/admin/'
       path: '/'
       fullPath: '/$lang/admin/'
       preLoaderRoute: typeof LangAdminIndexRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
-    '/$lang/torrents_/upload': {
-      id: '/$lang/torrents_/upload'
-      path: '/torrents/upload'
+    '/$lang/user-center/snatches': {
+      id: '/$lang/user-center/snatches'
+      path: '/snatches'
+      fullPath: '/$lang/user-center/snatches'
+      preLoaderRoute: typeof LangUserCenterSnatchesRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/settings': {
+      id: '/$lang/user-center/settings'
+      path: '/settings'
+      fullPath: '/$lang/user-center/settings'
+      preLoaderRoute: typeof LangUserCenterSettingsRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/seeding': {
+      id: '/$lang/user-center/seeding'
+      path: '/seeding'
+      fullPath: '/$lang/user-center/seeding'
+      preLoaderRoute: typeof LangUserCenterSeedingRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/messages': {
+      id: '/$lang/user-center/messages'
+      path: '/messages'
+      fullPath: '/$lang/user-center/messages'
+      preLoaderRoute: typeof LangUserCenterMessagesRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/medals': {
+      id: '/$lang/user-center/medals'
+      path: '/medals'
+      fullPath: '/$lang/user-center/medals'
+      preLoaderRoute: typeof LangUserCenterMedalsRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/invites': {
+      id: '/$lang/user-center/invites'
+      path: '/invites'
+      fullPath: '/$lang/user-center/invites'
+      preLoaderRoute: typeof LangUserCenterInvitesRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/hr': {
+      id: '/$lang/user-center/hr'
+      path: '/hr'
+      fullPath: '/$lang/user-center/hr'
+      preLoaderRoute: typeof LangUserCenterHrRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/checkin': {
+      id: '/$lang/user-center/checkin'
+      path: '/checkin'
+      fullPath: '/$lang/user-center/checkin'
+      preLoaderRoute: typeof LangUserCenterCheckinRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/bookmarks': {
+      id: '/$lang/user-center/bookmarks'
+      path: '/bookmarks'
+      fullPath: '/$lang/user-center/bookmarks'
+      preLoaderRoute: typeof LangUserCenterBookmarksRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/torrents/upload': {
+      id: '/$lang/torrents/upload'
+      path: '/upload'
       fullPath: '/$lang/torrents/upload'
       preLoaderRoute: typeof LangTorrentsUploadRouteImport
-      parentRoute: typeof LangRoute
+      parentRoute: typeof LangTorrentsRouteRoute
     }
-    '/$lang/torrents_/$id': {
-      id: '/$lang/torrents_/$id'
-      path: '/torrents/$id'
+    '/$lang/torrents/$id': {
+      id: '/$lang/torrents/$id'
+      path: '/$id'
       fullPath: '/$lang/torrents/$id'
       preLoaderRoute: typeof LangTorrentsIdRouteImport
-      parentRoute: typeof LangRoute
+      parentRoute: typeof LangTorrentsRouteRoute
+    }
+    '/$lang/forum/search': {
+      id: '/$lang/forum/search'
+      path: '/search'
+      fullPath: '/$lang/forum/search'
+      preLoaderRoute: typeof LangForumSearchRouteImport
+      parentRoute: typeof LangForumRouteRoute
+    }
+    '/$lang/forum/new': {
+      id: '/$lang/forum/new'
+      path: '/new'
+      fullPath: '/$lang/forum/new'
+      preLoaderRoute: typeof LangForumNewRouteImport
+      parentRoute: typeof LangForumRouteRoute
     }
     '/$lang/admin/users': {
       id: '/$lang/admin/users'
       path: '/users'
       fullPath: '/$lang/admin/users'
       preLoaderRoute: typeof LangAdminUsersRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/settings': {
       id: '/$lang/admin/settings'
       path: '/settings'
       fullPath: '/$lang/admin/settings'
       preLoaderRoute: typeof LangAdminSettingsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/roles': {
       id: '/$lang/admin/roles'
       path: '/roles'
       fullPath: '/$lang/admin/roles'
       preLoaderRoute: typeof LangAdminRolesRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/reports': {
       id: '/$lang/admin/reports'
       path: '/reports'
       fullPath: '/$lang/admin/reports'
       preLoaderRoute: typeof LangAdminReportsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/promotions': {
       id: '/$lang/admin/promotions'
       path: '/promotions'
       fullPath: '/$lang/admin/promotions'
       preLoaderRoute: typeof LangAdminPromotionsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/operations-resources': {
       id: '/$lang/admin/operations-resources'
       path: '/operations-resources'
       fullPath: '/$lang/admin/operations-resources'
       preLoaderRoute: typeof LangAdminOperationsResourcesRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/medals': {
       id: '/$lang/admin/medals'
       path: '/medals'
       fullPath: '/$lang/admin/medals'
       preLoaderRoute: typeof LangAdminMedalsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/levels': {
       id: '/$lang/admin/levels'
       path: '/levels'
       fullPath: '/$lang/admin/levels'
       preLoaderRoute: typeof LangAdminLevelsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/dict': {
       id: '/$lang/admin/dict'
       path: '/dict'
       fullPath: '/$lang/admin/dict'
       preLoaderRoute: typeof LangAdminDictRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/client-risk-control': {
       id: '/$lang/admin/client-risk-control'
       path: '/client-risk-control'
       fullPath: '/$lang/admin/client-risk-control'
       preLoaderRoute: typeof LangAdminClientRiskControlRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/bonus': {
       id: '/$lang/admin/bonus'
       path: '/bonus'
       fullPath: '/$lang/admin/bonus'
       preLoaderRoute: typeof LangAdminBonusRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
     '/$lang/admin/announcements': {
       id: '/$lang/admin/announcements'
       path: '/announcements'
       fullPath: '/$lang/admin/announcements'
       preLoaderRoute: typeof LangAdminAnnouncementsRouteImport
-      parentRoute: typeof LangAdminRoute
+      parentRoute: typeof LangAdminRouteRoute
     }
-    '/$lang/torrents_/$id/edit': {
-      id: '/$lang/torrents_/$id/edit'
+    '/$lang/user-center/bonus': {
+      id: '/$lang/user-center/bonus'
+      path: '/bonus'
+      fullPath: '/$lang/user-center/bonus'
+      preLoaderRoute: typeof LangUserCenterBonusRouteRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
+    '/$lang/user-center/bonus/': {
+      id: '/$lang/user-center/bonus/'
+      path: '/'
+      fullPath: '/$lang/user-center/bonus/'
+      preLoaderRoute: typeof LangUserCenterBonusIndexRouteImport
+      parentRoute: typeof LangUserCenterBonusRouteRoute
+    }
+    '/$lang/user-center/bonus/shop': {
+      id: '/$lang/user-center/bonus/shop'
+      path: '/shop'
+      fullPath: '/$lang/user-center/bonus/shop'
+      preLoaderRoute: typeof LangUserCenterBonusShopRouteImport
+      parentRoute: typeof LangUserCenterBonusRouteRoute
+    }
+    '/$lang/user-center/bonus/lucky-draw': {
+      id: '/$lang/user-center/bonus/lucky-draw'
+      path: '/lucky-draw'
+      fullPath: '/$lang/user-center/bonus/lucky-draw'
+      preLoaderRoute: typeof LangUserCenterBonusLuckyDrawRouteImport
+      parentRoute: typeof LangUserCenterBonusRouteRoute
+    }
+    '/$lang/user-center/bonus/logs': {
+      id: '/$lang/user-center/bonus/logs'
+      path: '/logs'
+      fullPath: '/$lang/user-center/bonus/logs'
+      preLoaderRoute: typeof LangUserCenterBonusLogsRouteImport
+      parentRoute: typeof LangUserCenterBonusRouteRoute
+    }
+    '/$lang/user-center/bonus/big-small': {
+      id: '/$lang/user-center/bonus/big-small'
+      path: '/big-small'
+      fullPath: '/$lang/user-center/bonus/big-small'
+      preLoaderRoute: typeof LangUserCenterBonusBigSmallRouteImport
+      parentRoute: typeof LangUserCenterBonusRouteRoute
+    }
+    '/$lang/torrents/$id/edit': {
+      id: '/$lang/torrents/$id/edit'
       path: '/edit'
       fullPath: '/$lang/torrents/$id/edit'
       preLoaderRoute: typeof LangTorrentsIdEditRouteImport
       parentRoute: typeof LangTorrentsIdRoute
     }
+    '/$lang/forum/topic/$id': {
+      id: '/$lang/forum/topic/$id'
+      path: '/topic/$id'
+      fullPath: '/$lang/forum/topic/$id'
+      preLoaderRoute: typeof LangForumTopicIdRouteImport
+      parentRoute: typeof LangForumRouteRoute
+    }
   }
 }
 
-interface LangAdminRouteChildren {
+interface LangAdminRouteRouteChildren {
   LangAdminAnnouncementsRoute: typeof LangAdminAnnouncementsRoute
   LangAdminBonusRoute: typeof LangAdminBonusRoute
   LangAdminClientRiskControlRoute: typeof LangAdminClientRiskControlRoute
@@ -582,7 +939,7 @@ interface LangAdminRouteChildren {
   LangAdminIndexRoute: typeof LangAdminIndexRoute
 }
 
-const LangAdminRouteChildren: LangAdminRouteChildren = {
+const LangAdminRouteRouteChildren: LangAdminRouteRouteChildren = {
   LangAdminAnnouncementsRoute: LangAdminAnnouncementsRoute,
   LangAdminBonusRoute: LangAdminBonusRoute,
   LangAdminClientRiskControlRoute: LangAdminClientRiskControlRoute,
@@ -598,8 +955,26 @@ const LangAdminRouteChildren: LangAdminRouteChildren = {
   LangAdminIndexRoute: LangAdminIndexRoute,
 }
 
-const LangAdminRouteWithChildren = LangAdminRoute._addFileChildren(
-  LangAdminRouteChildren,
+const LangAdminRouteRouteWithChildren = LangAdminRouteRoute._addFileChildren(
+  LangAdminRouteRouteChildren,
+)
+
+interface LangForumRouteRouteChildren {
+  LangForumNewRoute: typeof LangForumNewRoute
+  LangForumSearchRoute: typeof LangForumSearchRoute
+  LangForumIndexRoute: typeof LangForumIndexRoute
+  LangForumTopicIdRoute: typeof LangForumTopicIdRoute
+}
+
+const LangForumRouteRouteChildren: LangForumRouteRouteChildren = {
+  LangForumNewRoute: LangForumNewRoute,
+  LangForumSearchRoute: LangForumSearchRoute,
+  LangForumIndexRoute: LangForumIndexRoute,
+  LangForumTopicIdRoute: LangForumTopicIdRoute,
+}
+
+const LangForumRouteRouteWithChildren = LangForumRouteRoute._addFileChildren(
+  LangForumRouteRouteChildren,
 )
 
 interface LangTorrentsIdRouteChildren {
@@ -614,36 +989,96 @@ const LangTorrentsIdRouteWithChildren = LangTorrentsIdRoute._addFileChildren(
   LangTorrentsIdRouteChildren,
 )
 
-interface LangRouteChildren {
-  LangAdminRoute: typeof LangAdminRouteWithChildren
-  LangHrRoute: typeof LangHrRoute
-  LangInvitesRoute: typeof LangInvitesRoute
-  LangLoginRoute: typeof LangLoginRoute
-  LangMedalsRoute: typeof LangMedalsRoute
-  LangMessagesRoute: typeof LangMessagesRoute
-  LangOffersRoute: typeof LangOffersRoute
-  LangRegisterRoute: typeof LangRegisterRoute
-  LangTorrentsRoute: typeof LangTorrentsRoute
-  LangUserRoute: typeof LangUserRoute
-  LangIndexRoute: typeof LangIndexRoute
+interface LangTorrentsRouteRouteChildren {
   LangTorrentsIdRoute: typeof LangTorrentsIdRouteWithChildren
   LangTorrentsUploadRoute: typeof LangTorrentsUploadRoute
+  LangTorrentsIndexRoute: typeof LangTorrentsIndexRoute
+}
+
+const LangTorrentsRouteRouteChildren: LangTorrentsRouteRouteChildren = {
+  LangTorrentsIdRoute: LangTorrentsIdRouteWithChildren,
+  LangTorrentsUploadRoute: LangTorrentsUploadRoute,
+  LangTorrentsIndexRoute: LangTorrentsIndexRoute,
+}
+
+const LangTorrentsRouteRouteWithChildren =
+  LangTorrentsRouteRoute._addFileChildren(LangTorrentsRouteRouteChildren)
+
+interface LangUserCenterBonusRouteRouteChildren {
+  LangUserCenterBonusBigSmallRoute: typeof LangUserCenterBonusBigSmallRoute
+  LangUserCenterBonusLogsRoute: typeof LangUserCenterBonusLogsRoute
+  LangUserCenterBonusLuckyDrawRoute: typeof LangUserCenterBonusLuckyDrawRoute
+  LangUserCenterBonusShopRoute: typeof LangUserCenterBonusShopRoute
+  LangUserCenterBonusIndexRoute: typeof LangUserCenterBonusIndexRoute
+}
+
+const LangUserCenterBonusRouteRouteChildren: LangUserCenterBonusRouteRouteChildren =
+  {
+    LangUserCenterBonusBigSmallRoute: LangUserCenterBonusBigSmallRoute,
+    LangUserCenterBonusLogsRoute: LangUserCenterBonusLogsRoute,
+    LangUserCenterBonusLuckyDrawRoute: LangUserCenterBonusLuckyDrawRoute,
+    LangUserCenterBonusShopRoute: LangUserCenterBonusShopRoute,
+    LangUserCenterBonusIndexRoute: LangUserCenterBonusIndexRoute,
+  }
+
+const LangUserCenterBonusRouteRouteWithChildren =
+  LangUserCenterBonusRouteRoute._addFileChildren(
+    LangUserCenterBonusRouteRouteChildren,
+  )
+
+interface LangUserCenterRouteRouteChildren {
+  LangUserCenterBonusRouteRoute: typeof LangUserCenterBonusRouteRouteWithChildren
+  LangUserCenterBookmarksRoute: typeof LangUserCenterBookmarksRoute
+  LangUserCenterCheckinRoute: typeof LangUserCenterCheckinRoute
+  LangUserCenterHrRoute: typeof LangUserCenterHrRoute
+  LangUserCenterInvitesRoute: typeof LangUserCenterInvitesRoute
+  LangUserCenterMedalsRoute: typeof LangUserCenterMedalsRoute
+  LangUserCenterMessagesRoute: typeof LangUserCenterMessagesRoute
+  LangUserCenterSeedingRoute: typeof LangUserCenterSeedingRoute
+  LangUserCenterSettingsRoute: typeof LangUserCenterSettingsRoute
+  LangUserCenterSnatchesRoute: typeof LangUserCenterSnatchesRoute
+  LangUserCenterIndexRoute: typeof LangUserCenterIndexRoute
+}
+
+const LangUserCenterRouteRouteChildren: LangUserCenterRouteRouteChildren = {
+  LangUserCenterBonusRouteRoute: LangUserCenterBonusRouteRouteWithChildren,
+  LangUserCenterBookmarksRoute: LangUserCenterBookmarksRoute,
+  LangUserCenterCheckinRoute: LangUserCenterCheckinRoute,
+  LangUserCenterHrRoute: LangUserCenterHrRoute,
+  LangUserCenterInvitesRoute: LangUserCenterInvitesRoute,
+  LangUserCenterMedalsRoute: LangUserCenterMedalsRoute,
+  LangUserCenterMessagesRoute: LangUserCenterMessagesRoute,
+  LangUserCenterSeedingRoute: LangUserCenterSeedingRoute,
+  LangUserCenterSettingsRoute: LangUserCenterSettingsRoute,
+  LangUserCenterSnatchesRoute: LangUserCenterSnatchesRoute,
+  LangUserCenterIndexRoute: LangUserCenterIndexRoute,
+}
+
+const LangUserCenterRouteRouteWithChildren =
+  LangUserCenterRouteRoute._addFileChildren(LangUserCenterRouteRouteChildren)
+
+interface LangRouteChildren {
+  LangAdminRouteRoute: typeof LangAdminRouteRouteWithChildren
+  LangForumRouteRoute: typeof LangForumRouteRouteWithChildren
+  LangOffersRouteRoute: typeof LangOffersRouteRoute
+  LangTorrentsRouteRoute: typeof LangTorrentsRouteRouteWithChildren
+  LangUserCenterRouteRoute: typeof LangUserCenterRouteRouteWithChildren
+  LangLoginRoute: typeof LangLoginRoute
+  LangRegisterRoute: typeof LangRegisterRoute
+  LangUserRoute: typeof LangUserRoute
+  LangIndexRoute: typeof LangIndexRoute
 }
 
 const LangRouteChildren: LangRouteChildren = {
-  LangAdminRoute: LangAdminRouteWithChildren,
-  LangHrRoute: LangHrRoute,
-  LangInvitesRoute: LangInvitesRoute,
+  LangAdminRouteRoute: LangAdminRouteRouteWithChildren,
+  LangForumRouteRoute: LangForumRouteRouteWithChildren,
+  LangOffersRouteRoute: LangOffersRouteRoute,
+  LangTorrentsRouteRoute: LangTorrentsRouteRouteWithChildren,
+  LangUserCenterRouteRoute: LangUserCenterRouteRouteWithChildren,
   LangLoginRoute: LangLoginRoute,
-  LangMedalsRoute: LangMedalsRoute,
-  LangMessagesRoute: LangMessagesRoute,
-  LangOffersRoute: LangOffersRoute,
   LangRegisterRoute: LangRegisterRoute,
-  LangTorrentsRoute: LangTorrentsRoute,
   LangUserRoute: LangUserRoute,
   LangIndexRoute: LangIndexRoute,
-  LangTorrentsIdRoute: LangTorrentsIdRouteWithChildren,
-  LangTorrentsUploadRoute: LangTorrentsUploadRoute,
 }
 
 const LangRouteWithChildren = LangRoute._addFileChildren(LangRouteChildren)

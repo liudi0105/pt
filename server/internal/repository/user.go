@@ -153,3 +153,8 @@ func (r *UserRepo) AddUpload(id int64, bytes int64) error {
 	return r.db.Model(&model.User{}).Where("id = ?", id).
 		UpdateColumn("upload_bytes", gorm.Expr("upload_bytes + ?", bytes)).Error
 }
+
+func (r *UserRepo) AddDownload(id int64, bytes int64) error {
+	return r.db.Model(&model.User{}).Where("id = ?", id).
+		UpdateColumn("download_bytes", gorm.Expr("download_bytes + ?", bytes)).Error
+}

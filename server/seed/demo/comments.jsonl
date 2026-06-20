@@ -1,10 +1,10 @@
-{"model":"comment","data":{"user_id":1,"torrent_id":1,"content":"Great quality encode! Thanks for sharing."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":2,"content":"One of the best TV series ever made. Highly recommended!"}}
-{"model":"comment","data":{"user_id":1,"torrent_id":3,"content":"Classic album in lossless quality. A must-have for any music lover."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":4,"content":"Works perfectly. Thanks for the crack!"}}
-{"model":"comment","data":{"user_id":1,"torrent_id":5,"content":"Portable version is so convenient. No installation needed."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":6,"content":"The 4K HDR quality is absolutely stunning. Nature at its finest."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":7,"content":"Great anime series. The subtitles are well-timed."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":8,"content":"Essential textbook for calculus students. Clear and comprehensive."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":9,"content":"Christopher Nolan masterpiece. The Blu-ray quality is excellent."}}
-{"model":"comment","data":{"user_id":1,"torrent_id":10,"content":"Season 2 was amazing! The Atmos audio really enhances the experience."}}
+{"model":"comment","data":{"email":"admin@pt.local","torrent_id":1,"content":"Great quality encode! Thanks for sharing."}}
+{"model":"comment","data":{"email":"alice@pt.local","torrent_id":2,"content":"One of the best TV series ever made. Highly recommended!"}}
+{"model":"comment","data":{"email":"bob@pt.local","torrent_id":3,"content":"Classic album in lossless quality. A must-have for any music lover."}}
+{"model":"comment","data":{"email":"charlie@pt.local","torrent_id":4,"content":"Works perfectly. Thanks for the crack!"}}
+{"model":"comment","data":{"email":"diana@pt.local","torrent_id":5,"content":"Portable version is so convenient. No installation needed."}}
+{"model":"comment","data":{"email":"eve@pt.local","torrent_id":6,"content":"The 4K HDR quality is absolutely stunning. Nature at its finest."}}
+{"model":"comment","data":{"email":"frank@pt.local","torrent_id":7,"content":"Great anime series. The subtitles are well-timed."}}
+{"model":"comment","data":{"email":"grace@pt.local","torrent_id":8,"content":"Essential textbook for calculus students. Clear and comprehensive."}}
+{"model":"comment","data":{"email":"henry@pt.local","torrent_id":9,"content":"Christopher Nolan masterpiece. The Blu-ray quality is excellent."}}
+{"model":"comment","data":{"email":"irene@pt.local","torrent_id":10,"content":"Season 2 was amazing! The Atmos audio really enhances the experience."}}

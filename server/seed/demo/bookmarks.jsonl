@@ -1,5 +1,5 @@
-{"model":"bookmark","data":{"user_id":1,"torrent_id":1}}
-{"model":"bookmark","data":{"user_id":1,"torrent_id":3}}
-{"model":"bookmark","data":{"user_id":1,"torrent_id":6}}
-{"model":"bookmark","data":{"user_id":1,"torrent_id":9}}
-{"model":"bookmark","data":{"user_id":1,"torrent_id":10}}
+{"model":"bookmark","data":{"email":"alice@pt.local","torrent_id":1}}
+{"model":"bookmark","data":{"email":"bob@pt.local","torrent_id":3}}
+{"model":"bookmark","data":{"email":"charlie@pt.local","torrent_id":6}}
+{"model":"bookmark","data":{"email":"diana@pt.local","torrent_id":9}}
+{"model":"bookmark","data":{"email":"eve@pt.local","torrent_id":10}}

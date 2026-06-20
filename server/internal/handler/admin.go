@@ -717,9 +717,13 @@ func (h *Handler) AdminBatchUpdatePromotion(c *gin.Context) {
 		return
 	}
 
+	cats := []string{}
+	if req.Category != "" {
+		cats = append(cats, req.Category)
+	}
 	filter := repository.TorrentFilter{
-		Category: req.Category,
-		Keyword:  req.Keyword,
+		Categories: cats,
+		Keyword:    req.Keyword,
 	}
 	affected, err := h.repo.Torrent.BatchUpdatePromotion(filter, promo)
 	if err != nil {

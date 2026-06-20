@@ -1,136 +1,142 @@
-import { createRootRoute, HeadContent, Outlet, useLocation, useMatches } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { Layout, Menu, Spin } from 'antd'
-import {
-  DashboardOutlined, UserOutlined, BookOutlined, TrophyOutlined,
-  FlagOutlined, GiftOutlined, SafetyOutlined, SettingOutlined,
-  ThunderboltOutlined, ControlOutlined, DatabaseOutlined, NotificationOutlined,
-  DollarOutlined,
-} from '@ant-design/icons'
-import { Navbar } from '../components/Navbar'
-import { NProgressProvider } from '../components/NProgressProvider'
-import { useTranslation } from 'react-i18next'
-import { Link } from '@tanstack/react-router'
-import { langPath, normalizeLang } from '../utils/lang'
-import i18n, { i18nReady } from '../i18n'
-import { useAuthStore } from '../store/auth'
-import { getProfile } from '../api/user'
+import {createRootRoute, HeadContent, Outlet, useLocation, useMatches, useNavigate, useParams} from '@tanstack/react-router'
+import {useEffect, useMemo} from 'react'
+import {Layout, Menu, Spin} from 'antd'
+import type { MenuProps } from 'antd'
+import {Navbar} from '../components/Navbar'
+import {NProgressProvider} from '../components/NProgressProvider'
+import {langPath, normalizeLang} from '../utils/lang'
+import i18n, {i18nReady} from '../i18n'
+import {useAuthStore} from '../store/auth'
+import {getProfile} from '../api/user'
+import {useMenuTree} from '../hooks/useMenuTree'
 import 'nprogress/nprogress.css'
 
-const { Content, Sider } = Layout
+const {Content, Sider} = Layout
 
 const APP_NAME = 'pt-web'
 
 function getLangFromCookie(): string {
-  const match = document.cookie.match(/(?:^|;\s*)lang=([^;]*)/)
-  return normalizeLang(match ? decodeURIComponent(match[1]) : undefined) ?? 'zh'
+    const match = document.cookie.match(/(?:^|;\s*)lang=([^;]*)/)
+    return normalizeLang(match ? decodeURIComponent(match[1]) : undefined) ?? 'zh'
 }
 
 export const Route = createRootRoute({
-  loader: async () => {
-    await i18nReady
-    const { token, user } = useAuthStore.getState()
-    if (token && !user) {
-      try {
-        const res = await getProfile()
-        useAuthStore.getState().setAuth(token, res.data)
-      } catch {
-        // token invalid, ignore
-      }
-    }
-    return { ready: true }
-  },
-  pendingComponent: () => (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Spin size="large" />
-    </div>
-  ),
-  head: (ctx) => {
-    const lastMatch = ctx.matches[ctx.matches.length - 1]
-    const titleKey = lastMatch?.staticData?.title
-    const title = titleKey ? i18n.t(titleKey) : ''
+    loader: async () => {
+        await i18nReady
+        const {token, user} = useAuthStore.getState()
+        if (token && !user) {
+            try {
+                const res = await getProfile()
+                useAuthStore.getState().setAuth(token, res.data)
+            } catch {
+                // token invalid, ignore
+            }
+        }
+        return {ready: true}
+    },
+    pendingComponent: () => (
+        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+            <Spin size="large"/>
+        </div>
+    ),
+    head: (ctx) => {
+        const lastMatch = ctx.matches[ctx.matches.length - 1]
+        const titleKey = lastMatch?.staticData?.title
+        const title = titleKey ? i18n.t(titleKey) : ''
 
-    return {
-      meta: [
-        {
-          title: title ? `${title} - ${APP_NAME}` : APP_NAME,
-        },
-      ],
-    }
-  },
-  component: RootLayout,
+        return {
+            meta: [
+                {
+                    title: title ? `${title} - ${APP_NAME}` : APP_NAME,
+                },
+            ],
+        }
+    },
+    component: RootLayout,
 })
 
 function RootLayout() {
-  const location = useLocation()
-  const pathname = location.pathname
+    const location = useLocation()
+    const pathname = location.pathname
 
-  const hasLangPrefix = /^\/(zh|en)(\/|$)/.test(pathname)
+    const hasLangPrefix = /^\/(zh|en)(\/|$)/.test(pathname)
 
-  useEffect(() => {
+    useEffect(() => {
+        if (!hasLangPrefix) {
+            const lang = getLangFromCookie()
+            window.location.assign(langPath(lang, pathname) + window.location.search)
+        }
+    }, [hasLangPrefix, pathname])
+
     if (!hasLangPrefix) {
-      const lang = getLangFromCookie()
-      window.location.assign(langPath(lang, pathname) + window.location.search)
+        return null
     }
-  }, [hasLangPrefix, pathname])
 
-  if (!hasLangPrefix) {
-    return null
-  }
+    const matches = useMatches()
+    const menuTree = useMenuTree()
 
-  const matches = useMatches()
+    const navigate = useNavigate()
+    const { lang } = useParams({ from: '/$lang' })
+    const matchedKeys = matches.map(m => m.staticData?.menuCode).filter(Boolean) as string[]
+    let hasSidebar = false
+    let sidebarItems: any[] | undefined
+    for (const item of menuTree) {
+        const key = (item as any).key
+        if (!(item as any).children?.length) continue
+        if (matchedKeys.includes(key)) {
+            hasSidebar = true
+            sidebarItems = (item as any).children
+            break
+        }
+    }
 
-  const isAdmin = matches.some(m => m.staticData?.menuCode === 'admin')
-  const lang = pathname.startsWith('/zh') ? 'zh' : 'en'
+    const menuPathMap = useMemo(() => {
+        const map = new Map<string, string>()
+        function walk(items: any[]) {
+            for (const item of items) {
+                if (item._path) map.set(item.key, item._path)
+                if (item.children) walk(item.children)
+            }
+        }
+        walk(menuTree)
+        return map
+    }, [menuTree])
 
-  const selectedKeys = matches
-    .map(m => m.staticData?.menuCode)
-    .filter(Boolean) as string[]
+    const handleSidebarClick: MenuProps['onClick'] = ({ key }) => {
+        const path = menuPathMap.get(key)
+        if (path) {
+            navigate({ to: langPath(lang, path) as any })
+        }
+    }
 
-  const { t } = useTranslation('admin')
+    const selectedKeys = matchedKeys
 
-  const siderItems = [
-    { key: 'dashboard', icon: <DashboardOutlined />, label: <Link to="/$lang/admin" params={{ lang }}>{t('menu.dashboard')}</Link> },
-    { key: 'users', icon: <UserOutlined />, label: <Link to="/$lang/admin/users" params={{ lang }}>{t('menu.users')}</Link> },
-    { key: 'roles', icon: <SafetyOutlined />, label: <Link to="/$lang/admin/roles" params={{ lang }}>{t('menu.roles')}</Link> },
-    { key: 'settings', icon: <SettingOutlined />, label: <Link to="/$lang/admin/settings" params={{ lang }}>{t('menu.settings')}</Link> },
-    { key: 'dict', icon: <BookOutlined />, label: <Link to="/$lang/admin/dict" params={{ lang }}>{t('menu.dictionary')}</Link> },
-    { key: 'levels', icon: <TrophyOutlined />, label: <Link to="/$lang/admin/levels" params={{ lang }}>{t('menu.levels')}</Link> },
-    { key: 'promotions', icon: <ThunderboltOutlined />, label: <Link to="/$lang/admin/promotions" params={{ lang }}>{t('menu.promotions')}</Link> },
-    { key: 'reports', icon: <FlagOutlined />, label: <Link to="/$lang/admin/reports" params={{ lang }}>{t('menu.reports')}</Link> },
-    { key: 'medals', icon: <GiftOutlined />, label: <Link to="/$lang/admin/medals" params={{ lang }}>{t('menu.medals')}</Link> },
-    { key: 'client-risk', icon: <ControlOutlined />, label: <Link to="/$lang/admin/client-risk-control" params={{ lang }}>{t('menu.clientRisk')}</Link> },
-    { key: 'resources', icon: <DatabaseOutlined />, label: <Link to="/$lang/admin/operations-resources" params={{ lang }}>{t('menu.resources')}</Link> },
-    { key: 'announcements', icon: <NotificationOutlined />, label: <Link to="/$lang/admin/announcements" params={{ lang }}>{t('menu.announcements')}</Link> },
-    { key: 'bonus', icon: <DollarOutlined />, label: <Link to="/$lang/admin/bonus" params={{ lang }}>{t('menu.bonus')}</Link> },
-  ]
-
-  return (
-    <NProgressProvider>
-      <HeadContent />
-      <Layout style={{ minHeight: '100vh' }}>
-        <Navbar />
-        <Layout>
-          {isAdmin && (
-            <Sider width={220} theme="dark">
-              <Menu
-                theme="dark"
-                mode="inline"
-                selectedKeys={selectedKeys}
-                items={siderItems}
-                style={{ borderRight: 0 }}
-              />
-            </Sider>
-          )}
-          <Content style={
-            isAdmin
-              ? { padding: 24, background: '#f5f5f5' }
-              : { padding: '24px', maxWidth: 1200, margin: '0 auto', width: '100%' }
-          }>
-            <Outlet />
-          </Content>
-        </Layout>
-      </Layout>
-    </NProgressProvider>
-  )
+    return (
+        <NProgressProvider>
+            <HeadContent/>
+            <Layout style={{minHeight: '100vh'}}>
+                <Navbar/>
+                <Layout>
+                    {hasSidebar && (
+                        <Sider width={220}>
+                            <Menu
+                                mode="inline"
+                                selectedKeys={selectedKeys}
+                                items={sidebarItems}
+                                onClick={handleSidebarClick}
+                                style={{borderRight: 0}}
+                            />
+                        </Sider>
+                    )}
+                    <Content style={
+                        hasSidebar
+                            ? {padding: 24}
+                            : {padding: '24px', maxWidth: 1200, margin: '0 auto', width: '100%'}
+                    }>
+                        <Outlet/>
+                    </Content>
+                </Layout>
+            </Layout>
+        </NProgressProvider>
+    )
 }

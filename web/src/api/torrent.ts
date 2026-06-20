@@ -4,13 +4,26 @@ import { api } from './client'
 export interface TorrentListParams {
   page?: number
   page_size?: number
-  category?: string
+  categories?: string
   keyword?: string
+  incldead?: number
+  spstate?: number
+  sources?: string
+  codecs?: string
+  standards?: string
+  media?: string
+  processings?: string
+  teams?: string
+  audiocodecs?: string
+  sort?: string
+  order?: string
 }
 
 export function listTorrents(params: TorrentListParams = {}) {
   return api.get<TorrentListResult>('/torrents', { params })
 }
+
+
 
 export function getTorrent(id: number) {
   return api.get<Torrent>(`/torrents/${id}`)

@@ -34,6 +34,23 @@ export function buyUpload(bonusSpent: number) {
   return api.post('/user/buy-upload', { bonus_spent: bonusSpent })
 }
 
+export function buyDownload(bonusSpent: number) {
+  return api.post('/user/buy-download', { bonus_spent: bonusSpent })
+}
+
+export function getBonusLogs(params: { page?: number; page_size?: number }) {
+  return api.get<{ logs: import('../types').BonusLog[]; total: number }>('/user/bonus-logs', { params })
+}
+
+export function getSeedBonusRate() {
+  return api.get<{
+    bonus_per_hour: number
+    seed_points: number
+    torrent_count: number
+    total_size: number
+  }>('/user/seed-bonus-rate')
+}
+
 // Attendance
 export function checkin() {
   return api.post('/user/checkin')

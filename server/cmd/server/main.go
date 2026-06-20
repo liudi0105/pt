@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"pt-server/internal/bonus"
 	"pt-server/internal/config"
 	"pt-server/internal/handler"
 	i18n "pt-server/internal/i18n"
@@ -43,6 +44,7 @@ func main() {
 		func() time.Duration { return siteCfg.TrackerSnapshot().CleanupInterval },
 		func() time.Duration { return siteCfg.TrackerSnapshot().PeerTTL },
 	)
+	go bonus.HarvestLoop(repo, siteCfg)
 
 	h := handler.New(repo, peerStore, cfg, siteCfg)
 	mw := middleware.New(cfg, repo)
@@ -103,7 +105,26 @@ func main() {
 			user.POST("/buy-upload", h.BuyUpload)
 			user.GET("/checkin", h.CheckinStatus)
 			user.POST("/checkin", h.Checkin)
+			user.GET("/bonus-logs", h.ListUserBonusLogs)
+			user.GET("/seed-bonus-rate", h.GetSeedBonusRate)
+			user.POST("/buy-download", h.BuyDownload)
+			user.GET("/items", h.ListMyItems)
+			user.GET("/lucky-draw-records", h.ListMyDrawRecords)
+			user.GET("/bets", h.ListMyBets)
 		}
+
+		shop := api.Group("/shop")
+		shop.Use(mw.Auth())
+		{
+			shop.GET("/items", h.ListShopItems)
+			shop.POST("/items/:id/buy", h.BuyShopItem)
+		}
+
+		// Lucky Draw & Games
+		api.GET("/lucky-draw/prizes", mw.Auth(), h.ListLuckyDrawPrizes)
+		api.POST("/lucky-draw/draw", mw.Auth(), h.LuckyDraw)
+
+		api.POST("/games/bet", mw.Auth(), h.PlaceBet)
 
 		offers := api.Group("/offers")
 		offers.Use(mw.Auth())
@@ -151,6 +172,25 @@ func main() {
 
 		// H&R
 		api.GET("/user/hr", mw.Auth(), h.ListHR)
+
+		// Forums
+		forum := api.Group("/forums")
+		forum.Use(mw.Auth())
+		{
+			forum.GET("", h.ListForums)
+			forum.GET("/recent", h.ListRecentTopics)
+			forum.GET("/search", h.SearchTopics)
+			forum.GET("/unread", h.ListUnreadTopics)
+			forum.GET("/:id/topics", h.ListForumTopics)
+			forum.POST("/topics", h.CreateTopic)
+			forum.GET("/topics/:id", h.GetTopic)
+			forum.GET("/topics/:id/posts", h.ListTopicPosts)
+			forum.POST("/topics/:id/posts", h.CreatePost)
+			forum.PUT("/topics/:id", h.UpdateTopic)
+			forum.DELETE("/topics/:id", h.DeleteTopic)
+			forum.PUT("/posts/:id", h.UpdatePost)
+			forum.DELETE("/posts/:id", h.DeletePost)
+		}
 
 		admin := api.Group("/admin")
 		admin.Use(mw.Auth(), mw.Admin())
@@ -214,6 +254,12 @@ func main() {
 
 			// Bonus Logs
 			admin.GET("/bonus-logs", h.AdminListBonusLogs)
+
+			// Forum Management
+			admin.GET("/forums", h.AdminListForums)
+			admin.POST("/forums", h.AdminCreateForum)
+			admin.PUT("/forums/:id", h.AdminUpdateForum)
+			admin.DELETE("/forums/:id", h.AdminDeleteForum)
 		}
 	}
 

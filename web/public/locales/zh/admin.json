@@ -108,6 +108,13 @@
       "bonus.per_hour": "每小时基础魔力值",
       "bonus.seed_bonus": "做种加成魔力值",
       "bonus.size_bonus": "体积加成魔力值",
+      "bonus.tzero": "T0 参数 (种子存活周数半衰期)",
+      "bonus.nzero": "N0 参数 (做种人数饱和值)",
+      "bonus.bzero": "B0 每小时魔力上限",
+      "bonus.l": "L 参数 (魔力曲线参数)",
+      "bonus.perseeding": "每个做种奖励魔力值",
+      "bonus.maxseeding": "最大计数做种数量",
+      "bonus.harvest_interval": "魔力收获执行间隔",
       "hr.enabled": "是否启用 H&R",
       "hr.seed_hours": "H&R 需要的最短做种小时数",
       "hr.check_interval": "H&R 检查间隔"

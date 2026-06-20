@@ -1,14 +1,21 @@
-{"model":"site_setting","data":{"key":"site_name","value":"My PT Site","type":"string","description":"站点名称","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.interval","value":"30m","type":"duration","description":"Tracker announce 间隔","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.min_interval","value":"15m","type":"duration","description":"Tracker 最小 announce 间隔","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.cleanup_interval","value":"5m","type":"duration","description":"Tracker 运行态清理间隔","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.peer_ttl","value":"35m","type":"duration","description":"Tracker Peer TTL","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.default_numwant","value":"50","type":"int","description":"Tracker 默认返回 Peer 数量","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.allowed_clients","value":"[\"qBittorrent\",\"Transmission\",\"Deluge\",\"BiglyBT\",\"rTorrent\",\"libtorrent\",\"aria2\"]","type":"json","description":"Tracker 允许的客户端白名单","is_active":true}}
-{"model":"site_setting","data":{"key":"tracker.blacklist_ports","value":"[22,53,80,81,443]","type":"json","description":"Tracker 拒绝的端口列表","is_active":true}}
-{"model":"site_setting","data":{"key":"bonus.per_hour","value":"1.0","type":"float","description":"每小时基础魔力值","is_active":true}}
-{"model":"site_setting","data":{"key":"bonus.seed_bonus","value":"0.5","type":"float","description":"做种加成魔力值","is_active":true}}
-{"model":"site_setting","data":{"key":"bonus.size_bonus","value":"0.1","type":"float","description":"体积加成魔力值","is_active":true}}
-{"model":"site_setting","data":{"key":"hr.enabled","value":"true","type":"bool","description":"是否启用 H&R","is_active":true}}
-{"model":"site_setting","data":{"key":"hr.seed_hours","value":"72","type":"int","description":"H&R 需要的最短做种小时数","is_active":true}}
-{"model":"site_setting","data":{"key":"hr.check_interval","value":"1h","type":"duration","description":"H&R 检查间隔","is_active":true}}
+{"model":"site_setting","data":{"key":"site_name","value":"My PT Site","type":"string","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.interval","value":"30m","type":"duration","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.min_interval","value":"15m","type":"duration","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.cleanup_interval","value":"5m","type":"duration","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.peer_ttl","value":"35m","type":"duration","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.default_numwant","value":"50","type":"int","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.allowed_clients","value":"[\"qBittorrent\",\"Transmission\",\"Deluge\",\"BiglyBT\",\"rTorrent\",\"libtorrent\",\"aria2\"]","type":"json","is_active":true}}
+{"model":"site_setting","data":{"key":"tracker.blacklist_ports","value":"[22,53,80,81,443]","type":"json","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.per_hour","value":"1.0","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.seed_bonus","value":"0.5","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.size_bonus","value":"0.1","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.tzero","value":"4","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.nzero","value":"7","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.bzero","value":"50","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.l","value":"300","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.perseeding","value":"0.1","type":"float","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.maxseeding","value":"5000","type":"int","is_active":true}}
+{"model":"site_setting","data":{"key":"bonus.harvest_interval","value":"1h","type":"duration","is_active":true}}
+{"model":"site_setting","data":{"key":"hr.enabled","value":"true","type":"bool","is_active":true}}
+{"model":"site_setting","data":{"key":"hr.seed_hours","value":"72","type":"int","is_active":true}}
+{"model":"site_setting","data":{"key":"hr.check_interval","value":"1h","type":"duration","is_active":true}}

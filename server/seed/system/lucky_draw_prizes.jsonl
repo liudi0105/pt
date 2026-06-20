@@ -1,0 +1,6 @@
+{"model":"lucky_draw_prize","data":{"name":"VIP 30 Days","description":"30-day VIP membership","price":500,"probability":0.5,"stock":10,"sort_order":1}}
+{"model":"lucky_draw_prize","data":{"name":"1000 Bonus","description":"Win 1000 bonus points","price":500,"probability":2.0,"stock":-1,"sort_order":2}}
+{"model":"lucky_draw_prize","data":{"name":"500 Bonus","description":"Win 500 bonus points","price":500,"probability":5.0,"stock":-1,"sort_order":3}}
+{"model":"lucky_draw_prize","data":{"name":"Custom Title","description":"Free custom title change","price":500,"probability":10.0,"stock":50,"sort_order":4}}
+{"model":"lucky_draw_prize","data":{"name":"100 Bonus","description":"Win 100 bonus points","price":500,"probability":20.0,"stock":-1,"sort_order":5}}
+{"model":"lucky_draw_prize","data":{"name":"Rainbow Name","description":"Rainbow colored username for 30 days","price":500,"probability":25.0,"stock":-1,"sort_order":6}}

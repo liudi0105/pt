@@ -71,9 +71,38 @@
     "checkinSuccess": "Checked in! Earned {{bonus}} bonus. {{days}} day streak!",
     "checkinFailed": "Checkin failed"
   },
+  "menu": {
+    "profile": "Profile",
+    "checkin": "Check-in",
+    "seeding": "Seeding",
+    "snatches": "Snatches",
+    "bookmarks": "Bookmarks",
+    "bonus": "Bonus Shop",
+    "bonusLogs": "Bonus Logs",
+    "settings": "Settings",
+    "messages": "Messages",
+    "invites": "Invites",
+    "medals": "Medals",
+    "hr": "H&R"
+  },
+  "bonusLogs": {
+    "title": "Bonus Logs",
+    "time": "Time",
+    "type": "Type",
+    "change": "Change",
+    "balance": "Balance",
+    "comment": "Comment"
+  },
   "bonusShop": {
     "title": "Bonus Shop",
+    "bonusPerHour": "Per Hour",
+    "seedingCount": "Seeding",
+    "seedingSize": "Seeding Size",
+    "rateLabel": "Exchange Rate",
     "buyUpload": "Buy Upload Credit",
+    "buyDownload": "Buy Download Credit",
+    "downloadCredit": "download credit",
+    "buyDownloadSuccess": "Bought {{size}} download credit for {{bonus}} bonus!",
     "yourBonus": "Your Bonus",
     "exchangeRate": "Exchange Rate",
     "rateText": "{{rate}} bonus = 1 GB upload credit",

@@ -33,7 +33,7 @@ export function TorrentDetail() {
   const { t } = useTranslation('torrent')
   const { t: tCommon } = useTranslation('common')
   const { t: tPromo } = useTranslation('promotions')
-  const { id, lang } = useParams({ from: '/$lang/torrents_/$id' })
+  const { id, lang } = useParams({ from: '/$lang/torrents/$id' })
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const torrentId = Number(id)

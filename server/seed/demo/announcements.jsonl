@@ -1,5 +1,5 @@
-{"model":"announcement","data":{"title":"欢迎来到 PT 站点","content":"<p>欢迎注册我们的 PT 站点！请仔细阅读规则后开始上传下载。</p>","is_sticky":true,"is_active":true,"created_by":1}}
-{"model":"announcement","data":{"title":"端午节免费考核","content":"<p>端午节期间（6月22日-6月24日）全站免费考核，下载不计流量。</p>","is_sticky":false,"expires_at":"2026-07-01T00:00:00Z","is_active":true,"created_by":1}}
-{"model":"announcement","data":{"title":"服务器维护通知","content":"<p>2026年6月25日凌晨2:00-4:00进行服务器维护，届时站点将暂时无法访问。</p>","is_sticky":false,"is_active":true,"created_by":1}}
-{"model":"announcement","data":{"title":"上传竞赛结果","content":"<p>恭喜上月上传竞赛获奖者！<br>🥇 第一名：admin（150个种子）<br>🥈 第二名：user2（89个种子）<br>🥉 第三名：user3（67个种子）</p><p>奖励已发放至账户。</p>","is_sticky":false,"is_active":true,"created_by":1}}
-{"model":"announcement","data":{"title":"新种子类型上线","content":"<p>我们新增了「电子书」分类，欢迎发布和下载电子书资源。</p>","is_sticky":false,"is_active":true,"created_by":1}}
+{"model":"announcement","data":{"title":"欢迎来到 PT 站点","content":"<p>欢迎注册我们的 PT 站点！请仔细阅读规则后开始上传下载。</p>","is_sticky":true,"is_active":true,"email":"admin@pt.local"}}
+{"model":"announcement","data":{"title":"端午节免费考核","content":"<p>端午节期间（6月22日-6月24日）全站免费考核，下载不计流量。</p>","is_sticky":false,"expires_at":"2026-07-01T00:00:00Z","is_active":true,"email":"admin@pt.local"}}
+{"model":"announcement","data":{"title":"服务器维护通知","content":"<p>2026年6月25日凌晨2:00-4:00进行服务器维护，届时站点将暂时无法访问。</p>","is_sticky":false,"is_active":true,"email":"admin@pt.local"}}
+{"model":"announcement","data":{"title":"上传竞赛结果","content":"<p>恭喜上月上传竞赛获奖者！<br>🥇 第一名：admin（150个种子）<br>🥈 第二名：user2（89个种子）<br>🥉 第三名：user3（67个种子）</p><p>奖励已发放至账户。</p>","is_sticky":false,"is_active":true,"email":"admin@pt.local"}}
+{"model":"announcement","data":{"title":"新种子类型上线","content":"<p>我们新增了「电子书」分类，欢迎发布和下载电子书资源。</p>","is_sticky":false,"is_active":true,"email":"admin@pt.local"}}

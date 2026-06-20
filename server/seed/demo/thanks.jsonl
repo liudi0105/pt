@@ -1,5 +1,5 @@
-{"model":"thanks","data":{"user_id":1,"torrent_id":1}}
-{"model":"thanks","data":{"user_id":1,"torrent_id":2}}
-{"model":"thanks","data":{"user_id":1,"torrent_id":3}}
-{"model":"thanks","data":{"user_id":1,"torrent_id":6}}
-{"model":"thanks","data":{"user_id":1,"torrent_id":9}}
+{"model":"thanks","data":{"email":"frank@pt.local","torrent_id":1}}
+{"model":"thanks","data":{"email":"grace@pt.local","torrent_id":2}}
+{"model":"thanks","data":{"email":"henry@pt.local","torrent_id":3}}
+{"model":"thanks","data":{"email":"irene@pt.local","torrent_id":6}}
+{"model":"thanks","data":{"email":"jack@pt.local","torrent_id":9}}

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"pt-server/internal/model"
 	"pt-server/internal/repository"
@@ -17,10 +18,15 @@ import (
 
 func (h *Handler) ListTorrents(c *gin.Context) {
 	filter := repository.TorrentFilter{
-		Category: c.Query("category"),
 		Keyword:  c.Query("keyword"),
+		Sort:     c.DefaultQuery("sort", "created_at"),
+		Order:    c.DefaultQuery("order", "desc"),
 		Page:     1,
 		PageSize: 50,
+	}
+
+	if c.Query("incldead") == "1" {
+		filter.Incldead = 1
 	}
 
 	if p, err := strconv.Atoi(c.DefaultQuery("page", "1")); err == nil {
@@ -29,6 +35,33 @@ func (h *Handler) ListTorrents(c *gin.Context) {
 	if ps, err := strconv.Atoi(c.DefaultQuery("page_size", "50")); err == nil {
 		filter.PageSize = ps
 	}
+	if spstate, err := strconv.Atoi(c.Query("spstate")); err == nil {
+		filter.Spstate = spstate
+	}
+
+	// Parse comma-separated multi-value fields
+	parseCSV := func(key string) []string {
+		if v := c.Query(key); v != "" {
+			parts := strings.Split(v, ",")
+			result := make([]string, 0, len(parts))
+			for _, p := range parts {
+				if trimmed := strings.TrimSpace(p); trimmed != "" {
+					result = append(result, trimmed)
+				}
+			}
+			return result
+		}
+		return nil
+	}
+
+	filter.Categories = parseCSV("categories")
+	filter.Sources = parseCSV("sources")
+	filter.Codecs = parseCSV("codecs")
+	filter.Standards = parseCSV("standards")
+	filter.Media = parseCSV("media")
+	filter.Processings = parseCSV("processings")
+	filter.Teams = parseCSV("teams")
+	filter.AudioCodecs = parseCSV("audiocodecs")
 
 	result, err := h.repo.Torrent.List(filter)
 	if err != nil {

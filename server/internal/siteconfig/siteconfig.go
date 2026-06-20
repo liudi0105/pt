@@ -13,20 +13,27 @@ import (
 )
 
 const (
-	KeySiteName           = "site_name"
-	KeyTrackerInterval    = "tracker.interval"
-	KeyTrackerMinInterval = "tracker.min_interval"
-	KeyTrackerCleanup     = "tracker.cleanup_interval"
-	KeyTrackerPeerTTL     = "tracker.peer_ttl"
-	KeyTrackerDefaultNum  = "tracker.default_numwant"
-	KeyTrackerAllowed     = "tracker.allowed_clients"
-	KeyTrackerBlacklist   = "tracker.blacklist_ports"
-	KeyBonusPerHour       = "bonus.per_hour"
-	KeyBonusSeedBonus     = "bonus.seed_bonus"
-	KeyBonusSizeBonus     = "bonus.size_bonus"
-	KeyHREnabled          = "hr.enabled"
-	KeyHRSeedHours        = "hr.seed_hours"
-	KeyHRCheckInterval    = "hr.check_interval"
+	KeySiteName             = "site_name"
+	KeyTrackerInterval      = "tracker.interval"
+	KeyTrackerMinInterval   = "tracker.min_interval"
+	KeyTrackerCleanup       = "tracker.cleanup_interval"
+	KeyTrackerPeerTTL       = "tracker.peer_ttl"
+	KeyTrackerDefaultNum    = "tracker.default_numwant"
+	KeyTrackerAllowed       = "tracker.allowed_clients"
+	KeyTrackerBlacklist     = "tracker.blacklist_ports"
+	KeyBonusPerHour         = "bonus.per_hour"
+	KeyBonusSeedBonus       = "bonus.seed_bonus"
+	KeyBonusSizeBonus       = "bonus.size_bonus"
+	KeyBonusTZero           = "bonus.tzero"
+	KeyBonusNZero           = "bonus.nzero"
+	KeyBonusBZero           = "bonus.bzero"
+	KeyBonusL               = "bonus.l"
+	KeyBonusPerSeeding      = "bonus.perseeding"
+	KeyBonusMaxSeeding      = "bonus.maxseeding"
+	KeyBonusHarvestInterval = "bonus.harvest_interval"
+	KeyHREnabled            = "hr.enabled"
+	KeyHRSeedHours          = "hr.seed_hours"
+	KeyHRCheckInterval      = "hr.check_interval"
 )
 
 type Settings struct {
@@ -48,9 +55,16 @@ type TrackerSettings struct {
 }
 
 type BonusSettings struct {
-	PerHour   float64
-	SeedBonus float64
-	SizeBonus float64
+	PerHour         float64
+	SeedBonus       float64
+	SizeBonus       float64
+	TZero           float64
+	NZero           float64
+	BZero           float64
+	L               float64
+	PerSeeding      float64
+	MaxSeeding      int
+	HarvestInterval time.Duration
 }
 
 type HRSettings struct {
@@ -80,9 +94,16 @@ func NewDefault() *Settings {
 			BlacklistPorts: []int{22, 53, 80, 81, 443},
 		},
 		Bonus: BonusSettings{
-			PerHour:   1.0,
-			SeedBonus: 0.5,
-			SizeBonus: 0.1,
+			PerHour:         1.0,
+			SeedBonus:       0.5,
+			SizeBonus:       0.1,
+			TZero:           4,
+			NZero:           7,
+			BZero:           50,
+			L:               300,
+			PerSeeding:      0.1,
+			MaxSeeding:      5000,
+			HarvestInterval: 1 * time.Hour,
 		},
 		HR: HRSettings{
 			Enabled:       true,
@@ -163,6 +184,42 @@ func Load(repo *repository.Repository) (*Settings, error) {
 	if s, err := repo.SiteSetting.GetByKey(KeyBonusSizeBonus); err == nil {
 		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil {
 			settings.Bonus.SizeBonus = v
+		}
+	}
+
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusTZero); err == nil {
+		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil && v > 0 {
+			settings.Bonus.TZero = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusNZero); err == nil {
+		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil && v > 0 {
+			settings.Bonus.NZero = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusBZero); err == nil {
+		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil && v > 0 {
+			settings.Bonus.BZero = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusL); err == nil {
+		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil && v > 0 {
+			settings.Bonus.L = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusPerSeeding); err == nil {
+		if v, parseErr := strconv.ParseFloat(s.Value, 64); parseErr == nil && v >= 0 {
+			settings.Bonus.PerSeeding = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusMaxSeeding); err == nil {
+		if v, parseErr := strconv.Atoi(s.Value); parseErr == nil && v > 0 {
+			settings.Bonus.MaxSeeding = v
+		}
+	}
+	if s, err := repo.SiteSetting.GetByKey(KeyBonusHarvestInterval); err == nil {
+		if d, parseErr := time.ParseDuration(s.Value); parseErr == nil {
+			settings.Bonus.HarvestInterval = d
 		}
 	}
 
@@ -249,6 +306,34 @@ func (s *Settings) ApplySiteSetting(key, value string) {
 		if v, err := strconv.ParseFloat(value, 64); err == nil {
 			s.Bonus.SizeBonus = v
 		}
+	case KeyBonusTZero:
+		if v, err := strconv.ParseFloat(value, 64); err == nil && v > 0 {
+			s.Bonus.TZero = v
+		}
+	case KeyBonusNZero:
+		if v, err := strconv.ParseFloat(value, 64); err == nil && v > 0 {
+			s.Bonus.NZero = v
+		}
+	case KeyBonusBZero:
+		if v, err := strconv.ParseFloat(value, 64); err == nil && v > 0 {
+			s.Bonus.BZero = v
+		}
+	case KeyBonusL:
+		if v, err := strconv.ParseFloat(value, 64); err == nil && v > 0 {
+			s.Bonus.L = v
+		}
+	case KeyBonusPerSeeding:
+		if v, err := strconv.ParseFloat(value, 64); err == nil && v >= 0 {
+			s.Bonus.PerSeeding = v
+		}
+	case KeyBonusMaxSeeding:
+		if v, err := strconv.Atoi(value); err == nil && v > 0 {
+			s.Bonus.MaxSeeding = v
+		}
+	case KeyBonusHarvestInterval:
+		if d, err := time.ParseDuration(value); err == nil {
+			s.Bonus.HarvestInterval = d
+		}
 	case KeyHREnabled:
 		if v, err := strconv.ParseBool(value); err == nil {
 			s.HR.Enabled = v
@@ -294,20 +379,27 @@ func defaultSiteSettings(s *Settings) []model.SiteSetting {
 	}
 
 	return []model.SiteSetting{
-		{Key: KeySiteName, Value: s.SiteName, Type: "string", Description: "站点名称", IsActive: true},
-		{Key: KeyTrackerInterval, Value: s.Tracker.Interval.String(), Type: "duration", Description: "Tracker announce 间隔", IsActive: true},
-		{Key: KeyTrackerMinInterval, Value: s.Tracker.MinInterval.String(), Type: "duration", Description: "Tracker 最小 announce 间隔", IsActive: true},
-		{Key: KeyTrackerCleanup, Value: s.Tracker.CleanupInterval.String(), Type: "duration", Description: "Tracker 运行态清理间隔", IsActive: true},
-		{Key: KeyTrackerPeerTTL, Value: s.Tracker.PeerTTL.String(), Type: "duration", Description: "Tracker Peer TTL", IsActive: true},
-		{Key: KeyTrackerDefaultNum, Value: strconv.Itoa(s.Tracker.DefaultNumwant), Type: "int", Description: "Tracker 默认返回 Peer 数量", IsActive: true},
-		{Key: KeyTrackerAllowed, Value: toJSONArray(allowedClients), Type: "json", Description: "Tracker 允许的客户端白名单", IsActive: true},
-		{Key: KeyTrackerBlacklist, Value: toJSONArray(blacklistPorts), Type: "json", Description: "Tracker 拒绝的端口列表", IsActive: true},
-		{Key: KeyBonusPerHour, Value: strconv.FormatFloat(s.Bonus.PerHour, 'f', -1, 64), Type: "float", Description: "每小时基础魔力值", IsActive: true},
-		{Key: KeyBonusSeedBonus, Value: strconv.FormatFloat(s.Bonus.SeedBonus, 'f', -1, 64), Type: "float", Description: "做种加成魔力值", IsActive: true},
-		{Key: KeyBonusSizeBonus, Value: strconv.FormatFloat(s.Bonus.SizeBonus, 'f', -1, 64), Type: "float", Description: "体积加成魔力值", IsActive: true},
-		{Key: KeyHREnabled, Value: strconv.FormatBool(s.HR.Enabled), Type: "bool", Description: "是否启用 H&R", IsActive: true},
-		{Key: KeyHRSeedHours, Value: strconv.Itoa(s.HR.SeedHours), Type: "int", Description: "H&R 需要的最短做种小时数", IsActive: true},
-		{Key: KeyHRCheckInterval, Value: s.HR.CheckInterval.String(), Type: "duration", Description: "H&R 检查间隔", IsActive: true},
+		{Key: KeySiteName, Value: s.SiteName, Type: "string", IsActive: true},
+		{Key: KeyTrackerInterval, Value: s.Tracker.Interval.String(), Type: "duration", IsActive: true},
+		{Key: KeyTrackerMinInterval, Value: s.Tracker.MinInterval.String(), Type: "duration", IsActive: true},
+		{Key: KeyTrackerCleanup, Value: s.Tracker.CleanupInterval.String(), Type: "duration", IsActive: true},
+		{Key: KeyTrackerPeerTTL, Value: s.Tracker.PeerTTL.String(), Type: "duration", IsActive: true},
+		{Key: KeyTrackerDefaultNum, Value: strconv.Itoa(s.Tracker.DefaultNumwant), Type: "int", IsActive: true},
+		{Key: KeyTrackerAllowed, Value: toJSONArray(allowedClients), Type: "json", IsActive: true},
+		{Key: KeyTrackerBlacklist, Value: toJSONArray(blacklistPorts), Type: "json", IsActive: true},
+		{Key: KeyBonusPerHour, Value: strconv.FormatFloat(s.Bonus.PerHour, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusSeedBonus, Value: strconv.FormatFloat(s.Bonus.SeedBonus, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusSizeBonus, Value: strconv.FormatFloat(s.Bonus.SizeBonus, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusTZero, Value: strconv.FormatFloat(s.Bonus.TZero, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusNZero, Value: strconv.FormatFloat(s.Bonus.NZero, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusBZero, Value: strconv.FormatFloat(s.Bonus.BZero, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusL, Value: strconv.FormatFloat(s.Bonus.L, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusPerSeeding, Value: strconv.FormatFloat(s.Bonus.PerSeeding, 'f', -1, 64), Type: "float", IsActive: true},
+		{Key: KeyBonusMaxSeeding, Value: strconv.Itoa(s.Bonus.MaxSeeding), Type: "int", IsActive: true},
+		{Key: KeyBonusHarvestInterval, Value: s.Bonus.HarvestInterval.String(), Type: "duration", IsActive: true},
+		{Key: KeyHREnabled, Value: strconv.FormatBool(s.HR.Enabled), Type: "bool", IsActive: true},
+		{Key: KeyHRSeedHours, Value: strconv.Itoa(s.HR.SeedHours), Type: "int", IsActive: true},
+		{Key: KeyHRCheckInterval, Value: s.HR.CheckInterval.String(), Type: "duration", IsActive: true},
 	}
 }
 

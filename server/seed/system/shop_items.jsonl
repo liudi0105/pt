@@ -1,0 +1,5 @@
+{"model":"shop_item","data":{"name":"Custom Title","description":"Change your display title for 30 days","price":500,"stock":100,"type":"title_change","sort_order":1}}
+{"model":"shop_item","data":{"name":"Extra Invite Slot","description":"Gain one additional invite slot permanently","price":1000,"stock":50,"type":"invite_slot","sort_order":2}}
+{"model":"shop_item","data":{"name":"VIP 7 Days","description":"Enjoy VIP privileges for 7 days","price":2000,"stock":20,"type":"vip_days","sort_order":3}}
+{"model":"shop_item","data":{"name":"Rainbow Name","description":"Make your username rainbow colored for 30 days","price":300,"stock":-1,"type":"name_style","sort_order":4}}
+{"model":"shop_item","data":{"name":"Traffic Pack 10GB","description":"Add 10GB upload credit","price":100,"stock":-1,"type":"upload_bytes","metadata":"{\"bytes\":10737418240}","sort_order":5}}

@@ -87,4 +87,34 @@ CREATE UNIQUE INDEX `idx_users_passkey` ON `users`(`passkey`);
 CREATE INDEX `idx_users_role` ON `users`(`role`);
 CREATE INDEX `idx_users_role_id` ON `users`(`role_id`);
 CREATE INDEX `idx_users_status` ON `users`(`status`);
+CREATE TABLE `forums` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(128) NOT NULL,`description` varchar(255),`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime);
+
+CREATE TABLE `topics` (`id` integer PRIMARY KEY AUTOINCREMENT,`forum_id` integer NOT NULL,`user_id` integer NOT NULL,`title` varchar(255) NOT NULL,`views` integer DEFAULT 0,`post_count` integer DEFAULT 0,`is_sticky` numeric DEFAULT false,`is_locked` numeric DEFAULT false,`last_post_at` datetime,`created_at` datetime,`updated_at` datetime);
+CREATE INDEX `idx_topics_forum_id` ON `topics`(`forum_id`);
+CREATE INDEX `idx_topics_user_id` ON `topics`(`user_id`);
+CREATE INDEX `idx_topics_is_sticky` ON `topics`(`is_sticky`);
+
+CREATE TABLE `posts` (`id` integer PRIMARY KEY AUTOINCREMENT,`topic_id` integer NOT NULL,`user_id` integer NOT NULL,`content` text NOT NULL,`is_first` numeric DEFAULT false,`created_at` datetime,`updated_at` datetime);
+CREATE INDEX `idx_posts_topic_id` ON `posts`(`topic_id`);
+CREATE INDEX `idx_posts_user_id` ON `posts`(`user_id`);
+
+CREATE TABLE `forum_mods` (`id` integer PRIMARY KEY AUTOINCREMENT,`forum_id` integer NOT NULL,`user_id` integer NOT NULL);
+CREATE UNIQUE INDEX `idx_forum_mod` ON `forum_mods`(`forum_id`,`user_id`);
+
+CREATE TABLE `read_posts` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`topic_id` integer NOT NULL,`post_id` integer NOT NULL);
+CREATE UNIQUE INDEX `idx_read_post` ON `read_posts`(`user_id`,`topic_id`);
+
 CREATE UNIQUE INDEX `idx_users_username` ON `users`(`username`);
+
+CREATE TABLE `shop_items` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(255) NOT NULL,`description` text,`price` decimal(12,2) NOT NULL,`stock` integer DEFAULT -1,`type` varchar(50) NOT NULL DEFAULT 'item',`metadata` text,`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime);
+
+CREATE TABLE `user_items` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`item_id` integer NOT NULL,`quantity` integer DEFAULT 1,`created_at` datetime);
+CREATE INDEX `idx_user_items_user_id` ON `user_items`(`user_id`);
+
+CREATE TABLE `lucky_draw_prizes` (`id` integer PRIMARY KEY AUTOINCREMENT,`name` varchar(255) NOT NULL,`description` text,`price` decimal(12,2) NOT NULL,`probability` decimal(5,2) NOT NULL DEFAULT 1,`stock` integer DEFAULT -1,`image` varchar(255),`is_active` numeric DEFAULT true,`sort_order` integer DEFAULT 0,`created_at` datetime);
+
+CREATE TABLE `lucky_draw_records` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`prize_id` integer,`prize_name` varchar(255),`cost` decimal(12,2) NOT NULL,`created_at` datetime);
+CREATE INDEX `idx_lucky_draw_records_user_id` ON `lucky_draw_records`(`user_id`);
+
+CREATE TABLE `game_bets` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`bet_amount` decimal(12,2) NOT NULL,`bet_choice` varchar(10) NOT NULL,`dice_result` integer NOT NULL,`result` varchar(10) NOT NULL,`payout` decimal(12,2) NOT NULL,`created_at` datetime);
+CREATE INDEX `idx_game_bets_user_id` ON `game_bets`(`user_id`);

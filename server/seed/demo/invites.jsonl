@@ -1,3 +1,3 @@
-{"model":"invite","data":{"user_id":1,"code":"INVITE-ABC123","email":"friend1@example.com","is_used":false,"expires_at":"2024-02-01T00:00:00Z"}}
-{"model":"invite","data":{"user_id":1,"code":"INVITE-DEF456","email":"friend2@example.com","is_used":false,"expires_at":"2024-02-01T00:00:00Z"}}
-{"model":"invite","data":{"user_id":1,"code":"INVITE-GHI789","email":"friend3@example.com","is_used":true,"expires_at":"2024-01-15T00:00:00Z"}}
+{"model":"invite","data":{"sender_email":"admin@pt.local","code":"INVITE-ABC123","email":"friend1@example.com","is_used":false,"expires_at":"2024-02-01T00:00:00Z"}}
+{"model":"invite","data":{"sender_email":"admin@pt.local","code":"INVITE-DEF456","email":"friend2@example.com","is_used":false,"expires_at":"2024-02-01T00:00:00Z"}}
+{"model":"invite","data":{"sender_email":"admin@pt.local","code":"INVITE-GHI789","email":"friend3@example.com","is_used":true,"expires_at":"2024-01-15T00:00:00Z"}}

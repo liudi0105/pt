@@ -9,7 +9,8 @@
     "checkin": "签到",
     "seeding": "做种",
     "bookmarks": "收藏",
-    "bonusShop": "积分商店",
+    "bonusShop": "积分",
+    "bonusExchange": "积分兑换",
     "messages": "消息",
     "invites": "邀请",
     "medals": "勋章",
@@ -19,10 +20,14 @@
     "logout": "退出",
     "userCenter": "用户中心",
     "adminPanel": "管理面板",
+    "forum": "论坛",
     "inbox": "收件箱",
     "outbox": "发件箱",
     "torrentDetail": "种子详情",
-    "torrentEdit": "编辑种子"
+    "torrentEdit": "编辑种子",
+    "shop": "商品商店",
+    "luckyDraw": "抽奖",
+    "bigSmall": "大小博彩"
   },
   "brand": "PT Site",
   "categories": {
@@ -145,5 +150,49 @@
     "quickLinks": "快速链接",
     "browseTorrents": "浏览最新种子",
     "browseOffers": "查看候选和投票"
+  },
+  "shop": {
+    "title": "商品商店",
+    "myBonus": "我的积分",
+    "noItems": "暂无商品",
+    "bonusUnit": "积分",
+    "buy": "购买",
+    "stock": "库存",
+    "backToBonus": "返回积分商店"
+  },
+  "luckyDraw": {
+    "title": "抽奖",
+    "costPerDraw": "每次消耗",
+    "draw": "抽奖！",
+    "won": "恭喜！你抽中了：{{prize}}",
+    "none": "没有中奖，再试试！",
+    "availablePrizes": "可抽奖品",
+    "noPrizes": "暂无奖品",
+    "probability": "概率",
+    "unlimited": "不限",
+    "myRecords": "我的抽奖记录",
+    "noRecords": "暂无记录",
+    "prize": "奖品",
+    "cost": "消耗",
+    "date": "时间"
+  },
+  "bigSmall": {
+    "title": "大小博彩",
+    "pick": "选择你的下注：大 (11-18) 或 小 (3-10)",
+    "big": "大",
+    "small": "小",
+    "betAmount": "下注金额",
+    "bet": "下注",
+    "total": "总计",
+    "win": "你赢了 {{payout}} 积分！",
+    "lose": "你输了，再试试！",
+    "myBets": "我的下注记录",
+    "noBets": "暂无记录",
+    "choice": "选择",
+    "diceResult": "点数",
+    "result": "结果",
+    "payout": "赢取",
+    "winShort": "赢",
+    "loseShort": "输"
   }
 }

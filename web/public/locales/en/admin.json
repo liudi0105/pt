@@ -108,6 +108,13 @@
       "bonus.per_hour": "Base bonus points per hour",
       "bonus.seed_bonus": "Seeding bonus points",
       "bonus.size_bonus": "Size bonus points",
+      "bonus.tzero": "T0 parameter (torrent age half-life in weeks)",
+      "bonus.nzero": "N0 parameter (seeder saturation count)",
+      "bonus.bzero": "B0 max bonus per hour",
+      "bonus.l": "L curve parameter",
+      "bonus.perseeding": "Bonus per seeding torrent",
+      "bonus.maxseeding": "Max seeding torrents counted",
+      "bonus.harvest_interval": "Harvest execution interval",
       "hr.enabled": "Enable H&R",
       "hr.seed_hours": "Minimum seeding hours required for H&R",
       "hr.check_interval": "H&R check interval"

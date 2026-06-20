@@ -9,7 +9,8 @@
     "checkin": "Check-in",
     "seeding": "Seeding",
     "bookmarks": "Bookmarks",
-    "bonusShop": "Bonus Shop",
+    "bonusShop": "Bonus",
+    "bonusExchange": "Exchange",
     "messages": "Messages",
     "invites": "Invites",
     "medals": "Medals",
@@ -19,10 +20,14 @@
     "logout": "Logout",
     "userCenter": "User Center",
     "adminPanel": "Admin Panel",
+    "forum": "Forum",
     "inbox": "Inbox",
     "outbox": "Outbox",
     "torrentDetail": "Torrent Detail",
-    "torrentEdit": "Edit Torrent"
+    "torrentEdit": "Edit Torrent",
+    "shop": "Shop",
+    "luckyDraw": "Lucky Draw",
+    "bigSmall": "Big/Small"
   },
   "brand": "PT Site",
   "categories": {
@@ -145,5 +150,49 @@
     "quickLinks": "Quick Links",
     "browseTorrents": "Browse latest torrents",
     "browseOffers": "View candidates and vote"
+  },
+  "shop": {
+    "title": "Shop",
+    "myBonus": "My Bonus",
+    "noItems": "No items available",
+    "bonusUnit": "bonus",
+    "buy": "Buy",
+    "stock": "Stock",
+    "backToBonus": "Back to Bonus Shop"
+  },
+  "luckyDraw": {
+    "title": "Lucky Draw",
+    "costPerDraw": "Cost per draw",
+    "draw": "Draw!",
+    "won": "Congratulations! You won: {{prize}}",
+    "none": "No luck this time. Try again!",
+    "availablePrizes": "Available Prizes",
+    "noPrizes": "No prizes available",
+    "probability": "Probability",
+    "unlimited": "Unlimited",
+    "myRecords": "My Records",
+    "noRecords": "No records yet",
+    "prize": "Prize",
+    "cost": "Cost",
+    "date": "Date"
+  },
+  "bigSmall": {
+    "title": "Big / Small",
+    "pick": "Pick your choice: Big (11-18) or Small (3-10)",
+    "big": "Big",
+    "small": "Small",
+    "betAmount": "Bet Amount",
+    "bet": "Bet",
+    "total": "Total",
+    "win": "You won {{payout}} bonus!",
+    "lose": "You lost. Try again!",
+    "myBets": "My Bets",
+    "noBets": "No bets yet",
+    "choice": "Choice",
+    "diceResult": "Result",
+    "result": "Result",
+    "payout": "Payout",
+    "winShort": "Win",
+    "loseShort": "Lose"
   }
 }

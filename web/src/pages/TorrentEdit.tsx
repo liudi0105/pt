@@ -12,7 +12,7 @@ const { TextArea } = Input
 export function TorrentEdit() {
   const { t } = useTranslation('torrent')
   const { t: tCommon } = useTranslation('common')
-  const { id } = useParams({ from: '/$lang/torrents_/$id/edit' })
+  const { id } = useParams({ from: '/$lang/torrents/$id/edit' })
   const { lang } = useParams({ from: '/$lang' })
   const navigate = useNavigate()
   const torrentId = Number(id)

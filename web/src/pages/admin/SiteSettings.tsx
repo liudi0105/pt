@@ -45,7 +45,11 @@ const groupKeys = {
     'tracker.allowed_clients',
     'tracker.blacklist_ports',
   ],
-  bonus: ['bonus.per_hour', 'bonus.seed_bonus', 'bonus.size_bonus'],
+  bonus: [
+    'bonus.per_hour', 'bonus.seed_bonus', 'bonus.size_bonus',
+    'bonus.tzero', 'bonus.nzero', 'bonus.bzero', 'bonus.l',
+    'bonus.perseeding', 'bonus.maxseeding', 'bonus.harvest_interval',
+  ],
   hr: ['hr.enabled', 'hr.seed_hours', 'hr.check_interval'],
 }
 
