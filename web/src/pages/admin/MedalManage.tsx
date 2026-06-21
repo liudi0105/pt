@@ -130,7 +130,7 @@ export function MedalManage() {
       key: 'display',
       render: (_: unknown, record: Medal) => {
         const i18nMap = record.i18n?.[lang]
-        return i18nMap?.label || `Medal ${record.code}`
+        return i18nMap?.label || ''
       },
     },
     {
@@ -138,7 +138,7 @@ export function MedalManage() {
       key: 'description',
       render: (_: unknown, record: Medal) => {
         const i18nMap = record.i18n?.[lang]
-        return i18nMap?.description || record.description
+        return i18nMap?.description || ''
       },
     },
     { title: t('medalManage.price'), dataIndex: 'price', key: 'price', width: 80 },

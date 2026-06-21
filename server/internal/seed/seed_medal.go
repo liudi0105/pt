@@ -26,7 +26,7 @@ func insertMedal(db *gorm.DB, data map[string]any) error {
 
 	m := model.Medal{
 		Code:        code,
-		Description: strVal(data, "description"),
+		Description: strVal(data, "description_zh"),
 		Image:       strVal(data, "image"),
 		Price:       floatVal(data, "price"),
 		IsActive:    boolVal(data, "is_active"),

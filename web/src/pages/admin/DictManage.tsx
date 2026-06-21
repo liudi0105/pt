@@ -53,7 +53,7 @@ function rowsToI18n(rows: LocaleRow[]): Record<string, Record<string, string>> {
 
 function localizedLabel(entity: { i18n?: Record<string, Record<string, string>>; label?: string } | null | undefined, lang: string, field = 'label'): string {
   if (!entity) return ''
-  return entity.i18n?.[lang]?.[field] || entity.label || ''
+  return entity.i18n?.[lang]?.[field] || ''
 }
 
 export function DictManage() {

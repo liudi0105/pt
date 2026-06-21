@@ -23,7 +23,7 @@ function dictOptions(data: Record<string, DictData[]> | undefined, typeKey: stri
   const items = data?.[typeKey] ?? []
   return items.map(d => ({
     value: d.key,
-    label: d.i18n?.[lang]?.label || d.label,
+    label: d.i18n?.[lang]?.label || '',
   }))
 }
 

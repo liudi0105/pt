@@ -125,7 +125,7 @@ func insertUserLevelsBatch(db *gorm.DB, entries []Entry) {
 		}
 		seeds = append(seeds, levelSeed{item: model.UserLevel{
 			Code:         code,
-			Label:        strVal(entry.Data, "label"),
+			Label:        strVal(entry.Data, "label_zh"),
 			MinUpload:    int64Val(entry.Data, "min_upload"),
 			MinDownload:  int64Val(entry.Data, "min_download"),
 			MinRatio:     floatVal(entry.Data, "min_ratio"),
@@ -287,8 +287,8 @@ func insertDictTypes(db *gorm.DB, entries []Entry) {
 		seeds = append(seeds, dictTypeSeed{
 			item: model.DictType{
 				Key:       key,
-				Label:     strVal(entry.Data, "label"),
-				Remark:    strVal(entry.Data, "remark"),
+				Label:     strVal(entry.Data, "label_zh"),
+				Remark:    strVal(entry.Data, "remark_zh"),
 				SortOrder: intVal(entry.Data, "sort_order"),
 				IsSystem:  boolVal(entry.Data, "is_system"),
 				IsActive:  boolVal(entry.Data, "is_active"),
@@ -369,7 +369,7 @@ func insertDictDataBatch(db *gorm.DB, entries []Entry) {
 				TypeKey:   typeKey,
 				Key:       key,
 				Value:     strVal(entry.Data, "value"),
-				Label:     strVal(entry.Data, "label"),
+				Label:     strVal(entry.Data, "label_zh"),
 				SortOrder: intVal(entry.Data, "sort_order"),
 				IsDefault: boolVal(entry.Data, "is_default"),
 				IsActive:  boolVal(entry.Data, "is_active"),
@@ -519,8 +519,8 @@ func insertDictType(db *gorm.DB, data map[string]any) error {
 	}
 	d := model.DictType{
 		Key:       key,
-		Label:     strVal(data, "label"),
-		Remark:    strVal(data, "remark"),
+		Label:     strVal(data, "label_zh"),
+		Remark:    strVal(data, "remark_zh"),
 		SortOrder: intVal(data, "sort_order"),
 		IsSystem:  boolVal(data, "is_system"),
 		IsActive:  boolVal(data, "is_active"),
@@ -564,7 +564,7 @@ func insertDictData(db *gorm.DB, data map[string]any) error {
 		TypeKey:   dt.Key,
 		Key:       key,
 		Value:     strVal(data, "value"),
-		Label:     strVal(data, "label"),
+		Label:     strVal(data, "label_zh"),
 		SortOrder: intVal(data, "sort_order"),
 		IsDefault: boolVal(data, "is_default"),
 		IsActive:  boolVal(data, "is_active"),
@@ -630,7 +630,7 @@ func insertUserLevel(db *gorm.DB, data map[string]any) error {
 	}
 	l := model.UserLevel{
 		Code:         code,
-		Label:        strVal(data, "label"),
+		Label:        strVal(data, "label_zh"),
 		MinUpload:    int64Val(data, "min_upload"),
 		MinDownload:  int64Val(data, "min_download"),
 		MinRatio:     floatVal(data, "min_ratio"),

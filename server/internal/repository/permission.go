@@ -16,7 +16,7 @@ func NewPermissionRepo(db *gorm.DB) *PermissionRepo {
 
 func (r *PermissionRepo) List() ([]model.Permission, error) {
 	var perms []model.Permission
-	err := r.db.Order("group asc, id asc").Find(&perms).Error
+	err := r.db.Order("`group` ASC, id ASC").Find(&perms).Error
 	return perms, err
 }
 

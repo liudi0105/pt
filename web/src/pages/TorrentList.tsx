@@ -85,7 +85,7 @@ export function TorrentList() {
       const items = dictData[dictType] ?? []
       result[paramKey] = items.map((d: DictData) => ({
         value: d.key,
-        label: d.i18n?.[lang]?.label || d.label,
+        label: d.i18n?.[lang]?.label || '',
       }))
     }
     return result

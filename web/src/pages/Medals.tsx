@@ -82,8 +82,8 @@ export function Medals() {
           const has = owned.has(m.id)
           const isWearing = wearing.has(m.id)
           const i18nMap = m.i18n?.[lang]
-          const medalLabel = i18nMap?.label || `Medal ${m.code}`
-          const medalDescription = i18nMap?.description || m.description
+          const medalLabel = i18nMap?.label || ''
+          const medalDescription = i18nMap?.description || ''
 
           let action
           if (!has) {
@@ -129,7 +129,7 @@ export function Medals() {
                     const Icon = getMedalIcon(m.code, m.image); return <Icon size={48} color={getMedalColor(m.code, m.color)} />
                   })()}
                 <Title level={5}>{medalLabel}</Title>
-                <Text type="secondary">{medalDescription || t('medal.noDescription')}</Text>
+                <Text type="secondary">{medalDescription}</Text>
                 <div style={{ marginTop: 8 }}>
                   {isWearing ? (
                     <Tag color="gold">{t('medal.wearing')}</Tag>

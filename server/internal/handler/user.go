@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"pt-server/internal/model"
 
 	i18n "pt-server/internal/i18n"
+	"pt-server/internal/repository"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -29,7 +31,13 @@ func (h *Handler) GetProfile(c *gin.Context) {
 		level, err := h.repo.Level.GetByID(*user.LevelID)
 		if err == nil {
 			levelCode = level.Code
-			levelLabel = level.Label
+			entries, err := h.repo.I18n.LoadByKeys([]string{fmt.Sprintf("user_level.%d.label", level.Code)})
+			if err == nil {
+				byKey := repository.GroupByKey(entries)
+				if locales, ok := byKey[fmt.Sprintf("user_level.%d.label", level.Code)]; ok {
+					levelLabel = locales[i18n.GetLang(c)]
+				}
+			}
 		}
 	}
 

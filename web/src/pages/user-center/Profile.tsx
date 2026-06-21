@@ -58,7 +58,7 @@ export default function Profile() {
   const i18nLevel = useI18n('user_level')
   const levelCode = profile?.level_code
   const levelLabel = levelCode !== undefined
-    ? i18nLevel.getLabel(String(levelCode)) || profile?.level_label || `Level ${levelCode}`
+    ? i18nLevel.getLabel(String(levelCode)) || '-'
     : '-'
 
   const wearingMedals: Medal[] = (userMedalList ?? [])
@@ -78,7 +78,7 @@ export default function Profile() {
                   <Space key={m.id} direction="vertical" align="center" size={4}>
                     {(() => { const Icon = getMedalIcon(m.code, m.image); return <Icon size={32} color={getMedalColor(m.code, m.color)} /> })()}
                     <Text strong>
-                      {m.i18n?.[lang]?.label || `Medal ${m.code}`}
+                      {m.i18n?.[lang]?.label || ''}
                     </Text>
                   </Space>
                 ))}

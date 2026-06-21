@@ -210,6 +210,7 @@
     "sortOrderLabel": "排序",
     "activeLabel": "启用",
     "iconPlaceholder": "图标类名",
+    "i18nLabelPlaceholder": "标签",
     "deleteConfirm": "确定删除此等级？",
     "createSuccess": "等级已创建",
     "updateSuccess": "等级已更新",

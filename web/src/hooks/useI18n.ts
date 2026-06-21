@@ -13,7 +13,7 @@ export function useI18n(prefix: string) {
     select: (res) => res.data.entries,
   })
 
-  function getLabel(key: string, field = 'label', fallback = key): string {
+  function getLabel(key: string, field = 'label', fallback = ''): string {
     return data?.[`${prefix}.${key}.${field}`]?.[lang] || fallback
   }
 

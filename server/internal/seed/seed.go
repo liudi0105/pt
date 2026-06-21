@@ -174,6 +174,9 @@ func InsertAll(db *gorm.DB, entries []Entry) error {
 			}
 		}
 	}
+	if err := SyncI18nFromSeed(db, entries); err != nil {
+		return err
+	}
 	log.Println("Seed data initialized successfully")
 	return nil
 }
