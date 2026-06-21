@@ -42,6 +42,11 @@ CREATE TABLE `sys_i18n` (`key` varchar(255) NOT NULL,`locale` varchar(10) NOT NU
 
 CREATE TABLE `sys_user_level` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`label` varchar(128) DEFAULT '',`min_upload` integer DEFAULT 0,`min_download` integer DEFAULT 0,`min_ratio` decimal(10,3) DEFAULT 0,`min_bonus` decimal(12,2) DEFAULT 0,`min_seed_count` integer DEFAULT 0,`color` varchar(32),`icon` varchar(64),`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_sys_user_level_code` UNIQUE (`code`));
 
+CREATE TABLE `achievements` (`id` integer PRIMARY KEY AUTOINCREMENT,`code` integer NOT NULL,`name` varchar(128),`description` text,`icon` varchar(255),`group` varchar(32) DEFAULT 'other',`condition` text,`is_active` numeric DEFAULT true,`created_at` datetime,CONSTRAINT `uni_achievements_code` UNIQUE (`code`));
+CREATE TABLE `user_achievements` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`achievement_id` integer NOT NULL,`unlocked_at` datetime);
+CREATE UNIQUE INDEX `idx_user_achievement` ON `user_achievements`(`user_id`,`achievement_id`);
+CREATE INDEX `idx_achievements_group` ON `achievements`(`group`);
+
 CREATE TABLE `thanks` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`torrent_id` integer NOT NULL,`created_at` datetime);
 
 CREATE TABLE `torrents` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`info_hash` bytea NOT NULL,`name` varchar(255) NOT NULL,`description` text,`file_name` varchar(255) DEFAULT '',`size` integer DEFAULT 0,`file_count` integer DEFAULT 0,`category` varchar(32) DEFAULT '',`source` text DEFAULT '',`medium` text DEFAULT '',`codec` text DEFAULT '',`standard` text DEFAULT '',`processing` text DEFAULT '',`team` text DEFAULT '',`audio_codec` text DEFAULT '',`small_descr` text,`technical_info` text,`cover` text,`nfo` text,`tags` text DEFAULT '',`promotion` varchar(16) DEFAULT "none",`seed_hours` integer DEFAULT 0,`seeders` integer DEFAULT 0,`leechers` integer DEFAULT 0,`completed` integer DEFAULT 0,`created_at` datetime,`is_deleted` numeric DEFAULT false);
@@ -118,3 +123,5 @@ CREATE INDEX `idx_lucky_draw_records_user_id` ON `lucky_draw_records`(`user_id`)
 
 CREATE TABLE `game_bets` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer NOT NULL,`bet_amount` decimal(12,2) NOT NULL,`bet_choice` varchar(10) NOT NULL,`dice_result` integer NOT NULL,`result` varchar(10) NOT NULL,`payout` decimal(12,2) NOT NULL,`created_at` datetime);
 CREATE INDEX `idx_game_bets_user_id` ON `game_bets`(`user_id`);
+
+ALTER TABLE `user_medals` ADD COLUMN `is_wearing` numeric DEFAULT 0;

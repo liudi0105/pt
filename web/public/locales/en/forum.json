@@ -12,6 +12,8 @@
   "categories": "Categories",
   "recent": "Recent Topics",
   "noTopics": "No topics yet",
+  "noCategories": "No categories yet",
+  "noPosts": "No posts yet",
   "noResults": "No results found",
   "sticky": "Sticky",
   "locked": "Locked",

@@ -30,6 +30,10 @@ func (r *MedalRepo) GetByID(id int64) (*model.Medal, error) {
 	return &m, err
 }
 
+func (r *MedalRepo) Update(m *model.Medal) error {
+	return r.db.Save(m).Error
+}
+
 func (r *MedalRepo) Delete(id int64) error {
 	return r.db.Delete(&model.Medal{}, id).Error
 }
@@ -65,4 +69,10 @@ func (r *UserMedalRepo) Exists(userID, medalID int64) (bool, error) {
 	var count int64
 	err := r.db.Model(&model.UserMedal{}).Where("user_id = ? AND medal_id = ?", userID, medalID).Count(&count).Error
 	return count > 0, err
+}
+
+func (r *UserMedalRepo) SetWearing(userID, medalID int64, wearing bool) error {
+	return r.db.Model(&model.UserMedal{}).
+		Where("user_id = ? AND medal_id = ?", userID, medalID).
+		Update("is_wearing", wearing).Error
 }

@@ -83,6 +83,7 @@
     "messages": "消息",
     "invites": "邀请",
     "medals": "勋章",
+    "achievements": "成就",
     "hr": "Hit & Run"
   },
   "bonusLogs": {
@@ -92,6 +93,24 @@
     "change": "变动",
     "balance": "余额",
     "comment": "说明"
+  },
+  "bonusRules": {
+    "title": "积分规则",
+    "formula": "做种积分公式",
+    "progress": {
+      "title": "当前做种收益",
+      "current": "当前每小时积分",
+      "max": "最大每小时积分",
+      "percent": "达成率"
+    },
+    "breakdown": {
+      "title": "做种明细",
+      "torrent": "种子",
+      "size": "大小",
+      "weeks": "存活(周)",
+      "seeders": "做种人数"
+    },
+    "otherWays": "其他赚积分方式"
   },
   "bonusShop": {
     "title": "积分商店",
@@ -112,6 +131,7 @@
     "buyNow": "立即购买",
     "insufficientBonus": "积分不足",
     "buySuccess": "购买成功！消耗 {{bonus}} 积分，获得 {{size}} 上传额度！",
-    "buyFailed": "购买失败"
+    "buyFailed": "购买失败",
+    "confirmTitle": "确认购买？"
   }
 }

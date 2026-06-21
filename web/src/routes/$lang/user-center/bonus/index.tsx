@@ -1,11 +1,19 @@
 import { createFileRoute } from '@tanstack/react-router'
-import BonusShop from '../../../../pages/user-center/BonusShop'
+import Bonus from '../../../../pages/user-center/Bonus'
+import { getProfile, getSeedBonusRate } from '../../../../api/user'
 
 export const Route = createFileRoute('/$lang/user-center/bonus/')({
-  staticData: {
-    title: 'user:menu.bonus',
-    menuCode: 'user-bonus-exchange',
-    menuSort: 5,
+  loader: async ({ context: { queryClient } }) => {
+    await Promise.all([
+      queryClient.ensureQueryData({
+        queryKey: ['profile'],
+        queryFn: () => getProfile(),
+      }),
+      queryClient.ensureQueryData({
+        queryKey: ['seed-bonus-rate'],
+        queryFn: () => getSeedBonusRate(),
+      }),
+    ])
   },
-  component: BonusShop,
+  component: Bonus,
 })

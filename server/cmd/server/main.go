@@ -107,6 +107,8 @@ func main() {
 			user.POST("/checkin", h.Checkin)
 			user.GET("/bonus-logs", h.ListUserBonusLogs)
 			user.GET("/seed-bonus-rate", h.GetSeedBonusRate)
+			user.GET("/bonus-settings", h.GetBonusSettings)
+			user.GET("/seed-bonus-breakdown", h.GetSeedBonusBreakdown)
 			user.POST("/buy-download", h.BuyDownload)
 			user.GET("/items", h.ListMyItems)
 			user.GET("/lucky-draw-records", h.ListMyDrawRecords)
@@ -168,7 +170,14 @@ func main() {
 		// Medals
 		api.GET("/medals", h.ListMedals)
 		api.POST("/medals/:id/buy", mw.Auth(), h.BuyMedal)
+		api.POST("/medals/:id/wear", mw.Auth(), h.WearMedal)
+		api.POST("/medals/:id/unwear", mw.Auth(), h.UnwearMedal)
 		api.GET("/user/medals", mw.Auth(), h.ListUserMedals)
+
+		// Achievements
+		api.GET("/achievements", h.ListAchievements)
+		api.GET("/user/achievements", mw.Auth(), h.ListUserAchievements)
+		api.POST("/user/achievements/check", mw.Auth(), h.CheckAchievements)
 
 		// H&R
 		api.GET("/user/hr", mw.Auth(), h.ListHR)
@@ -231,7 +240,15 @@ func main() {
 			admin.GET("/reports", h.ListReports)
 			admin.POST("/reports/:id/resolve", h.ResolveReport)
 			admin.POST("/medals", h.CreateMedal)
+			admin.PUT("/medals/:id", h.UpdateMedal)
 			admin.DELETE("/medals/:id", h.DeleteMedal)
+
+			// Achievement management
+			admin.GET("/achievements", h.ListAchievements)
+			admin.POST("/achievements", h.CreateAchievement)
+			admin.PUT("/achievements/:id", h.UpdateAchievement)
+			admin.DELETE("/achievements/:id", h.DeleteAchievement)
+			admin.GET("/user-achievements", h.ListUserAchievementsAdmin)
 
 			// Roles & Permissions
 			admin.GET("/roles", h.ListRoles)

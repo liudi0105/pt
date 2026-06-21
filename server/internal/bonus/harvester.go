@@ -19,15 +19,36 @@ type SeedBonusResult struct {
 	TotalSize    int64
 }
 
-func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSettings) (*SeedBonusResult, error) {
+type TorrentBonusDetail struct {
+	TorrentID  int64   `json:"torrent_id"`
+	Name       string  `json:"name"`
+	Size       int64   `json:"size"`
+	Seeders    int     `json:"seeders"`
+	WeeksAlive float64 `json:"weeks_alive"`
+	AValue     float64 `json:"a_value"`
+}
+
+type SeedBonusBreakdown struct {
+	Torrents   []TorrentBonusDetail `json:"torrents"`
+	TotalA     float64              `json:"total_a"`
+	SeedBonus  float64              `json:"seed_bonus"`
+	MaxBonus   float64              `json:"max_bonus"`
+	Percent    float64              `json:"percent"`
+	Count      int                  `json:"count"`
+	TotalSize  int64                `json:"total_size"`
+	SeedPoints float64              `json:"seed_points"`
+}
+
+func CalculateSeedBonusBreakdown(db *gorm.DB, userID int64, cfg siteconfig.BonusSettings) (*SeedBonusBreakdown, error) {
 	var seeding []struct {
 		TorrentID int64
+		Name      string
 		Size      int64
 		Seeders   int
 		CreatedAt time.Time
 	}
 	err := db.Table("snatches").
-		Select("snatches.torrent_id, torrents.size, torrents.seeders, torrents.created_at").
+		Select("snatches.torrent_id, torrents.name, torrents.size, torrents.seeders, torrents.created_at").
 		Joins("JOIN torrents ON torrents.id = snatches.torrent_id").
 		Where("snatches.user_id = ? AND snatches.is_seeding = ? AND torrents.is_deleted = ?", userID, true, false).
 		Find(&seeding).Error
@@ -36,7 +57,7 @@ func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSe
 	}
 
 	if len(seeding) == 0 {
-		return &SeedBonusResult{}, nil
+		return &SeedBonusBreakdown{}, nil
 	}
 
 	now := time.Now()
@@ -51,6 +72,7 @@ func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSe
 	var A float64
 	var totalSize int64
 	count := 0
+	torrents := make([]TorrentBonusDetail, 0, len(seeding))
 
 	for _, s := range seeding {
 		totalSize += s.Size
@@ -62,6 +84,15 @@ func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSe
 
 		temp := (1 - math.Exp(valueOne*weeksAlive)) * gbSize *
 			(1 + sqrtof2*math.Exp(valueThree*float64(s.Seeders-1)))
+
+		torrents = append(torrents, TorrentBonusDetail{
+			TorrentID:  s.TorrentID,
+			Name:       s.Name,
+			Size:       s.Size,
+			Seeders:    s.Seeders,
+			WeeksAlive: math.Round(weeksAlive*100) / 100,
+			AValue:     math.Round(temp*10000) / 10000,
+		})
 		A += temp
 		count++
 	}
@@ -75,6 +106,12 @@ func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSe
 		seedBonus = 0
 	}
 
+	maxSeedBonus := valueTwo*math.Atan(1e10/cfg.L) + cfg.PerSeeding*float64(cfg.MaxSeeding)
+	percent := 0.0
+	if maxSeedBonus > 0 {
+		percent = math.Round(seedBonus/maxSeedBonus*10000) / 100
+	}
+
 	notOfficialSize := float64(totalSize)
 	notOfficialSeedPoints := (notOfficialSize / (1024 * 1024 * 1024)) * 0.01
 	if notOfficialSeedPoints > 50 {
@@ -82,11 +119,28 @@ func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSe
 	}
 	seedPoints := notOfficialSeedPoints
 
+	return &SeedBonusBreakdown{
+		Torrents:   torrents,
+		TotalA:     math.Round(A*100) / 100,
+		SeedBonus:  math.Round(seedBonus*1000) / 1000,
+		MaxBonus:   math.Round(maxSeedBonus*1000) / 1000,
+		Percent:    percent,
+		Count:      count,
+		TotalSize:  totalSize,
+		SeedPoints: seedPoints,
+	}, nil
+}
+
+func CalculateSeedBonusForUser(db *gorm.DB, userID int64, cfg siteconfig.BonusSettings) (*SeedBonusResult, error) {
+	breakdown, err := CalculateSeedBonusBreakdown(db, userID, cfg)
+	if err != nil {
+		return nil, err
+	}
 	return &SeedBonusResult{
-		SeedBonus:    seedBonus,
-		SeedPoints:   seedPoints,
-		TorrentCount: count,
-		TotalSize:    totalSize,
+		SeedBonus:    breakdown.SeedBonus,
+		SeedPoints:   breakdown.SeedPoints,
+		TorrentCount: breakdown.Count,
+		TotalSize:    breakdown.TotalSize,
 	}, nil
 }
 

@@ -1,7 +1,20 @@
-import {createRootRoute, HeadContent, Outlet, useLocation, useMatches, useNavigate, useParams} from '@tanstack/react-router'
+import {
+    createRootRouteWithContext,
+    HeadContent,
+    Outlet,
+    useLocation,
+    useMatches,
+    useNavigate,
+    useParams
+} from '@tanstack/react-router'
+import type {QueryClient} from '@tanstack/react-query'
 import {useEffect, useMemo} from 'react'
-import {Layout, Menu, Spin} from 'antd'
-import type { MenuProps } from 'antd'
+import type {MenuProps} from 'antd'
+import {Layout, Menu, Spin, theme} from 'antd'
+
+interface RouterContext {
+    queryClient: QueryClient
+}
 import {Navbar} from '../components/Navbar'
 import {NProgressProvider} from '../components/NProgressProvider'
 import {langPath, normalizeLang} from '../utils/lang'
@@ -20,7 +33,7 @@ function getLangFromCookie(): string {
     return normalizeLang(match ? decodeURIComponent(match[1]) : undefined) ?? 'zh'
 }
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
     loader: async () => {
         await i18nReady
         const {token, user} = useAuthStore.getState()
@@ -58,6 +71,7 @@ export const Route = createRootRoute({
 function RootLayout() {
     const location = useLocation()
     const pathname = location.pathname
+    const {token} = theme.useToken()
 
     const hasLangPrefix = /^\/(zh|en)(\/|$)/.test(pathname)
 
@@ -76,7 +90,7 @@ function RootLayout() {
     const menuTree = useMenuTree()
 
     const navigate = useNavigate()
-    const { lang } = useParams({ from: '/$lang' })
+    const {lang} = useParams({from: '/$lang'})
     const matchedKeys = matches.map(m => m.staticData?.menuCode).filter(Boolean) as string[]
     let hasSidebar = false
     let sidebarItems: any[] | undefined
@@ -92,20 +106,22 @@ function RootLayout() {
 
     const menuPathMap = useMemo(() => {
         const map = new Map<string, string>()
+
         function walk(items: any[]) {
             for (const item of items) {
                 if (item._path) map.set(item.key, item._path)
                 if (item.children) walk(item.children)
             }
         }
+
         walk(menuTree)
         return map
     }, [menuTree])
 
-    const handleSidebarClick: MenuProps['onClick'] = ({ key }) => {
+    const handleSidebarClick: MenuProps['onClick'] = ({key}) => {
         const path = menuPathMap.get(key)
         if (path) {
-            navigate({ to: langPath(lang, path) as any })
+            navigate({to: langPath(lang, path) as any})
         }
     }
 
@@ -114,24 +130,33 @@ function RootLayout() {
     return (
         <NProgressProvider>
             <HeadContent/>
-            <Layout style={{minHeight: '100vh'}}>
+            <Layout style={{minHeight: '100vh', background: token.colorBgLayout}}>
                 <Navbar/>
                 <Layout>
                     {hasSidebar && (
-                        <Sider width={220}>
+                        <Sider width={220} style={{
+                            background: token.colorBgContainer,
+                            borderRight: `1px solid ${token.colorBorderSecondary}`
+                        }}>
                             <Menu
                                 mode="inline"
                                 selectedKeys={selectedKeys}
                                 items={sidebarItems}
                                 onClick={handleSidebarClick}
-                                style={{borderRight: 0}}
+                                style={{borderRight: 0, height: '100%'}}
                             />
                         </Sider>
                     )}
                     <Content style={
                         hasSidebar
-                            ? {padding: 24}
-                            : {padding: '24px', maxWidth: 1200, margin: '0 auto', width: '100%'}
+                            ? {padding: 24, background: token.colorBgLayout}
+                            : {
+                                padding: '24px',
+                                maxWidth: 1200,
+                                margin: '0 auto',
+                                width: '100%',
+                                background: token.colorBgLayout
+                            }
                     }>
                         <Outlet/>
                     </Content>

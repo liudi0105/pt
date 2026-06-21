@@ -5,7 +5,7 @@ export const Route = createFileRoute('/$lang/forum')({
     title: 'common:nav.forum',
     menuCode: 'forum',
     menuIcon: 'CommentOutlined',
-    menuSort: 30,
+    menuSort: 5,
   },
   component: () => <Outlet />,
 })

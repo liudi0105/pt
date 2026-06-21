@@ -246,6 +246,19 @@ export interface Medal {
   price: number
   is_active: boolean
   created_at: string
+  i18n?: Record<string, Record<string, string>>
+}
+
+export interface MedalFormValues {
+  code: number
+  description: string
+  image: string
+  price: number
+  is_active: boolean
+  label_zh: string
+  label_en: string
+  description_zh: string
+  description_en: string
 }
 
 export interface UserMedal {
@@ -253,7 +266,28 @@ export interface UserMedal {
   user_id: number
   medal_id: number
   medal_code?: number
+  is_wearing: boolean
   created_at: string
+}
+
+export interface Achievement {
+  id: number
+  code: number
+  name: string
+  description: string
+  icon: string
+  group: string
+  condition: string
+  is_active: boolean
+  created_at: string
+}
+
+export interface UserAchievement {
+  id: number
+  user_id: number
+  achievement_id: number
+  achievement_code?: number
+  unlocked_at: string
 }
 
 export interface HRItem {

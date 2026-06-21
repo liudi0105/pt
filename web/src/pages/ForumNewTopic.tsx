@@ -1,35 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query'
 import { BookOutlined, EditOutlined } from '@ant-design/icons'
 import { Alert, Button, Card, Col, Form, Input, Row, Select, Space, Typography } from 'antd'
-import { createTopic, listForums, type Forum } from '../api/forum'
+import { createTopic, listForums } from '../api/forum'
 
 const { TextArea } = Input
 
 export function ForumNewTopic() {
   const { t } = useTranslation('forum')
   const navigate = useNavigate()
+  const { lang } = useParams({ from: '/$lang/forum/new' })
   const search = useSearch({ from: '/$lang/forum/new' }) as { forumId?: string }
-  const [forums, setForums] = useState<Forum[]>([])
   const [forumId, setForumId] = useState<number>(Number(search.forumId) || 0)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  useEffect(() => {
-    listForums().then(res => setForums(res.data.forums))
-  }, [])
+  const { data: forumsData } = useQuery({
+    queryKey: ['forums'],
+    queryFn: () => listForums(),
+    staleTime: 5 * 60 * 1000,
+  })
+  const forums = forumsData?.data.forums ?? []
 
   const handleSubmit = async () => {
     if (!forumId || !title.trim() || !content.trim()) return
     setSubmitting(true)
-    try {
-      const res = await createTopic({ forum_id: forumId, title: title.trim(), content: content.trim() })
-      navigate({ to: '/$lang/forum/topic/$id', params: { lang: '', id: String(res.data.topic.id) } })
-    } finally {
-      setSubmitting(false)
-    }
+      try {
+        const res = await createTopic({ forum_id: forumId, title: title.trim(), content: content.trim() })
+      navigate({ to: '/$lang/forum/topic/$id', params: { lang, id: String(res.data.topic.id) } })
+      } finally {
+        setSubmitting(false)
+      }
   }
 
   return (
@@ -90,7 +94,7 @@ export function ForumNewTopic() {
               >
                 {t('submit')}
               </Button>
-              <Button onClick={() => navigate({ to: '/$lang/forum', params: { lang: '' }, search: { forumId: undefined } })}>
+              <Button onClick={() => navigate({ to: '/$lang/forum', params: { lang }, search: { forumId: undefined, page: undefined } })}>
                 {t('common:cancel')}
               </Button>
             </Space>

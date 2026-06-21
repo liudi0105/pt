@@ -1,35 +1,42 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from '@tanstack/react-router'
-import { listLuckyDrawPrizes, draw, listDrawRecords, type LuckyDrawPrize, type LuckyDrawRecord } from '../api/luckydraw'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { listLuckyDrawPrizes, draw, listDrawRecords } from '../api/luckydraw'
 import { getProfile } from '../api/user'
 
 export function LuckyDraw() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [prizes, setPrizes] = useState<LuckyDrawPrize[]>([])
-  const [records, setRecords] = useState<LuckyDrawRecord[]>([])
-  const [profile, setProfile] = useState<{ bonus: number } | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { lang } = useParams({ from: '/$lang' })
+  const queryClient = useQueryClient()
   const [drawing, setDrawing] = useState(false)
   const [lastResult, setLastResult] = useState<{ prize: string; won: boolean } | null>(null)
   const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
   const pageSize = 10
 
-  const load = () => {
-    setLoading(true)
-    Promise.all([
-      listLuckyDrawPrizes().then(r => setPrizes(r.data.prizes)),
-      getProfile().then(r => setProfile(r.data)),
-      listDrawRecords({ page, page_size: pageSize }).then(r => {
-        setRecords(r.data.records)
-        setTotal(r.data.total)
-      }),
-    ]).finally(() => setLoading(false))
-  }
+  const { data: prizes = [], isLoading: prizesLoading } = useQuery({
+    queryKey: ['lucky-draw-prizes'],
+    queryFn: () => listLuckyDrawPrizes(),
+    select: (res) => res.data.prizes,
+    staleTime: 5 * 60 * 1000,
+  })
 
-  useState(() => load())
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getProfile(),
+    select: (res) => res.data,
+  })
+
+  const { data: recordsData, isLoading: recordsLoading } = useQuery({
+    queryKey: ['lucky-draw-records', page],
+    queryFn: () => listDrawRecords({ page, page_size: pageSize }),
+    select: (res) => res.data,
+  })
+
+  const records = recordsData?.records ?? []
+  const total = recordsData?.total ?? 0
+  const loading = prizesLoading || profileLoading || recordsLoading
 
   const handleDraw = async () => {
     if (!profile || profile.bonus < (prizes[0]?.price || 0)) return
@@ -37,12 +44,9 @@ export function LuckyDraw() {
     try {
       const res = await draw()
       setLastResult({ prize: res.data.prize, won: res.data.won })
-      const profileRes = await getProfile()
-      setProfile(profileRes.data)
-      const r = await listDrawRecords({ page: 1, page_size: pageSize })
-      setRecords(r.data.records)
-      setTotal(r.data.total)
       setPage(1)
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+      queryClient.invalidateQueries({ queryKey: ['lucky-draw-records'] })
     } finally {
       setDrawing(false)
     }
@@ -129,7 +133,7 @@ export function LuckyDraw() {
       )}
       <div className="mt-4">
         <button className="text-blue-500 hover:underline text-sm"
-          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang: '' } })}>
+          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang } })}>
           &larr; {t('shop.backToBonus')}
         </button>
       </div>

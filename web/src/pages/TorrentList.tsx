@@ -1,9 +1,9 @@
 import { useMemo, useCallback, useState } from 'react'
-import { Table, Input, Tag, Space, Typography, Button, Checkbox, Row, Col, Card, Tooltip } from 'antd'
-import { FireOutlined, StarOutlined, ThunderboltOutlined, ClockCircleOutlined, ArrowUpOutlined, FilterOutlined, ReloadOutlined } from '@ant-design/icons'
+import { Table, Input, Tag, Space, Typography, Button, Checkbox, Row, Col, Card, Tooltip, Select } from 'antd'
+import { FireOutlined, FilterOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Link, useParams, useNavigate, useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { listTorrents } from '../api/torrent'
+import { listTorrents, type TorrentListParams } from '../api/torrent'
 import { getDictData } from '../api/dict'
 import { formatSize } from '../utils/format'
 import type { Torrent, DictData } from '../types'
@@ -23,7 +23,7 @@ type TorrentSearch = {
   keyword?: string
   categories?: string
   incldead?: number
-  spstate?: number
+  spstate?: string
   sort?: string
   order?: string
   page?: number
@@ -61,13 +61,13 @@ export function TorrentList() {
     staleTime: 5 * 60 * 1000,
   })
 
-  const apiParams = useMemo(() => ({
+  const apiParams: TorrentListParams = useMemo(() => ({
     page: search.page || 1,
     page_size: search.page_size || 50,
     keyword: search.keyword,
     categories: search.categories,
     incldead: search.incldead,
-    spstate: search.spstate,
+    spstate: search.spstate as any,
     sort: search.sort || 'created_at',
     order: search.order || 'desc',
     sources: search.sources,
@@ -240,46 +240,42 @@ export function TorrentList() {
               {tt('filter.active')}
             </Button>
           </Tooltip>
-          <Tooltip title={tt('filter.freeTooltip')}>
-            <Button
-              type={search.spstate === 2 ? 'primary' : 'default'}
-              icon={<StarOutlined />}
-              onClick={() => toggleQuickFilter('spstate', 2)}
-            >
-              {tt('filter.free')}
-            </Button>
-          </Tooltip>
-          <Tooltip title={tt('filter.twoupTooltip')}>
-            <Button
-              type={search.spstate === 3 ? 'primary' : 'default'}
-              icon={<ThunderboltOutlined />}
-              onClick={() => toggleQuickFilter('spstate', 3)}
-            >
-              {tt('filter.twoup')}
-            </Button>
-          </Tooltip>
+          <Select
+            mode="multiple"
+            value={search.spstate ? String(search.spstate).split(',').filter(Boolean) : []}
+            style={{ minWidth: 100 }}
+            placeholder={tt('filter.promotion')}
+            onChange={(values: string[]) => {
+              updateSearch({ spstate: values.length ? values.join(',') : undefined })
+            }}
+            options={[
+              { value: '2', label: tt('filter.free') },
+              { value: '3', label: tt('filter.twoup') },
+            ]}
+          />
 
-          <Button
-            type={search.sort === 'created_at' && search.order === 'desc' ? 'primary' : 'default'}
-            icon={<ClockCircleOutlined />}
-            onClick={() => updateSearch({ sort: 'created_at', order: 'desc' })}
-          >
-            {tt('filter.newest')}
-          </Button>
-          <Button
-            type={search.sort === 'seeders' ? 'primary' : 'default'}
-            icon={<ArrowUpOutlined />}
-            onClick={() => updateSearch({ sort: 'seeders', order: 'desc' })}
-          >
-            {tt('filter.mostSeeders')}
-          </Button>
+          <Select
+            value={search.sort === 'seeders' ? 'seeders' : 'created_at'}
+            style={{ width: 120 }}
+            onChange={(value) => {
+              if (value === 'created_at') {
+                updateSearch({ sort: 'created_at', order: 'desc' })
+              } else {
+                updateSearch({ sort: 'seeders', order: 'desc' })
+              }
+            }}
+            options={[
+              { value: 'created_at', label: tt('filter.newest') },
+              { value: 'seeders', label: tt('filter.mostSeeders') },
+            ]}
+          />
 
           <Button
             type={showAdvanced ? 'primary' : 'default'}
             icon={<FilterOutlined />}
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
-            {showAdvanced ? tt('filter.hideAdvanced') : tt('filter.advanced')}
+            {tt('filter.advanced')}
           </Button>
         </Space>
       </Card>

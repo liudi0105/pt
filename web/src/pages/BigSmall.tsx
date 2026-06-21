@@ -1,61 +1,57 @@
 import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from '@tanstack/react-router'
-import { placeBet, listBets, type GameBet } from '../api/game'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { placeBet, listBets } from '../api/game'
 import { getProfile } from '../api/user'
 
 export function BigSmall() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [profile, setProfile] = useState<{ bonus: number } | null>(null)
-  const [bets, setBets] = useState<GameBet[]>([])
-  const [total, setTotal] = useState(0)
+  const { lang } = useParams({ from: '/$lang' })
+  const queryClient = useQueryClient()
   const [betAmount, setBetAmount] = useState(10)
   const [betChoice, setBetChoice] = useState<string>('big')
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
   const [lastResult, setLastResult] = useState<{
     dice: number[]; total: number; result: string; payout: number
   } | null>(null)
   const [page, setPage] = useState(1)
   const pageSize = 10
 
-  const load = () => {
-    setLoading(true)
-    Promise.all([
-      getProfile().then(r => setProfile(r.data)),
-      listBets({ page, page_size: pageSize }).then(r => {
-        setBets(r.data.bets)
-        setTotal(r.data.total)
-      }),
-    ]).finally(() => setLoading(false))
-  }
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getProfile().then(r => r.data),
+  })
 
-  useState(() => load())
+  const { data: betsData } = useQuery({
+    queryKey: ['bets', page],
+    queryFn: () => listBets({ page, page_size: pageSize }).then(r => r.data),
+  })
 
-  const handleBet = async () => {
-    if (!profile || profile.bonus < betAmount) return
-    setSubmitting(true)
-    try {
-      const res = await placeBet({ bet_amount: betAmount, bet_choice: betChoice })
+  const bets = betsData?.bets ?? []
+  const total = betsData?.total ?? 0
+
+  const placeBetMutation = useMutation({
+    mutationFn: (data: { bet_amount: number; bet_choice: string }) => placeBet(data),
+    onSuccess: (res) => {
       setLastResult({
         dice: res.data.dice,
         total: res.data.total,
         result: res.data.result,
         payout: res.data.payout,
       })
-      const profileRes = await getProfile()
-      setProfile(profileRes.data)
-      const r = await listBets({ page: 1, page_size: pageSize })
-      setBets(r.data.bets)
-      setTotal(r.data.total)
       setPage(1)
-    } finally {
-      setSubmitting(false)
-    }
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+      queryClient.invalidateQueries({ queryKey: ['bets'] })
+    },
+  })
+
+  const handleBet = () => {
+    if (!profile || profile.bonus < betAmount) return
+    placeBetMutation.mutate({ bet_amount: betAmount, bet_choice: betChoice })
   }
 
-  if (loading) return <div className="container mx-auto p-4 text-center py-8">{t('common:loading')}</div>
+  if (profileLoading) return <div className="container mx-auto p-4 text-center py-8">{t('common:loading')}</div>
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -81,9 +77,9 @@ export function BigSmall() {
             min={1} />
         </div>
         <button className="px-6 py-2 bg-green-500 text-white rounded-lg disabled:opacity-50"
-          disabled={submitting || !profile || profile.bonus < betAmount}
+          disabled={placeBetMutation.isPending || !profile || profile.bonus < betAmount}
           onClick={handleBet}>
-          {submitting ? t('common:loading') : t('bigSmall.bet')}
+          {placeBetMutation.isPending ? t('common:loading') : t('bigSmall.bet')}
         </button>
 
         {lastResult && (
@@ -147,7 +143,7 @@ export function BigSmall() {
       )}
       <div className="mt-4">
         <button className="text-blue-500 hover:underline text-sm"
-          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang: '' } })}>
+          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang } })}>
           &larr; {t('shop.backToBonus')}
         </button>
       </div>

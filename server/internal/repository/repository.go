@@ -18,6 +18,8 @@ type Repository struct {
 	Message         *MessageRepo
 	Invite          *InviteRepo
 	Report          *ReportRepo
+	Achievement     *AchievementRepo
+	UserAchievement *UserAchievementRepo
 	Medal           *MedalRepo
 	UserMedal       *UserMedalRepo
 	DictType        *DictTypeRepo
@@ -60,6 +62,8 @@ func New(db *gorm.DB) *Repository {
 		Message:         NewMessageRepo(db),
 		Invite:          NewInviteRepo(db),
 		Report:          NewReportRepo(db),
+		Achievement:     NewAchievementRepo(db),
+		UserAchievement: NewUserAchievementRepo(db),
 		Medal:           NewMedalRepo(db),
 		UserMedal:       NewUserMedalRepo(db),
 		DictType:        NewDictTypeRepo(db),

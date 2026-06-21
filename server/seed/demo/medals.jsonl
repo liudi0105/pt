@@ -1,8 +1,8 @@
-{"model":"medal","data":{"code":0,"description":"Awarded for completing the first upload milestone","image":"first-upload.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":1,"description":"Awarded for reaching the 100 uploads milestone","image":"100-uploads.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":2,"description":"Awarded for seeding for 1000 hours","image":"seed-master.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":3,"description":"Awarded for receiving 50 thanks","image":"helpful-user.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":4,"description":"Special medal for VIP members","image":"vip-member.png","price":100,"is_active":true}}
-{"model":"medal","data":{"code":5,"description":"Awarded to top uploaders of the month","image":"top-uploader.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":6,"description":"Awarded for being a member for 1 year","image":"anniversary-1year.png","price":0,"is_active":true}}
-{"model":"medal","data":{"code":7,"description":"Awarded for making 100 forum posts","image":"forum-active.png","price":0,"is_active":true}}
+{"model":"medal","data":{"code":4,"description":"VIP members exclusive medal","image":"vip-member.png","price":100,"is_active":true,"label_zh":"VIP 勋章","label_en":"VIP Medal","description_zh":"VIP 会员专属勋章","description_en":"VIP members exclusive medal"}}
+{"model":"medal","data":{"code":8,"description":"Support the community by purchasing this contributor medal","image":"contributor.png","price":200,"is_active":true,"label_zh":"社区贡献者","label_en":"Contributor","description_zh":"购买此勋章以支持社区发展","description_en":"Support the community by purchasing this contributor medal"}}
+{"model":"medal","data":{"code":9,"description":"Rainbow themed limited medal","image":"rainbow.png","price":150,"is_active":true,"label_zh":"彩虹勋章","label_en":"Rainbow Medal","description_zh":"彩虹主题限定勋章","description_en":"Rainbow themed limited medal"}}
+{"model":"medal","data":{"code":10,"description":"Dark themed premium medal","image":"dark-night.png","price":120,"is_active":true,"label_zh":"暗夜勋章","label_en":"Dark Night Medal","description_zh":"暗夜主题高级勋章","description_en":"Dark themed premium medal"}}
+{"model":"medal","data":{"code":11,"description":"Luxurious golden medal for elite members","image":"gold.png","price":300,"is_active":true,"label_zh":"黄金勋章","label_en":"Gold Medal","description_zh":"精英会员尊享黄金勋章","description_en":"Luxurious golden medal for elite members"}}
+{"model":"medal","data":{"code":12,"description":"Starry sky themed collectible medal","image":"star.png","price":80,"is_active":true,"label_zh":"星辰勋章","label_en":"Star Medal","description_zh":"星空主题收藏勋章","description_en":"Starry sky themed collectible medal"}}
+{"model":"medal","data":{"code":13,"description":"Elegant silver medal","image":"silver.png","price":60,"is_active":true,"label_zh":"白银勋章","label_en":"Silver Medal","description_zh":"优雅白银勋章","description_en":"Elegant silver medal"}}
+{"model":"medal","data":{"code":14,"description":"Starter bronze medal","image":"bronze.png","price":40,"is_active":true,"label_zh":"青铜勋章","label_en":"Bronze Medal","description_zh":"入门级青铜勋章","description_en":"Starter bronze medal"}}

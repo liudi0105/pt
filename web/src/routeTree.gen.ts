@@ -32,6 +32,7 @@ import { Route as LangUserCenterInvitesRouteImport } from './routes/$lang/user-c
 import { Route as LangUserCenterHrRouteImport } from './routes/$lang/user-center/hr'
 import { Route as LangUserCenterCheckinRouteImport } from './routes/$lang/user-center/checkin'
 import { Route as LangUserCenterBookmarksRouteImport } from './routes/$lang/user-center/bookmarks'
+import { Route as LangUserCenterAchievementsRouteImport } from './routes/$lang/user-center/achievements'
 import { Route as LangTorrentsUploadRouteImport } from './routes/$lang/torrents/upload'
 import { Route as LangTorrentsIdRouteImport } from './routes/$lang/torrents/$id'
 import { Route as LangForumSearchRouteImport } from './routes/$lang/forum/search'
@@ -48,6 +49,7 @@ import { Route as LangAdminDictRouteImport } from './routes/$lang/admin/dict'
 import { Route as LangAdminClientRiskControlRouteImport } from './routes/$lang/admin/client-risk-control'
 import { Route as LangAdminBonusRouteImport } from './routes/$lang/admin/bonus'
 import { Route as LangAdminAnnouncementsRouteImport } from './routes/$lang/admin/announcements'
+import { Route as LangAdminAchievementsRouteImport } from './routes/$lang/admin/achievements'
 import { Route as LangUserCenterBonusRouteRouteImport } from './routes/$lang/user-center/bonus/route'
 import { Route as LangUserCenterBonusIndexRouteImport } from './routes/$lang/user-center/bonus/index'
 import { Route as LangUserCenterBonusShopRouteImport } from './routes/$lang/user-center/bonus/shop'
@@ -172,6 +174,12 @@ const LangUserCenterBookmarksRoute = LangUserCenterBookmarksRouteImport.update({
   path: '/bookmarks',
   getParentRoute: () => LangUserCenterRouteRoute,
 } as any)
+const LangUserCenterAchievementsRoute =
+  LangUserCenterAchievementsRouteImport.update({
+    id: '/achievements',
+    path: '/achievements',
+    getParentRoute: () => LangUserCenterRouteRoute,
+  } as any)
 const LangTorrentsUploadRoute = LangTorrentsUploadRouteImport.update({
   id: '/upload',
   path: '/upload',
@@ -254,6 +262,11 @@ const LangAdminAnnouncementsRoute = LangAdminAnnouncementsRouteImport.update({
   path: '/announcements',
   getParentRoute: () => LangAdminRouteRoute,
 } as any)
+const LangAdminAchievementsRoute = LangAdminAchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
+  getParentRoute: () => LangAdminRouteRoute,
+} as any)
 const LangUserCenterBonusRouteRoute =
   LangUserCenterBonusRouteRouteImport.update({
     id: '/bonus',
@@ -311,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/$lang/user': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
+  '/$lang/admin/achievements': typeof LangAdminAchievementsRoute
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
   '/$lang/admin/bonus': typeof LangAdminBonusRoute
   '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
@@ -327,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/$lang/forum/search': typeof LangForumSearchRoute
   '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
   '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/achievements': typeof LangUserCenterAchievementsRoute
   '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
   '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
   '/$lang/user-center/hr': typeof LangUserCenterHrRoute
@@ -354,6 +369,7 @@ export interface FileRoutesByTo {
   '/$lang/register': typeof LangRegisterRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang': typeof LangIndexRoute
+  '/$lang/admin/achievements': typeof LangAdminAchievementsRoute
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
   '/$lang/admin/bonus': typeof LangAdminBonusRoute
   '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
@@ -370,6 +386,7 @@ export interface FileRoutesByTo {
   '/$lang/forum/search': typeof LangForumSearchRoute
   '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
   '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/achievements': typeof LangUserCenterAchievementsRoute
   '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
   '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
   '/$lang/user-center/hr': typeof LangUserCenterHrRoute
@@ -404,6 +421,7 @@ export interface FileRoutesById {
   '/$lang/user_': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
+  '/$lang/admin/achievements': typeof LangAdminAchievementsRoute
   '/$lang/admin/announcements': typeof LangAdminAnnouncementsRoute
   '/$lang/admin/bonus': typeof LangAdminBonusRoute
   '/$lang/admin/client-risk-control': typeof LangAdminClientRiskControlRoute
@@ -420,6 +438,7 @@ export interface FileRoutesById {
   '/$lang/forum/search': typeof LangForumSearchRoute
   '/$lang/torrents/$id': typeof LangTorrentsIdRouteWithChildren
   '/$lang/torrents/upload': typeof LangTorrentsUploadRoute
+  '/$lang/user-center/achievements': typeof LangUserCenterAchievementsRoute
   '/$lang/user-center/bookmarks': typeof LangUserCenterBookmarksRoute
   '/$lang/user-center/checkin': typeof LangUserCenterCheckinRoute
   '/$lang/user-center/hr': typeof LangUserCenterHrRoute
@@ -455,6 +474,7 @@ export interface FileRouteTypes {
     | '/$lang/user'
     | '/$lang/'
     | '/$lang/user-center/bonus'
+    | '/$lang/admin/achievements'
     | '/$lang/admin/announcements'
     | '/$lang/admin/bonus'
     | '/$lang/admin/client-risk-control'
@@ -471,6 +491,7 @@ export interface FileRouteTypes {
     | '/$lang/forum/search'
     | '/$lang/torrents/$id'
     | '/$lang/torrents/upload'
+    | '/$lang/user-center/achievements'
     | '/$lang/user-center/bookmarks'
     | '/$lang/user-center/checkin'
     | '/$lang/user-center/hr'
@@ -498,6 +519,7 @@ export interface FileRouteTypes {
     | '/$lang/register'
     | '/$lang/user'
     | '/$lang'
+    | '/$lang/admin/achievements'
     | '/$lang/admin/announcements'
     | '/$lang/admin/bonus'
     | '/$lang/admin/client-risk-control'
@@ -514,6 +536,7 @@ export interface FileRouteTypes {
     | '/$lang/forum/search'
     | '/$lang/torrents/$id'
     | '/$lang/torrents/upload'
+    | '/$lang/user-center/achievements'
     | '/$lang/user-center/bookmarks'
     | '/$lang/user-center/checkin'
     | '/$lang/user-center/hr'
@@ -547,6 +570,7 @@ export interface FileRouteTypes {
     | '/$lang/user_'
     | '/$lang/'
     | '/$lang/user-center/bonus'
+    | '/$lang/admin/achievements'
     | '/$lang/admin/announcements'
     | '/$lang/admin/bonus'
     | '/$lang/admin/client-risk-control'
@@ -563,6 +587,7 @@ export interface FileRouteTypes {
     | '/$lang/forum/search'
     | '/$lang/torrents/$id'
     | '/$lang/torrents/upload'
+    | '/$lang/user-center/achievements'
     | '/$lang/user-center/bookmarks'
     | '/$lang/user-center/checkin'
     | '/$lang/user-center/hr'
@@ -752,6 +777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangUserCenterBookmarksRouteImport
       parentRoute: typeof LangUserCenterRouteRoute
     }
+    '/$lang/user-center/achievements': {
+      id: '/$lang/user-center/achievements'
+      path: '/achievements'
+      fullPath: '/$lang/user-center/achievements'
+      preLoaderRoute: typeof LangUserCenterAchievementsRouteImport
+      parentRoute: typeof LangUserCenterRouteRoute
+    }
     '/$lang/torrents/upload': {
       id: '/$lang/torrents/upload'
       path: '/upload'
@@ -864,6 +896,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LangAdminAnnouncementsRouteImport
       parentRoute: typeof LangAdminRouteRoute
     }
+    '/$lang/admin/achievements': {
+      id: '/$lang/admin/achievements'
+      path: '/achievements'
+      fullPath: '/$lang/admin/achievements'
+      preLoaderRoute: typeof LangAdminAchievementsRouteImport
+      parentRoute: typeof LangAdminRouteRoute
+    }
     '/$lang/user-center/bonus': {
       id: '/$lang/user-center/bonus'
       path: '/bonus'
@@ -924,6 +963,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface LangAdminRouteRouteChildren {
+  LangAdminAchievementsRoute: typeof LangAdminAchievementsRoute
   LangAdminAnnouncementsRoute: typeof LangAdminAnnouncementsRoute
   LangAdminBonusRoute: typeof LangAdminBonusRoute
   LangAdminClientRiskControlRoute: typeof LangAdminClientRiskControlRoute
@@ -940,6 +980,7 @@ interface LangAdminRouteRouteChildren {
 }
 
 const LangAdminRouteRouteChildren: LangAdminRouteRouteChildren = {
+  LangAdminAchievementsRoute: LangAdminAchievementsRoute,
   LangAdminAnnouncementsRoute: LangAdminAnnouncementsRoute,
   LangAdminBonusRoute: LangAdminBonusRoute,
   LangAdminClientRiskControlRoute: LangAdminClientRiskControlRoute,
@@ -1028,6 +1069,7 @@ const LangUserCenterBonusRouteRouteWithChildren =
 
 interface LangUserCenterRouteRouteChildren {
   LangUserCenterBonusRouteRoute: typeof LangUserCenterBonusRouteRouteWithChildren
+  LangUserCenterAchievementsRoute: typeof LangUserCenterAchievementsRoute
   LangUserCenterBookmarksRoute: typeof LangUserCenterBookmarksRoute
   LangUserCenterCheckinRoute: typeof LangUserCenterCheckinRoute
   LangUserCenterHrRoute: typeof LangUserCenterHrRoute
@@ -1042,6 +1084,7 @@ interface LangUserCenterRouteRouteChildren {
 
 const LangUserCenterRouteRouteChildren: LangUserCenterRouteRouteChildren = {
   LangUserCenterBonusRouteRoute: LangUserCenterBonusRouteRouteWithChildren,
+  LangUserCenterAchievementsRoute: LangUserCenterAchievementsRoute,
   LangUserCenterBookmarksRoute: LangUserCenterBookmarksRoute,
   LangUserCenterCheckinRoute: LangUserCenterCheckinRoute,
   LangUserCenterHrRoute: LangUserCenterHrRoute,

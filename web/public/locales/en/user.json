@@ -83,6 +83,7 @@
     "messages": "Messages",
     "invites": "Invites",
     "medals": "Medals",
+    "achievements": "Achievements",
     "hr": "H&R"
   },
   "bonusLogs": {
@@ -92,6 +93,24 @@
     "change": "Change",
     "balance": "Balance",
     "comment": "Comment"
+  },
+  "bonusRules": {
+    "title": "Bonus Rules",
+    "formula": "Seeding Bonus Formula",
+    "progress": {
+      "title": "Seeding Performance",
+      "current": "Current Per Hour",
+      "max": "Max Per Hour",
+      "percent": "Progress"
+    },
+    "breakdown": {
+      "title": "Seeding Breakdown",
+      "torrent": "Torrent",
+      "size": "Size",
+      "weeks": "Weeks",
+      "seeders": "Seeders"
+    },
+    "otherWays": "Other Ways to Earn Bonus"
   },
   "bonusShop": {
     "title": "Bonus Shop",
@@ -112,6 +131,7 @@
     "buyNow": "Buy Now",
     "insufficientBonus": "Insufficient bonus",
     "buySuccess": "Bought {{size}} upload credit for {{bonus}} bonus!",
-    "buyFailed": "Purchase failed"
+    "buyFailed": "Purchase failed",
+    "confirmTitle": "Confirm purchase?"
   }
 }

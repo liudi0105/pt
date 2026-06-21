@@ -1,5 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { TorrentsPage } from '../../../pages/TorrentsPage'
+import { getDictData } from '../../../api/dict'
+import { listActiveAnnouncements } from '../../../api/announcements'
+import { listTorrents } from '../../../api/torrent'
+import { PUBLISH_DICT_TYPES } from '../../../constants/torrent'
 
 export interface TorrentSearchParams {
   keyword?: string
@@ -17,6 +21,26 @@ export interface TorrentSearchParams {
   processings?: string
   teams?: string
   audiocodecs?: string
+}
+
+export function buildApiParams(search: TorrentSearchParams) {
+  return {
+    page: search.page || 1,
+    page_size: search.page_size || 50,
+    keyword: search.keyword,
+    categories: search.categories,
+    incldead: search.incldead,
+    spstate: search.spstate,
+    sort: search.sort || 'created_at',
+    order: search.order || 'desc',
+    sources: search.sources,
+    codecs: search.codecs,
+    standards: search.standards,
+    media: search.media,
+    processings: search.processings,
+    teams: search.teams,
+    audiocodecs: search.audiocodecs,
+  }
 }
 
 export const Route = createFileRoute('/$lang/torrents/')({
@@ -37,5 +61,29 @@ export const Route = createFileRoute('/$lang/torrents/')({
     teams: search.teams || undefined,
     audiocodecs: search.audiocodecs || undefined,
   }),
+  loader: async ({ context: { queryClient }, location }) => {
+    const usp = new URLSearchParams(location.searchStr)
+    const search: TorrentSearchParams = {}
+    for (const [k, v] of usp.entries()) {
+      ;(search as any)[k] = v
+    }
+    const apiParams = buildApiParams(search)
+    await Promise.all([
+      queryClient.ensureQueryData({
+        queryKey: ['dict-data', PUBLISH_DICT_TYPES],
+        queryFn: () => getDictData([...PUBLISH_DICT_TYPES]),
+        staleTime: 5 * 60 * 1000,
+      }),
+      queryClient.ensureQueryData({
+        queryKey: ['torrents', apiParams],
+        queryFn: () => listTorrents(apiParams),
+      }),
+      queryClient.ensureQueryData({
+        queryKey: ['active-announcements'],
+        queryFn: () => listActiveAnnouncements(),
+        staleTime: 5 * 60 * 1000,
+      }),
+    ])
+  },
   component: TorrentsPage,
 })

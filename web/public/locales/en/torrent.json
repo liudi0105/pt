@@ -95,10 +95,11 @@
     "freeTooltip": "Free only",
     "twoup": "2X",
     "twoupTooltip": "2X upload only",
+    "sort": "Sort",
     "newest": "Newest",
     "mostSeeders": "Most Seeders",
     "advanced": "Advanced",
-    "hideAdvanced": "Hide",
+    "promotion": "Promotion",
     "reset": "Reset"
   },
   "subject": "Subject",

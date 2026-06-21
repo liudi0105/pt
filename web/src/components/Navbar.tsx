@@ -1,5 +1,5 @@
 import {Link, useMatches, useParams} from '@tanstack/react-router'
-import {Flex, Layout, Menu, Typography} from 'antd'
+import {Flex, Layout, Menu, Typography, theme} from 'antd'
 import {useTranslation} from 'react-i18next'
 import {useMenuTree} from '../hooks/useMenuTree'
 import {HeaderActions} from './HeaderActions'
@@ -9,6 +9,7 @@ const {Header} = Layout
 export function Navbar() {
     const {t} = useTranslation()
     const {lang} = useParams({from: '/$lang'})
+    const {token} = theme.useToken()
     const matches = useMatches()
     const menuTree = useMenuTree()
 
@@ -33,10 +34,10 @@ export function Navbar() {
     }
 
     return (
-        <Header style={{display: 'flex', alignItems: 'center', padding: '0 0 0 16px', height: 48, lineHeight: '48px'}}>
+        <Header style={{display: 'flex', alignItems: 'center', padding: '0 0 0 16px', height: 48, lineHeight: '48px', background: token.colorBgContainer, borderBottom: `1px solid ${token.colorBorderSecondary}`}}>
             <Link to="/$lang" params={{lang}}
-                  style={{color: '#fff', textDecoration: 'none', whiteSpace: 'nowrap', marginRight: 24}}>
-                <Typography.Title level={4} style={{color: '#fff', margin: 0, fontSize: 18}}>
+                  style={{color: token.colorText, textDecoration: 'none', whiteSpace: 'nowrap', marginRight: 24}}>
+                <Typography.Title level={4} style={{color: token.colorText, margin: 0, fontSize: 18}}>
                     {t('brand')}
                 </Typography.Title>
             </Link>

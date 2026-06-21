@@ -1,13 +1,26 @@
-import { Table, Tag, Typography, Space, Button, message, Alert } from 'antd'
-import { CopyOutlined, PlusOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { listInvites, createInvite } from '../api/invite'
-import type { Invite } from '../types'
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  CopyOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Alert, Button, message, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
+import { createInvite, listInvites } from '../api/invite'
+import type { Invite } from '../types'
 
 const { Title } = Typography
+
+type ApiError = {
+  response?: {
+    data?: {
+      error?: string
+    }
+  }
+}
 
 export function Invites() {
   const { t } = useTranslation('torrent')
@@ -26,7 +39,8 @@ export function Invites() {
       queryClient.invalidateQueries({ queryKey: ['invites'] })
       message.success(t('inviteCreated'))
     },
-    onError: (err: any) => message.error(err.response?.data?.error || t('failedToCreateInvite')),
+    onError: (err: ApiError) =>
+      message.error(err.response?.data?.error || t('failedToCreateInvite')),
   })
 
   const copyCode = (code: string) => {
@@ -47,13 +61,20 @@ export function Invites() {
       ),
     },
     {
-      title: tCommon('status'),
+      title: t('status'),
       dataIndex: 'is_used',
       key: 'is_used',
       width: 100,
-      render: (used: boolean) => used
-        ? <Tag color="default" icon={<CloseCircleOutlined />}>{tCommon('status.used')}</Tag>
-        : <Tag color="green" icon={<CheckCircleOutlined />}>{tCommon('status.active')}</Tag>,
+      render: (used: boolean) =>
+        used ? (
+          <Tag color="default" icon={<CloseCircleOutlined />}>
+            {tCommon('status.used')}
+          </Tag>
+        ) : (
+          <Tag color="green" icon={<CheckCircleOutlined />}>
+            {tCommon('status.active')}
+          </Tag>
+        ),
     },
     {
       title: t('usedBy'),
@@ -83,15 +104,32 @@ export function Invites() {
   return (
     <div>
       <Space style={{ marginBottom: 16, justifyContent: 'space-between', width: '100%' }}>
-        <Title level={3} style={{ margin: 0 }}>{tCommon('nav.invites')}</Title>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => createMut.mutate()} loading={createMut.isPending}>
+        <Title level={3} style={{ margin: 0 }}>
+          {tCommon('nav.invites')}
+        </Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => createMut.mutate()}
+          loading={createMut.isPending}
+        >
           {t('createInviteBonus')}
         </Button>
       </Space>
 
-      <Alert message={t('activeInvitesCount', { count: activeCount })} type="info" showIcon style={{ marginBottom: 16 }} />
+      <Alert
+        message={t('activeInvitesCount', { count: activeCount })}
+        type="info"
+        showIcon
+        style={{ marginBottom: 16 }}
+      />
 
-      <Table columns={columns} dataSource={data} rowKey="id" loading={isLoading} size="small"
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        loading={isLoading}
+        size="small"
         pagination={false}
       />
     </div>

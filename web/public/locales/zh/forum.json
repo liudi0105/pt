@@ -12,6 +12,8 @@
   "categories": "版块",
   "recent": "最新主题",
   "noTopics": "暂无主题",
+  "noCategories": "暂无版块",
+  "noPosts": "暂无帖子",
   "noResults": "没有找到结果",
   "sticky": "置顶",
   "locked": "锁定",

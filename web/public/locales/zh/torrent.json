@@ -95,10 +95,11 @@
     "freeTooltip": "只看免费",
     "twoup": "2X",
     "twoupTooltip": "只看2X上传",
-    "newest": "最新",
+    "sort": "排序",
+    "newest": "最新发布",
     "mostSeeders": "最多做种",
     "advanced": "高级搜索",
-    "hideAdvanced": "收起",
+    "promotion": "促销",
     "reset": "重置"
   },
   "subject": "主题",

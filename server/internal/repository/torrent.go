@@ -53,7 +53,7 @@ type TorrentFilter struct {
 	Categories  []string
 	Keyword     string
 	Incldead    int
-	Spstate     int
+	Spstate     []int
 	Sources     []string
 	Codecs      []string
 	Standards   []string
@@ -100,11 +100,19 @@ func (r *TorrentRepo) List(f TorrentFilter) (*TorrentListResult, error) {
 	}
 
 	// Spstate: 2 = free, 3 = 2x upload
-	switch f.Spstate {
-	case 2:
-		query = query.Where("promotion IN ?", []string{"free", "free_twoup", "thirty_percent"})
-	case 3:
-		query = query.Where("promotion IN ?", []string{"twoup", "free_twoup"})
+	if len(f.Spstate) > 0 {
+		var promotions []string
+		for _, s := range f.Spstate {
+			switch s {
+			case 2:
+				promotions = append(promotions, "free", "free_twoup", "thirty_percent")
+			case 3:
+				promotions = append(promotions, "twoup", "free_twoup")
+			}
+		}
+		if len(promotions) > 0 {
+			query = query.Where("promotion IN ?", promotions)
+		}
 	}
 
 	// Taxonomy filters (exact match for each value, OR within same field)

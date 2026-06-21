@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"pt-server/internal/achievement"
 	"pt-server/internal/i18n"
 	"pt-server/internal/model"
 	"pt-server/internal/utils"
@@ -59,6 +60,10 @@ func (h *Handler) Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "failed_to_create_user")})
 		return
 	}
+
+	// Auto-grant registration achievement
+	checker := achievement.NewChecker(h.repo.DB(), h.repo.Achievement, h.repo.UserAchievement)
+	checker.CheckUser(user.ID)
 
 	c.JSON(http.StatusCreated, gin.H{"id": user.ID})
 }

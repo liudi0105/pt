@@ -13,6 +13,7 @@ import (
 )
 
 var schemaValidateModels = []any{
+	model.Achievement{},
 	model.Attendance{},
 	model.Bookmark{},
 	model.BonusLog{},
@@ -35,6 +36,7 @@ var schemaValidateModels = []any{
 	model.Thanks{},
 	model.Torrent{},
 	model.User{},
+	model.UserAchievement{},
 	model.UserLevel{},
 	model.UserMedal{},
 }

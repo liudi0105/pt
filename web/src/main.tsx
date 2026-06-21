@@ -1,4 +1,5 @@
 import './index.css'
+import 'katex/dist/katex.min.css'
 import './i18n'
 import {StrictMode, useMemo} from 'react'
 import {createRoot} from 'react-dom/client'

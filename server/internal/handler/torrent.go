@@ -35,8 +35,12 @@ func (h *Handler) ListTorrents(c *gin.Context) {
 	if ps, err := strconv.Atoi(c.DefaultQuery("page_size", "50")); err == nil {
 		filter.PageSize = ps
 	}
-	if spstate, err := strconv.Atoi(c.Query("spstate")); err == nil {
-		filter.Spstate = spstate
+	if spstate := c.Query("spstate"); spstate != "" {
+		for _, p := range strings.Split(spstate, ",") {
+			if v, err := strconv.Atoi(strings.TrimSpace(p)); err == nil {
+				filter.Spstate = append(filter.Spstate, v)
+			}
+		}
 	}
 
 	// Parse comma-separated multi-value fields

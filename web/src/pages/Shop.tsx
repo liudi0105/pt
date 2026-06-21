@@ -1,37 +1,47 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { listShopItems, buyShopItem, type ShopItem } from '../api/shop'
 import { getProfile } from '../api/user'
 
 export function Shop() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [items, setItems] = useState<ShopItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [profile, setProfile] = useState<{ bonus: number } | null>(null)
+  const { lang } = useParams({ from: '/$lang' })
   const [buyingId, setBuyingId] = useState(0)
+  const queryClient = useQueryClient()
 
-  useState(() => {
-    Promise.all([
-      listShopItems().then(r => { setItems(r.data.items); setLoading(false) }),
-      getProfile().then(r => setProfile(r.data)),
-    ])
+  const { data: items, isLoading } = useQuery({
+    queryKey: ['shop-items'],
+    queryFn: () => listShopItems(),
+    select: (res) => res.data.items,
+  })
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: () => getProfile(),
+    select: (res) => res.data,
+  })
+
+  const mutation = useMutation({
+    mutationFn: (id: number) => buyShopItem(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+    },
   })
 
   const handleBuy = async (item: ShopItem) => {
     if (profile && profile.bonus < item.price) return
     setBuyingId(item.id)
     try {
-      await buyShopItem(item.id)
-      const profileRes = await getProfile()
-      setProfile(profileRes.data)
+      await mutation.mutateAsync(item.id)
     } finally {
       setBuyingId(0)
     }
   }
 
-  if (loading) return <div className="container mx-auto p-4 text-center py-8">{t('common:loading')}</div>
+  if (isLoading) return <div className="container mx-auto p-4 text-center py-8">{t('common:loading')}</div>
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -41,11 +51,11 @@ export function Shop() {
           {t('shop.myBonus')}: <span className="font-semibold text-yellow-600">{profile.bonus}</span>
         </div>
       )}
-      {items.length === 0 ? (
+      {(items ?? []).length === 0 ? (
         <div className="text-center py-8 text-gray-500">{t('shop.noItems')}</div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {items.map(item => (
+          {(items ?? []).map(item => (
             <div key={item.id} className="bg-white dark:bg-gray-800 rounded shadow p-4 flex flex-col">
               <h3 className="font-semibold text-lg mb-1">{item.name}</h3>
               {item.description && <p className="text-sm text-gray-500 mb-3 flex-1">{item.description}</p>}
@@ -66,7 +76,7 @@ export function Shop() {
       )}
       <div className="mt-4">
         <button className="text-blue-500 hover:underline text-sm"
-          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang: '' } })}>
+          onClick={() => navigate({ to: '/$lang/user-center/bonus', params: { lang } })}>
           &larr; {t('shop.backToBonus')}
         </button>
       </div>

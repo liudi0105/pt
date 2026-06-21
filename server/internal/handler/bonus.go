@@ -50,6 +50,32 @@ func (h *Handler) GetSeedBonusRate(c *gin.Context) {
 	})
 }
 
+func (h *Handler) GetBonusSettings(c *gin.Context) {
+	cfg := h.siteCfg.BonusSnapshot()
+	c.JSON(http.StatusOK, gin.H{
+		"tzero":            cfg.TZero,
+		"nzero":            cfg.NZero,
+		"bzero":            cfg.BZero,
+		"l":                cfg.L,
+		"perseeding":       cfg.PerSeeding,
+		"maxseeding":       cfg.MaxSeeding,
+		"harvest_interval": cfg.HarvestInterval.String(),
+	})
+}
+
+func (h *Handler) GetSeedBonusBreakdown(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	cfg := h.siteCfg.BonusSnapshot()
+
+	result, err := bonus.CalculateSeedBonusBreakdown(h.repo.DB(), userID.(int64), cfg)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "server_error")})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 type BuyDownloadRequest struct {
 	BonusSpent float64 `json:"bonus_spent" binding:"required"`
 }

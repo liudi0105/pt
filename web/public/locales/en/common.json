@@ -14,6 +14,7 @@
     "messages": "Messages",
     "invites": "Invites",
     "medals": "Medals",
+    "achievements": "Achievements",
     "hr": "H&R",
     "login": "Login",
     "register": "Register",
@@ -65,12 +66,18 @@
     "ok": "OK",
     "yes": "Yes",
     "no": "No",
-    "system": "System"
+    "system": "System",
+    "unlocked": "Unlocked",
+    "locked": "Locked"
   },
   "pagination": {
     "total": "Total {{count}} items"
   },
   "back": "Back",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "prev": "Previous",
+  "next": "Next",
   "save": "Save",
   "edit": "Edit",
   "delete": "Delete",
@@ -100,26 +107,6 @@
   "created": "Created",
   "deleted": "Deleted",
   "error": "Failed",
-  "medals": {
-    "0": "First Upload",
-    "1": "100 Uploads",
-    "2": "Seed Master",
-    "3": "Helpful User",
-    "4": "VIP Member",
-    "5": "Top Uploader",
-    "6": "Anniversary 1 Year",
-    "7": "Forum Active"
-  },
-  "medalDescriptions": {
-    "0": "Granted after completing the first upload milestone",
-    "1": "Granted after reaching 100 uploads",
-    "2": "Granted after seeding for 1000 hours",
-    "3": "Granted after receiving 50 thanks",
-    "4": "Special medal for VIP members",
-    "5": "Granted to the top uploaders of the month",
-    "6": "Granted after 1 year of membership",
-    "7": "Granted after 100 forum posts"
-  },
   "medal": {
     "purchased": "Medal purchased!",
     "purchaseFailed": "Purchase failed",
@@ -127,7 +114,63 @@
     "bonus": "bonus",
     "price": "Price",
     "noDescription": "No description",
-    "empty": "No medals available yet"
+    "empty": "No medals available yet",
+    "ownedOnly": "Owned",
+    "confirmBuy": "Confirm buying this medal?",
+    "wear": "Wear",
+    "wearing": "Wearing",
+    "unwear": "Unwear",
+    "unwearing": "Unwearing",
+    "wearFailed": "Failed to wear",
+    "unwearFailed": "Failed to unwear"
+  },
+  "achievements": {
+    "0": "First Upload",
+    "1": "100 Uploads",
+    "2": "Seed Master",
+    "3": "Helpful User",
+    "4": "Top Uploader",
+    "5": "Anniversary 1 Year",
+    "6": "Forum Active",
+    "7": "Upload Legend",
+    "8": "Download Pioneer",
+    "9": "Seed Fanatic",
+    "10": "Upload Hunter",
+    "11": "Thanks Veteran",
+    "12": "Forum Star",
+    "13": "Veteran Member",
+    "14": "Newcomer"
+  },
+  "achievementDescriptions": {
+    "0": "Granted after completing the first upload milestone",
+    "1": "Granted after reaching 100 uploads",
+    "2": "Granted after seeding for 1000 hours",
+    "3": "Granted after receiving 50 thanks",
+    "4": "Granted to the top uploaders of the month",
+    "5": "Granted after 1 year of membership",
+    "6": "Granted after 100 forum posts",
+    "7": "Granted after uploading over 1TB",
+    "8": "Granted after downloading over 100GB",
+    "9": "Granted after seeding for 5000 hours",
+    "10": "Granted after uploading 500 torrents",
+    "11": "Granted after receiving 200 thanks",
+    "12": "Granted after 500 forum posts",
+    "13": "Granted after 3 years of membership",
+    "14": "Granted for registering an account"
+  },
+  "achievement": {
+    "check": "Check",
+    "unlocked": "{{count}} new achievement(s) unlocked!",
+    "noNew": "No new achievements to unlock",
+    "checkFailed": "Failed to check achievements",
+    "empty": "No achievements available"
+  },
+  "achievementGroup": {
+    "upload": "Upload",
+    "seed": "Seeding",
+    "community": "Community",
+    "special": "Special",
+    "other": "Other"
   },
   "announcements": {
     "title": "Announcements"

@@ -1,0 +1,9 @@
+{"model":"read_post","data":{"id":1,"email":"alice@pt.local","topic_id":1,"post_id":3}}
+{"model":"read_post","data":{"id":2,"email":"alice@pt.local","topic_id":2,"post_id":5}}
+{"model":"read_post","data":{"id":3,"email":"bob@pt.local","topic_id":1,"post_id":3}}
+{"model":"read_post","data":{"id":4,"email":"bob@pt.local","topic_id":4,"post_id":9}}
+{"model":"read_post","data":{"id":5,"email":"diana@pt.local","topic_id":5,"post_id":11}}
+{"model":"read_post","data":{"id":6,"email":"charlie@pt.local","topic_id":6,"post_id":14}}
+{"model":"read_post","data":{"id":7,"email":"eve@pt.local","topic_id":7,"post_id":17}}
+{"model":"read_post","data":{"id":8,"email":"bob@pt.local","topic_id":8,"post_id":21}}
+{"model":"read_post","data":{"id":9,"email":"alice@pt.local","topic_id":8,"post_id":21}}
