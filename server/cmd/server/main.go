@@ -282,6 +282,7 @@ func main() {
 
 	api.GET("/announcements", h.ListActiveAnnouncements)
 	api.GET("/i18n", h.QueryI18n)
+	api.GET("/i18n/batch", h.QueryI18nBatch)
 
 	r.GET("/announce", h.Announce)
 	r.GET("/scrape", h.Scrape)

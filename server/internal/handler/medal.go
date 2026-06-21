@@ -8,7 +8,6 @@ import (
 
 	i18n "pt-server/internal/i18n"
 	"pt-server/internal/model"
-	"pt-server/internal/repository"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,33 +22,6 @@ func (h *Handler) ListMedals(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "failed_to_list_medals")})
 		return
 	}
-
-	var keys []string
-	for _, m := range medals {
-		prefix := medalI18nPrefix(m.Code)
-		keys = append(keys, prefix+".label", prefix+".description")
-	}
-
-	entries, _ := h.repo.I18n.LoadByKeys(keys)
-	byKey := repository.GroupByKey(entries)
-
-	for i := range medals {
-		prefix := medalI18nPrefix(medals[i].Code)
-		i18nMap := make(map[string]map[string]string)
-		for _, field := range []string{"label", "description"} {
-			key := prefix + "." + field
-			if locales, ok := byKey[key]; ok {
-				for locale, val := range locales {
-					if i18nMap[locale] == nil {
-						i18nMap[locale] = make(map[string]string)
-					}
-					i18nMap[locale][field] = val
-				}
-			}
-		}
-		medals[i].I18n = i18nMap
-	}
-
 	c.JSON(http.StatusOK, gin.H{"medals": medals})
 }
 
@@ -68,6 +40,7 @@ func (h *Handler) CreateMedal(c *gin.Context) {
 			log.Printf("Failed to save i18n for medal %d: %v", m.Code, err)
 		}
 	}
+	m.I18n = nil
 	c.JSON(http.StatusCreated, m)
 }
 
@@ -94,6 +67,7 @@ func (h *Handler) UpdateMedal(c *gin.Context) {
 			log.Printf("Failed to save i18n for medal %d: %v", m.Code, err)
 		}
 	}
+	m.I18n = nil
 	c.JSON(http.StatusOK, m)
 }
 

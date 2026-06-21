@@ -46,6 +46,10 @@ func userLevelI18nPrefix(code int) string {
 	return fmt.Sprintf("user_level.%d", code)
 }
 
+func roleI18nPrefix(key string) string {
+	return "role." + key
+}
+
 // ---- Dict Types ----
 
 func (h *Handler) ListDictTypes(c *gin.Context) {
@@ -54,33 +58,6 @@ func (h *Handler) ListDictTypes(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	var keys []string
-	for _, t := range types {
-		prefix := dictTypeI18nPrefix(t.Key)
-		keys = append(keys, prefix+".label", prefix+".remark")
-	}
-
-	entries, _ := h.repo.I18n.LoadByKeys(keys)
-	byKey := repository.GroupByKey(entries)
-
-	for i := range types {
-		prefix := dictTypeI18nPrefix(types[i].Key)
-		i18nMap := make(map[string]map[string]string)
-		for _, field := range []string{"label", "remark"} {
-			key := prefix + "." + field
-			if locales, ok := byKey[key]; ok {
-				for locale, val := range locales {
-					if i18nMap[locale] == nil {
-						i18nMap[locale] = make(map[string]string)
-					}
-					i18nMap[locale][field] = val
-				}
-			}
-		}
-		types[i].I18n = i18nMap
-	}
-
 	c.JSON(http.StatusOK, gin.H{"types": types})
 }
 
@@ -103,6 +80,7 @@ func (h *Handler) CreateDictType(c *gin.Context) {
 			log.Printf("Failed to save i18n for dict type %s: %v", t.Key, err)
 		}
 	}
+	t.I18n = nil
 	c.JSON(http.StatusCreated, t)
 }
 
@@ -156,6 +134,7 @@ func (h *Handler) UpdateDictType(c *gin.Context) {
 			}
 		}
 	}
+	t.I18n = nil
 	c.JSON(http.StatusOK, t)
 }
 
@@ -204,29 +183,6 @@ func (h *Handler) ListDictData(c *gin.Context) {
 		return
 	}
 
-	if typeKey != "" && len(data) > 0 {
-		var keys []string
-		for _, d := range data {
-			keys = append(keys, dictDataI18nPrefix(typeKey, d.Key)+".label")
-		}
-		entries, _ := h.repo.I18n.LoadByKeys(keys)
-		byKey := repository.GroupByKey(entries)
-		for i := range data {
-			prefix := dictDataI18nPrefix(typeKey, data[i].Key)
-			i18nMap := make(map[string]map[string]string)
-			key := prefix + ".label"
-			if locales, ok := byKey[key]; ok {
-				for locale, val := range locales {
-					if i18nMap[locale] == nil {
-						i18nMap[locale] = make(map[string]string)
-					}
-					i18nMap[locale]["label"] = val
-				}
-			}
-			data[i].I18n = i18nMap
-		}
-	}
-
 	c.JSON(http.StatusOK, gin.H{"data": data})
 }
 
@@ -246,30 +202,6 @@ func (h *Handler) ListDictDataPublic(c *gin.Context) {
 	grouped := make(map[string][]model.DictData)
 	for _, d := range all {
 		grouped[d.TypeKey] = append(grouped[d.TypeKey], d)
-	}
-
-	for typeKey, items := range grouped {
-		var keys []string
-		for _, d := range items {
-			keys = append(keys, dictDataI18nPrefix(typeKey, d.Key)+".label")
-		}
-		entries, _ := h.repo.I18n.LoadByKeys(keys)
-		byKey := repository.GroupByKey(entries)
-		for i := range items {
-			prefix := dictDataI18nPrefix(typeKey, items[i].Key)
-			i18nMap := make(map[string]map[string]string)
-			key := prefix + ".label"
-			if locales, ok := byKey[key]; ok {
-				for locale, val := range locales {
-					if i18nMap[locale] == nil {
-						i18nMap[locale] = make(map[string]string)
-					}
-					i18nMap[locale]["label"] = val
-				}
-			}
-			items[i].I18n = i18nMap
-		}
-		grouped[typeKey] = items
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": grouped})
@@ -298,6 +230,7 @@ func (h *Handler) CreateDictData(c *gin.Context) {
 			h.repo.I18n.SaveMap(dictDataI18nPrefix(d.TypeKey, d.Key), d.I18n)
 		}
 	}
+	d.I18n = nil
 	c.JSON(http.StatusCreated, d)
 }
 
@@ -338,6 +271,7 @@ func (h *Handler) UpdateDictData(c *gin.Context) {
 		h.repo.I18n.DeleteByPrefix(newPrefix)
 		h.repo.I18n.SaveMap(newPrefix, d.I18n)
 	}
+	d.I18n = nil
 	c.JSON(http.StatusOK, d)
 }
 
@@ -364,8 +298,10 @@ func (h *Handler) AdminListUsers(c *gin.Context) {
 		Page:     1,
 		PageSize: 20,
 	}
-	if s, err := strconv.Atoi(c.DefaultQuery("status", "0")); err == nil {
-		f.Status = s
+	if status, ok := c.GetQuery("status"); ok {
+		if s, err := strconv.Atoi(status); err == nil {
+			f.Status = &s
+		}
 	}
 	if p, err := strconv.Atoi(c.DefaultQuery("page", "1")); err == nil {
 		f.Page = p
@@ -508,31 +444,6 @@ func (h *Handler) ListLevels(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	var keys []string
-	for _, l := range levels {
-		prefix := userLevelI18nPrefix(l.Code)
-		keys = append(keys, prefix+".label")
-	}
-
-	entries, _ := h.repo.I18n.LoadByKeys(keys)
-	byKey := repository.GroupByKey(entries)
-
-	for i := range levels {
-		prefix := userLevelI18nPrefix(levels[i].Code)
-		i18nMap := make(map[string]map[string]string)
-		key := prefix + ".label"
-		if locales, ok := byKey[key]; ok {
-			for locale, val := range locales {
-				if i18nMap[locale] == nil {
-					i18nMap[locale] = make(map[string]string)
-				}
-				i18nMap[locale]["label"] = val
-			}
-		}
-		levels[i].I18n = i18nMap
-	}
-
 	c.JSON(http.StatusOK, gin.H{"levels": levels})
 }
 
@@ -551,6 +462,7 @@ func (h *Handler) CreateLevel(c *gin.Context) {
 			log.Printf("Failed to save i18n for user level %d: %v", l.Code, err)
 		}
 	}
+	l.I18n = nil
 	c.JSON(http.StatusCreated, l)
 }
 
@@ -571,6 +483,7 @@ func (h *Handler) UpdateLevel(c *gin.Context) {
 		h.repo.I18n.DeleteByPrefix(prefix)
 		h.repo.I18n.SaveMap(prefix, l.I18n)
 	}
+	l.I18n = nil
 	c.JSON(http.StatusOK, l)
 }
 
@@ -614,11 +527,22 @@ func (h *Handler) CreateRole(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	if r.I18n != nil {
+		if err := h.repo.I18n.SaveMap(roleI18nPrefix(r.Key), r.I18n); err != nil {
+			log.Printf("Failed to save i18n for role %s: %v", r.Key, err)
+		}
+	}
+	r.I18n = nil
 	c.JSON(http.StatusCreated, r)
 }
 
 func (h *Handler) UpdateRole(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	old, err := h.repo.Role.GetByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": i18n.T(c, "role_not_found")})
+		return
+	}
 	var r model.RoleModel
 	if err := c.ShouldBindJSON(&r); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": i18n.T(c, "invalid_request_body")})
@@ -629,11 +553,28 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	oldPrefix := roleI18nPrefix(old.Key)
+	newPrefix := roleI18nPrefix(r.Key)
+	if oldPrefix != newPrefix {
+		if err := moveI18nPrefix(h.repo.I18n, oldPrefix, newPrefix); err != nil {
+			log.Printf("Failed to move role i18n from %s to %s: %v", oldPrefix, newPrefix, err)
+		}
+	}
+	if r.I18n != nil {
+		h.repo.I18n.DeleteByPrefix(newPrefix)
+		if err := h.repo.I18n.SaveMap(newPrefix, r.I18n); err != nil {
+			log.Printf("Failed to save i18n for role %s: %v", r.Key, err)
+		}
+	}
+	r.I18n = nil
 	c.JSON(http.StatusOK, r)
 }
 
 func (h *Handler) DeleteRole(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	if role, err := h.repo.Role.GetByID(id); err == nil {
+		h.repo.I18n.DeleteByPrefix(roleI18nPrefix(role.Key))
+	}
 	if err := h.repo.Role.Delete(id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -757,6 +698,48 @@ func (h *Handler) QueryI18n(c *gin.Context) {
 			result[e.Key] = make(map[string]string)
 		}
 		result[e.Key][e.Locale] = e.Value
+	}
+	c.JSON(http.StatusOK, gin.H{"entries": result})
+}
+
+func (h *Handler) QueryI18nBatch(c *gin.Context) {
+	rawPrefixes := c.Query("prefixes")
+	if rawPrefixes == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "prefixes is required"})
+		return
+	}
+
+	seen := make(map[string]struct{})
+	prefixes := make([]string, 0)
+	for _, prefix := range strings.Split(rawPrefixes, ",") {
+		prefix = strings.TrimSpace(prefix)
+		if prefix == "" {
+			continue
+		}
+		if _, ok := seen[prefix]; ok {
+			continue
+		}
+		seen[prefix] = struct{}{}
+		prefixes = append(prefixes, prefix)
+	}
+	if len(prefixes) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "prefixes is required"})
+		return
+	}
+
+	result := make(map[string]map[string]string)
+	for _, prefix := range prefixes {
+		entries, err := h.repo.I18n.LoadByPrefix(prefix)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		for _, e := range entries {
+			if result[e.Key] == nil {
+				result[e.Key] = make(map[string]string)
+			}
+			result[e.Key][e.Locale] = e.Value
+		}
 	}
 	c.JSON(http.StatusOK, gin.H{"entries": result})
 }

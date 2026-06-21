@@ -14,9 +14,8 @@ import type { Achievement, UserAchievement, Medal, UserMedal } from '../../types
 const { Text } = Typography
 
 export default function Profile() {
-  const { t, i18n } = useTranslation('user')
+  const { t } = useTranslation('user')
   const { t: tCommon } = useTranslation()
-  const lang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
 
   const { data: profile } = useQuery({
     queryKey: ['profile'],
@@ -56,6 +55,7 @@ export default function Profile() {
   }
 
   const i18nLevel = useI18n('user_level')
+  const i18nMedal = useI18n('medal')
   const levelCode = profile?.level_code
   const levelLabel = levelCode !== undefined
     ? i18nLevel.getLabel(String(levelCode)) || '-'
@@ -78,7 +78,7 @@ export default function Profile() {
                   <Space key={m.id} direction="vertical" align="center" size={4}>
                     {(() => { const Icon = getMedalIcon(m.code, m.image); return <Icon size={32} color={getMedalColor(m.code, m.color)} /> })()}
                     <Text strong>
-                      {m.i18n?.[lang]?.label || ''}
+                      {i18nMedal.getLabel(String(m.code)) || ''}
                     </Text>
                   </Space>
                 ))}

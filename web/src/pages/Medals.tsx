@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { listMedals, buyMedal, listUserMedals, wearMedal, unwearMedal } from '../api/medal'
 import { getMedalIcon, getMedalColor } from '../constants/icons'
 import type { Medal, UserMedal } from '../types'
+import { useI18n } from '../hooks/useI18n'
 
 const { Title, Text } = Typography
 
 export function Medals() {
-  const { t, i18n } = useTranslation()
-  const lang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const medalI18n = useI18n('medal')
   const [ownedOnly, setOwnedOnly] = useState(false)
 
   const { data: medals, isLoading } = useQuery({
@@ -81,9 +82,8 @@ export function Medals() {
         {filtered.map((m: Medal) => {
           const has = owned.has(m.id)
           const isWearing = wearing.has(m.id)
-          const i18nMap = m.i18n?.[lang]
-          const medalLabel = i18nMap?.label || ''
-          const medalDescription = i18nMap?.description || ''
+          const medalLabel = medalI18n.getLabel(String(m.code)) || ''
+          const medalDescription = medalI18n.getLabel(String(m.code), 'description') || ''
 
           let action
           if (!has) {

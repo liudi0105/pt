@@ -168,7 +168,7 @@ export function AchievementManage() {
       dataIndex: 'is_active',
       key: 'is_active',
       width: 80,
-      render: (v: boolean) => (v ? tCommon('status.yes') : tCommon('status.no')),
+      render: (v: boolean) => (v ? tCommon('boolean.yes') : tCommon('boolean.no')),
     },
     {
       title: tCommon('createdAt'),

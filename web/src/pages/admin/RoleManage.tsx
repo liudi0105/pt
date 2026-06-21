@@ -1,20 +1,62 @@
 import { useState } from 'react'
-import { Table, Button, Modal, Form, Input, InputNumber, Typography, Space, message, Checkbox, Tag, Popconfirm } from 'antd'
+import { Table, Button, Modal, Form, Input, InputNumber, Typography, Space, message, Checkbox, Tag, Popconfirm, Select } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, SafetyOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { listRoles, createRole, updateRole, deleteRole, setRolePermissions, listPermissions } from '../../api/admin'
 import type { RoleModel, Permission } from '../../types'
 import type { ColumnsType } from 'antd/es/table'
+import { useI18n } from '../../hooks/useI18n'
 
 const { Title } = Typography
 
+interface LocaleRow {
+  locale: string
+  display_name: string
+  description: string
+}
+
+const LOCALE_OPTIONS = [
+  { value: 'zh', label: '中文' },
+  { value: 'en', label: 'English' },
+  { value: 'jp', label: '日本語' },
+  { value: 'fr', label: 'Français' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'ko', label: '한국어' },
+  { value: 'ru', label: 'Русский' },
+  { value: 'es', label: 'Español' },
+]
+
+function i18nToRows(i18n: Record<string, Record<string, string>> | undefined): LocaleRow[] {
+  if (!i18n) return []
+  return Object.entries(i18n).map(([locale, fields]) => ({
+    locale,
+    display_name: fields.display_name || '',
+    description: fields.description || '',
+  }))
+}
+
+function rowsToI18n(rows: LocaleRow[]): Record<string, Record<string, string>> {
+  const i18n: Record<string, Record<string, string>> = {}
+  for (const row of rows) {
+    if (!row.locale) continue
+    i18n[row.locale] = {
+      display_name: row.display_name || '',
+      description: row.description || '',
+    }
+  }
+  return i18n
+}
+
 export function RoleManage() {
-  const { t } = useTranslation('admin')
+  const { t, i18n } = useTranslation('admin')
   const { t: tCommon } = useTranslation('common')
+  const currentLang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
+  const roleI18n = useI18n('role')
   const [editOpen, setEditOpen] = useState(false)
   const [permOpen, setPermOpen] = useState<RoleModel | null>(null)
   const [editingRole, setEditingRole] = useState<RoleModel | null>(null)
+  const [i18nRows, setI18nRows] = useState<LocaleRow[]>([])
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
 
@@ -34,6 +76,7 @@ export function RoleManage() {
     mutationFn: (values: Partial<RoleModel>) => createRole(values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-roles'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setEditOpen(false)
       form.resetFields()
       message.success(t('roleManage.createSuccess'))
@@ -45,6 +88,7 @@ export function RoleManage() {
     mutationFn: ({ id, data }: { id: number; data: Partial<RoleModel> }) => updateRole(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-roles'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setEditOpen(false)
       setEditingRole(null)
       message.success(t('roleManage.updateSuccess'))
@@ -56,6 +100,7 @@ export function RoleManage() {
     mutationFn: (id: number) => deleteRole(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-roles'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       message.success(t('roleManage.deleteSuccess'))
     },
     onError: () => message.error(t('roleManage.deleteFailed')),
@@ -74,9 +119,16 @@ export function RoleManage() {
   const openEdit = (role?: RoleModel) => {
     setEditingRole(role || null)
     if (role) {
-      form.setFieldsValue(role)
+      const i18nMap = roleI18n.getEntityI18n(role.key)?.[currentLang] || {}
+      form.setFieldsValue({
+        ...role,
+        display_name: i18nMap.display_name || '',
+        description: i18nMap.description || '',
+      })
+      setI18nRows(i18nToRows(roleI18n.getEntityI18n(role.key)))
     } else {
       form.resetFields()
+      setI18nRows([])
     }
     setEditOpen(true)
   }
@@ -90,8 +142,8 @@ export function RoleManage() {
   const columns: ColumnsType<RoleModel> = [
     { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
     { title: t('roleManage.key'), dataIndex: 'key', key: 'key', width: 120 },
-    { title: t('roleManage.displayName'), dataIndex: 'display_name', key: 'display_name', width: 120 },
-    { title: t('roleManage.description'), dataIndex: 'description', key: 'description' },
+    { title: t('roleManage.displayName'), key: 'display_name', width: 120, render: (_: unknown, record: RoleModel) => roleI18n.getLabel(record.key, 'display_name') },
+    { title: t('roleManage.description'), key: 'description', render: (_: unknown, record: RoleModel) => roleI18n.getLabel(record.key, 'description') },
     {
       title: t('roleManage.system'),
       dataIndex: 'is_system',
@@ -141,12 +193,22 @@ export function RoleManage() {
 
       <Table columns={columns} dataSource={roles} rowKey="id" loading={isLoading} size="small" pagination={false} />
 
-      <Modal title={editingRole ? t('roleManage.editTitle') : t('roleManage.newTitle')} open={editOpen} onCancel={() => { setEditOpen(false); setEditingRole(null) }} footer={null} destroyOnClose>
+      <Modal title={editingRole ? t('roleManage.editTitle') : t('roleManage.newTitle')} open={editOpen} onCancel={() => { setEditOpen(false); setEditingRole(null); setI18nRows([]) }} footer={null} destroyOnClose>
         <Form form={form} labelCol={{ style: { width: 110 } }} onFinish={(values) => {
+          const mergedI18n = rowsToI18n(i18nRows)
+          mergedI18n[currentLang] = {
+            ...(mergedI18n[currentLang] || {}),
+            display_name: values.display_name || '',
+            description: values.description || '',
+          }
+          const payload = {
+            ...values,
+            i18n: mergedI18n,
+          }
           if (editingRole) {
-            updateMut.mutate({ id: editingRole.id, data: values })
+            updateMut.mutate({ id: editingRole.id, data: payload })
           } else {
-            createMut.mutate(values)
+            createMut.mutate(payload)
           }
         }}>
           <Form.Item name="key" label={t('roleManage.keyLabel')} rules={[{ required: true }]}>
@@ -161,13 +223,64 @@ export function RoleManage() {
           <Form.Item name="sort_order" label={t('roleManage.sortOrderLabel')}>
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
+
+          <Typography.Text strong style={{ display: 'block', marginBottom: 8 }}>
+            {t('dictManage.i18nLabel')}
+          </Typography.Text>
+          {i18nRows.map((row, idx) => (
+            <Space key={row.locale} style={{ display: 'flex', marginBottom: 8 }} align="start">
+              <Select
+                value={row.locale}
+                onChange={(v) => {
+                  const next = [...i18nRows]
+                  next[idx] = { ...next[idx], locale: v }
+                  setI18nRows(next)
+                }}
+                style={{ width: 100 }}
+                options={LOCALE_OPTIONS}
+              />
+              <Input
+                placeholder={t('roleManage.displayNameLabel')}
+                value={row.display_name}
+                onChange={(e) => {
+                  const next = [...i18nRows]
+                  next[idx] = { ...next[idx], display_name: e.target.value }
+                  setI18nRows(next)
+                }}
+                style={{ width: 150 }}
+              />
+              <Input
+                placeholder={t('roleManage.descriptionLabel')}
+                value={row.description}
+                onChange={(e) => {
+                  const next = [...i18nRows]
+                  next[idx] = { ...next[idx], description: e.target.value }
+                  setI18nRows(next)
+                }}
+                style={{ width: 180 }}
+              />
+              <Button type="text" danger onClick={() => setI18nRows((prev) => prev.filter((_, i) => i !== idx))}>
+                {tCommon('delete')}
+              </Button>
+            </Space>
+          ))}
+          <Button
+            type="dashed"
+            size="small"
+            icon={<PlusOutlined />}
+            style={{ marginBottom: 16 }}
+            onClick={() => setI18nRows((prev) => [...prev, { locale: '', display_name: '', description: '' }])}
+          >
+            {t('dictManage.addLocale')}
+          </Button>
+
           <Button type="primary" htmlType="submit" block loading={createMut.isPending || updateMut.isPending}>
             {editingRole ? tCommon('update') : tCommon('create')}
           </Button>
         </Form>
       </Modal>
 
-      <Modal title={t('roleManage.permTitle', { name: permOpen?.display_name || permOpen?.key })} open={!!permOpen} onCancel={() => setPermOpen(null)} footer={null} width={600}>
+      <Modal title={t('roleManage.permTitle', { name: permOpen ? roleI18n.getLabel(permOpen.key, 'display_name') : '' })} open={!!permOpen} onCancel={() => setPermOpen(null)} footer={null} width={600}>
         {permOpen && (
           <div>
             {Object.entries(grouped).map(([group, perms]) => (

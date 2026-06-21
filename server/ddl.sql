@@ -30,7 +30,7 @@ CREATE TABLE `snatches` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` intege
 
 CREATE TABLE `subs` (`id` integer PRIMARY KEY AUTOINCREMENT,`torrent_id` integer NOT NULL,`user_id` integer NOT NULL,`language` varchar(32) NOT NULL,`title` varchar(255),`file_name` varchar(255) NOT NULL,`file_size` integer DEFAULT 0,`hits` integer DEFAULT 0,`created_at` datetime);
 
-CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_key` varchar(64) NOT NULL,`key` varchar(128) NOT NULL,`value` text,`label` varchar(255),`sort_order` integer DEFAULT 0,`is_default` numeric DEFAULT false,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
+CREATE TABLE `sys_dict_data` (`id` integer PRIMARY KEY AUTOINCREMENT,`type_key` varchar(64) NOT NULL,`key` varchar(128) NOT NULL,`label` varchar(255),`sort_order` integer DEFAULT 0,`is_active` numeric DEFAULT true,`created_at` datetime,`updated_at` datetime);
 
 CREATE TABLE `announcements` (`id` integer PRIMARY KEY AUTOINCREMENT,`title` varchar(255) NOT NULL,`content` text,`is_sticky` numeric DEFAULT false,`expires_at` datetime,`is_active` numeric DEFAULT true,`created_by` integer NOT NULL,`created_at` datetime,`updated_at` datetime);
 

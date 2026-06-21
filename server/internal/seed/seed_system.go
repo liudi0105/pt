@@ -52,6 +52,7 @@ func insertPermissionsBatch(db *gorm.DB, entries []Entry) {
 	}
 	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
 		log.Printf("Warning: %v", err)
+		return
 	}
 }
 
@@ -103,6 +104,7 @@ func insertSiteSettingsBatch(db *gorm.DB, entries []Entry) {
 	}
 	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
 		log.Printf("Warning: %v", err)
+		return
 	}
 }
 
@@ -222,6 +224,23 @@ func insertRolesBatch(db *gorm.DB, entries []Entry) {
 	if err := db.CreateInBatches(&toInsert, seedBatchSize).Error; err != nil {
 		log.Printf("Warning: %v", err)
 		return
+	}
+	for _, seed := range remaining {
+		prefix := "role." + seed.item.Key
+		for _, lf := range []struct {
+			locale string
+			field  string
+			val    string
+		}{
+			{"zh", "display_name", seed.item.DisplayName},
+			{"en", "display_name", seed.item.DisplayName},
+			{"zh", "description", seed.item.Description},
+			{"en", "description", seed.item.Description},
+		} {
+			if lf.val != "" {
+				saveI18n(db, prefix+"."+lf.field, lf.locale, lf.val)
+			}
+		}
 	}
 	insertedByName := make(map[string]model.RoleModel, len(toInsert))
 	for _, role := range toInsert {
@@ -368,10 +387,8 @@ func insertDictDataBatch(db *gorm.DB, entries []Entry) {
 			item: model.DictData{
 				TypeKey:   typeKey,
 				Key:       key,
-				Value:     strVal(entry.Data, "value"),
 				Label:     strVal(entry.Data, "label_zh"),
 				SortOrder: intVal(entry.Data, "sort_order"),
-				IsDefault: boolVal(entry.Data, "is_default"),
 				IsActive:  boolVal(entry.Data, "is_active"),
 			},
 			i18n: map[string]map[string]string{
@@ -563,10 +580,8 @@ func insertDictData(db *gorm.DB, data map[string]any) error {
 	d := model.DictData{
 		TypeKey:   dt.Key,
 		Key:       key,
-		Value:     strVal(data, "value"),
 		Label:     strVal(data, "label_zh"),
 		SortOrder: intVal(data, "sort_order"),
-		IsDefault: boolVal(data, "is_default"),
 		IsActive:  boolVal(data, "is_active"),
 	}
 	if err := db.Create(&d).Error; err != nil {

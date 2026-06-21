@@ -70,6 +70,16 @@
     "unlocked": "Unlocked",
     "locked": "Locked"
   },
+  "boolean": {
+    "yes": "Yes",
+    "no": "No",
+    "on": "On",
+    "off": "Off",
+    "open": "Open",
+    "close": "Close",
+    "enable": "Enable",
+    "disable": "Disable"
+  },
   "pagination": {
     "total": "Total {{count}} items"
   },
@@ -91,7 +101,6 @@
   "actions": "Actions",
   "description": "Description",
   "name": "Name",
-  "value": "Value",
   "label": "Label",
   "key": "Key",
   "type": "Type",

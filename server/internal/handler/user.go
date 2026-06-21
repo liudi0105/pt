@@ -1,14 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"pt-server/internal/model"
 
 	i18n "pt-server/internal/i18n"
-	"pt-server/internal/repository"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -24,20 +22,11 @@ func (h *Handler) GetProfile(c *gin.Context) {
 	}
 
 	total, seeding, _ := h.repo.Snatch.CountByUser(user.ID)
-
 	levelCode := 0
-	levelLabel := ""
 	if user.LevelID != nil {
 		level, err := h.repo.Level.GetByID(*user.LevelID)
 		if err == nil {
 			levelCode = level.Code
-			entries, err := h.repo.I18n.LoadByKeys([]string{fmt.Sprintf("user_level.%d.label", level.Code)})
-			if err == nil {
-				byKey := repository.GroupByKey(entries)
-				if locales, ok := byKey[fmt.Sprintf("user_level.%d.label", level.Code)]; ok {
-					levelLabel = locales[i18n.GetLang(c)]
-				}
-			}
 		}
 	}
 
@@ -51,7 +40,6 @@ func (h *Handler) GetProfile(c *gin.Context) {
 		"bonus":          user.Bonus,
 		"role":           user.Role,
 		"level_code":     levelCode,
-		"level_label":    levelLabel,
 		"total_snatches": total,
 		"seeding_count":  seeding,
 		"created_at":     user.CreatedAt,

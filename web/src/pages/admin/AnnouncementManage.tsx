@@ -57,14 +57,14 @@ export function AnnouncementManage() {
       dataIndex: 'is_sticky',
       key: 'is_sticky',
       width: 80,
-      render: (v: boolean) => v ? tCommon('yes') : tCommon('no'),
+      render: (v: boolean) => v ? tCommon('boolean.yes') : tCommon('boolean.no'),
     },
     {
       title: t('announcements.active'),
       dataIndex: 'is_active',
       key: 'is_active',
       width: 80,
-      render: (v: boolean) => v ? tCommon('yes') : tCommon('no'),
+      render: (v: boolean) => v ? tCommon('boolean.yes') : tCommon('boolean.no'),
     },
     {
       title: t('announcements.expiresAt'),

@@ -45,12 +45,13 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
               gap: 4,
             }}
           >
-            {filtered.map(name => {
-              const Icon = iconRegistry[name] ?? iconRegistry.Circle
+            {filtered.map((name, idx) => {
+              const Icon = iconRegistry[name]
+              if (!Icon) return null
               const isSelected = value === name
               return (
                 <div
-                  key={name}
+                  key={`${name}-${idx}`}
                   onClick={() => {
                     onChange?.(name)
                     setOpen(false)

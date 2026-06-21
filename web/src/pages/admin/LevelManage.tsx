@@ -9,15 +9,16 @@ import type { UserLevel } from '../../types'
 import { useTranslation } from 'react-i18next'
 import { ColorPickerField } from '../../components/ColorPickerField'
 import { IconPicker } from '../../components/IconPicker'
+import { useI18n } from '../../hooks/useI18n'
+import { DB_I18N_LOCALES, mergeI18nFields, resolveDbLang } from '../../utils/i18nPayload'
 
 const { Title } = Typography
-
-const locales = ['zh', 'en', 'jp', 'fr', 'de', 'ko', 'ru', 'es']
 
 export function LevelManage() {
   const { t } = useTranslation('admin')
   const { t: tCommon, i18n } = useTranslation('common')
-  const currentLang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
+  const currentLang = resolveDbLang(i18n.language)
+  const levelI18n = useI18n('user_level')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingRecord, setEditingRecord] = useState<UserLevel | null>(null)
   const [i18nRows, setI18nRows] = useState<string[]>([])
@@ -33,6 +34,7 @@ export function LevelManage() {
     mutationFn: createLevel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'levels'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setModalOpen(false)
       message.success(t('levelManage.createSuccess'))
     },
@@ -41,6 +43,7 @@ export function LevelManage() {
     mutationFn: ({ id, data }: { id: number; data: Partial<UserLevel> }) => updateLevel(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'levels'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setModalOpen(false)
       message.success(t('levelManage.updateSuccess'))
     },
@@ -49,14 +52,20 @@ export function LevelManage() {
     mutationFn: deleteLevel,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'levels'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       message.success(t('levelManage.deleteSuccess'))
     },
   })
 
   const openModal = (record: UserLevel | null) => {
     setEditingRecord(record)
-    if (record?.i18n) {
-      setI18nRows(Object.keys(record.i18n))
+    if (record) {
+      const entityI18n = levelI18n.getEntityI18n(String(record.code))
+      if (entityI18n) {
+        setI18nRows(Object.keys(entityI18n))
+      } else {
+        setI18nRows([])
+      }
     } else {
       setI18nRows([])
     }
@@ -68,7 +77,7 @@ export function LevelManage() {
     {
       title: t('levelManage.display'),
       key: 'label',
-      render: (_: unknown, record: UserLevel) => record.i18n?.[currentLang]?.label || '',
+      render: (_: unknown, record: UserLevel) => levelI18n.getLabel(String(record.code)),
     },
     {
       title: t('levelManage.color'),
@@ -88,7 +97,7 @@ export function LevelManage() {
       dataIndex: 'is_active',
       key: 'is_active',
       width: 60,
-      render: (v: boolean) => (v ? tCommon('status.yes') : tCommon('status.no')),
+      render: (v: boolean) => (v ? tCommon('boolean.yes') : tCommon('boolean.no')),
     },
     {
       title: tCommon('actions'),
@@ -140,7 +149,7 @@ export function LevelManage() {
           labelCol={{ style: { width: 110 } }}
           initialValues={editingRecord ? {
             ...editingRecord,
-            label: editingRecord.i18n?.[currentLang]?.label || '',
+            label: levelI18n.getEntityI18n(String(editingRecord.code))?.[currentLang]?.label || '',
             color: editingRecord.color || '#000000',
           } : {}}
           onFinish={(values) => {
@@ -148,20 +157,18 @@ export function LevelManage() {
               ...values,
               color: values.color?.toHexString?.() ?? values.color,
             }
-            const mergedI18n: Record<string, Record<string, string>> = {
-              ...(editingRecord?.i18n || {}),
-            }
+            let mergedI18n = levelI18n.getEntityI18n(String(editingRecord?.code ?? '')) || {}
             if (values.label) {
-              mergedI18n[currentLang] = {
-                ...(mergedI18n[currentLang] || {}),
+              mergedI18n = mergeI18nFields(mergedI18n, currentLang, {
                 label: values.label as string,
-              }
+              })
             }
             for (const locale of i18nRows) {
               const labelKey = `i18n_${locale}_label`
               if (values[labelKey]) {
-                if (!mergedI18n[locale]) mergedI18n[locale] = {}
-                mergedI18n[locale].label = values[labelKey] as string
+                mergedI18n = mergeI18nFields(mergedI18n, locale, {
+                  label: values[labelKey] as string,
+                })
               }
             }
             if (Object.keys(mergedI18n).length > 0) {
@@ -214,7 +221,7 @@ export function LevelManage() {
           {i18nRows.map((locale) => (
             <Space key={locale} style={{ display: 'flex', marginBottom: 8 }} align="start">
               <Form.Item name={`i18n_${locale}_label`} label={locale} style={{ marginBottom: 0 }}
-                initialValue={editingRecord?.i18n?.[locale]?.label ?? ''}
+                initialValue={editingRecord ? levelI18n.getEntityI18n(String(editingRecord.code))?.[locale]?.label ?? '' : ''}
               >
                 <Input placeholder={t('levelManage.i18nLabelPlaceholder')} />
               </Form.Item>
@@ -232,7 +239,7 @@ export function LevelManage() {
                 setI18nRows([...i18nRows, locale])
               }
             }}
-            options={locales.filter((l) => !i18nRows.includes(l)).map((l) => ({ value: l, label: l }))}
+            options={DB_I18N_LOCALES.filter((l) => !i18nRows.includes(l)).map((l) => ({ value: l, label: l }))}
           />
 
           <Button type="primary" htmlType="submit" loading={createMut.isPending || updateMut.isPending}>

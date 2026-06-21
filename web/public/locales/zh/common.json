@@ -70,6 +70,16 @@
     "unlocked": "已解锁",
     "locked": "未解锁"
   },
+  "boolean": {
+    "yes": "是",
+    "no": "否",
+    "on": "开",
+    "off": "关",
+    "open": "开启",
+    "close": "关闭",
+    "enable": "启用",
+    "disable": "禁用"
+  },
   "pagination": {
     "total": "共 {{count}} 条"
   },
@@ -91,7 +101,6 @@
   "actions": "操作",
   "description": "描述",
   "name": "名称",
-  "value": "值",
   "label": "标签",
   "key": "键",
   "type": "类型",

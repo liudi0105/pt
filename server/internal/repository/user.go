@@ -38,7 +38,7 @@ func (r *UserRepo) GetByPasskey(passkey string) (*model.User, error) {
 
 type UserFilter struct {
 	Role     string
-	Status   int
+	Status   *int
 	Keyword  string
 	Page     int
 	PageSize int
@@ -61,8 +61,8 @@ func (r *UserRepo) List(f UserFilter) (*UserListResult, error) {
 	if f.Role != "" {
 		query = query.Where("role = ?", f.Role)
 	}
-	if f.Status != 0 {
-		query = query.Where("status = ?", f.Status)
+	if f.Status != nil {
+		query = query.Where("status = ?", *f.Status)
 	}
 	if f.Keyword != "" {
 		query = query.Where("username LIKE ? OR email LIKE ?", "%"+f.Keyword+"%", "%"+f.Keyword+"%")

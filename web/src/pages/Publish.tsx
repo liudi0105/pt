@@ -8,24 +8,16 @@ import { useNavigate, useParams } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { uploadTorrent } from '../api/torrent'
 import { getDictData } from '../api/dict'
-import type { DictData } from '../types'
 import { useAuthStore } from '../store/auth'
 import { useTranslation } from 'react-i18next'
 import { formatSize } from '../utils/format'
 import { getTorrentCategoryOptions, PUBLISH_DICT_TYPES, PUBLISH_META_FIELDS } from '../constants/torrent'
+import { useI18n } from '../hooks/useI18n'
 
 const { Title } = Typography
 const { Dragger } = AntUpload
 const { TextArea } = Input
 const { Panel } = Collapse
-
-function dictOptions(data: Record<string, DictData[]> | undefined, typeKey: string, lang: string) {
-  const items = data?.[typeKey] ?? []
-  return items.map(d => ({
-    value: d.key,
-    label: d.i18n?.[lang]?.label || '',
-  }))
-}
 
 export function Publish() {
   const [form] = Form.useForm()
@@ -37,7 +29,7 @@ export function Publish() {
   const { token } = useAuthStore()
   const { t: tt } = useTranslation('torrent')
   const { t: tCommon } = useTranslation('common')
-  const { t } = useTranslation()
+  const dictI18n = useI18n('dict_data')
 
   const { data: dictData } = useQuery({
     queryKey: ['dict-data', PUBLISH_DICT_TYPES],
@@ -45,6 +37,14 @@ export function Publish() {
     select: (res) => res.data.data,
     staleTime: 5 * 60 * 1000,
   })
+
+  const localizedDictOptions = (typeKey: string) => {
+    const items = dictData?.[typeKey] ?? []
+    return items.map((d) => ({
+      value: d.key,
+      label: dictI18n.getLabel(`${typeKey}.${d.key}`) || '',
+    }))
+  }
 
   useEffect(() => {
     if (!token) {
@@ -120,26 +120,26 @@ export function Publish() {
           <Space direction="vertical" style={{ width: '100%' }} size="middle">
             <Space style={{ width: '100%' }} wrap>
               <Form.Item name="source" label={tt('publish.source')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'source', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('source')} />
               </Form.Item>
               <Form.Item name="codec" label={tt('publish.codec')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'codec', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('codec')} />
               </Form.Item>
             </Space>
             <Space style={{ width: '100%' }} wrap>
               <Form.Item name="standard" label={tt('publish.standard')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'resolution', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('resolution')} />
               </Form.Item>
               <Form.Item name="processing" label={tt('publish.processing')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'processing', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('processing')} />
               </Form.Item>
             </Space>
             <Space style={{ width: '100%' }} wrap>
               <Form.Item name="team" label={tt('publish.team')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'team', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('team')} />
               </Form.Item>
               <Form.Item name="audiocodec" label={tt('publish.audiocodec')}>
-                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'audio', lang)} />
+                <Select allowClear style={{ minWidth: 180 }} options={localizedDictOptions('audio')} />
               </Form.Item>
             </Space>
           </Space>
@@ -228,7 +228,7 @@ export function Publish() {
               </Form.Item>
               <Form.Item name="sticky" label={tt('publish.sticky')}>
                 <Select style={{ width: 120 }}>
-                  <Select.Option value="">{t('status.no')}</Select.Option>
+                  <Select.Option value="">{tCommon('boolean.no')}</Select.Option>
                   <Select.Option value="1">1</Select.Option>
                   <Select.Option value="2">2</Select.Option>
                   <Select.Option value="3">3</Select.Option>
@@ -236,7 +236,7 @@ export function Publish() {
               </Form.Item>
               <Form.Item name="pick" label={tt('publish.pick')}>
                 <Select style={{ width: 120 }} allowClear>
-                  <Select.Option value="recommend">{t('status.yes')}</Select.Option>
+                  <Select.Option value="recommend">{tCommon('boolean.yes')}</Select.Option>
                 </Select>
               </Form.Item>
               <Form.Item name="price" label={tt('publish.price')}>

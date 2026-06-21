@@ -6,12 +6,14 @@ import { useTranslation } from 'react-i18next'
 import type { ColumnsType } from 'antd/es/table'
 import type { Torrent, User } from '../../types'
 import { adminGetDashboard } from '../../api/admin'
+import { useI18n } from '../../hooks/useI18n'
 
 const { Title, Text } = Typography
 
 export function AdminDashboard() {
   const { t } = useTranslation('admin')
   const { t: tCommon } = useTranslation('common')
+  const roleI18n = useI18n('role')
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'dashboard'],
     queryFn: () => adminGetDashboard(),
@@ -26,7 +28,12 @@ export function AdminDashboard() {
       dataIndex: 'role',
       key: 'role',
       width: 90,
-      render: (role: string) => <Tag>{role}</Tag>,
+      render: (role: string) => {
+        if (role === 'user') return <Tag>{roleI18n.getLabel('user', 'display_name')}</Tag>
+        if (role === 'vip') return <Tag>{roleI18n.getLabel('vip', 'display_name')}</Tag>
+        if (role === 'admin') return <Tag>{roleI18n.getLabel('admin', 'display_name')}</Tag>
+        return <Tag>{role}</Tag>
+      },
     },
     {
       title: t('userManage.status'),

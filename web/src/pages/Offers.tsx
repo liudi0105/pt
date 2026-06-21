@@ -111,10 +111,10 @@ export function Offers() {
           {r.status === 'pending' && (
             <>
               <Button size="small" type="link" onClick={() => voteMut.mutate({ id: r.id, isYeah: true })} loading={voteMut.isPending}>
-                {t('status.yes')}
+                {tCommon('boolean.yes')}
               </Button>
               <Button size="small" type="link" danger onClick={() => voteMut.mutate({ id: r.id, isYeah: false })} loading={voteMut.isPending}>
-                {t('status.no')}
+                {tCommon('boolean.no')}
               </Button>
             </>
           )}
@@ -233,7 +233,7 @@ export function Offers() {
       <Modal title={t('nav.candidates')} open={votesOpen !== null} onCancel={() => setVotesOpen(null)} footer={null}>
         {votes?.map((v: OfferVote) => (
           <div key={v.id} style={{ padding: '4px 0' }}>
-            <Tag color={v.is_yeah ? 'green' : 'red'}>{v.is_yeah ? t('status.yes') : t('status.no')}</Tag>
+            <Tag color={v.is_yeah ? 'green' : 'red'}>{v.is_yeah ? tCommon('boolean.yes') : tCommon('boolean.no')}</Tag>
             <Text>{v.username}</Text>
             <Text type="secondary" style={{ marginLeft: 8, fontSize: 12 }}>{dayjs(v.created_at).fromNow()}</Text>
           </div>

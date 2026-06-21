@@ -9,52 +9,10 @@ import { useTranslation } from 'react-i18next'
 import { Route } from '../../routes/$lang/admin/dict'
 import { listDictTypes, createDictType, updateDictType, deleteDictType, listDictData, createDictData, updateDictData, deleteDictData } from '../../api/admin'
 import type { DictType, DictData } from '../../types'
+import { useI18n } from '../../hooks/useI18n'
+import { DB_I18N_LOCALE_OPTIONS, i18nToRows, rowsToI18n, type LocaleRow } from '../../utils/i18nPayload'
 
 const { Title } = Typography
-const { TextArea } = Input
-
-interface LocaleRow {
-  locale: string
-  label: string
-  remark?: string
-}
-
-const LOCALE_OPTIONS = [
-  { value: 'zh', label: '中文' },
-  { value: 'en', label: 'English' },
-  { value: 'jp', label: '日本語' },
-  { value: 'fr', label: 'Français' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'ko', label: '한국어' },
-  { value: 'ru', label: 'Русский' },
-  { value: 'es', label: 'Español' },
-]
-
-function i18nToRows(i18n: Record<string, Record<string, string>> | undefined): LocaleRow[] {
-  if (!i18n) return []
-  return Object.entries(i18n).map(([locale, fields]) => ({
-    locale,
-    label: fields.label || '',
-    remark: fields.remark || '',
-  }))
-}
-
-function rowsToI18n(rows: LocaleRow[]): Record<string, Record<string, string>> {
-  const i18n: Record<string, Record<string, string>> = {}
-  for (const row of rows) {
-    if (!row.locale) continue
-    i18n[row.locale] = { label: row.label || '' }
-    if (row.remark !== undefined) {
-      i18n[row.locale].remark = row.remark
-    }
-  }
-  return i18n
-}
-
-function localizedLabel(entity: { i18n?: Record<string, Record<string, string>>; label?: string } | null | undefined, lang: string, field = 'label'): string {
-  if (!entity) return ''
-  return entity.i18n?.[lang]?.[field] || ''
-}
 
 export function DictManage() {
   const { t } = useTranslation('admin')
@@ -63,17 +21,19 @@ export function DictManage() {
   const { lang } = useParams({ from: '/$lang' })
   const { type_key } = Route.useSearch()
   const activeTypeKey = type_key ?? null
+  const dictTypeI18n = useI18n('dict_type')
+  const dictDataI18n = useI18n('dict_data')
   const [typeModal, setTypeModal] = useState<{ open: boolean; record?: DictType }>({ open: false })
   const [dataModal, setDataModal] = useState<{ open: boolean; record?: DictData }>({ open: false })
-  const [typeLocaleRows, setTypeLocaleRows] = useState<LocaleRow[]>([])
-  const [dataLocaleRows, setDataLocaleRows] = useState<LocaleRow[]>([])
+  const [typeLocaleRows, setTypeLocaleRows] = useState<LocaleRow<'label' | 'remark'>[]>([])
+  const [dataLocaleRows, setDataLocaleRows] = useState<LocaleRow<'label'>[]>([])
   const queryClient = useQueryClient()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
   const openTypeModal = useCallback((record?: DictType) => {
     setTypeModal({ open: true, record })
-    setTypeLocaleRows(i18nToRows(record?.i18n))
+    setTypeLocaleRows(record ? i18nToRows(dictTypeI18n.getEntityI18n(record.key), ['label', 'remark']) : [])
   }, [])
 
   const closeTypeModal = useCallback(() => {
@@ -83,7 +43,7 @@ export function DictManage() {
 
   const openDataModal = useCallback((record?: DictData) => {
     setDataModal({ open: true, record })
-    setDataLocaleRows(i18nToRows(record?.i18n))
+    setDataLocaleRows(record ? i18nToRows(dictDataI18n.getEntityI18n(`${record.type_key}.${record.key}`), ['label']) : [])
   }, [])
 
   const closeDataModal = useCallback(() => {
@@ -109,11 +69,20 @@ export function DictManage() {
   })
 
   const selectedType = types?.find((t) => t.key === activeTypeKey)
+  const localizedTypeLabel = (record: DictType | null | undefined) => {
+    if (!record) return ''
+    return dictTypeI18n.getLabel(record.key) || ''
+  }
+  const localizedDataLabel = (record: DictData | null | undefined) => {
+    if (!record) return ''
+    return dictDataI18n.getLabel(`${record.type_key}.${record.key}`) || ''
+  }
 
   const createTypeMut = useMutation({
     mutationFn: createDictType,
     onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-types'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setActiveType(created.data.key)
       closeTypeModal()
       message.success(t('dictManage.typeCreated'))
@@ -123,6 +92,7 @@ export function DictManage() {
     mutationFn: ({ id, data }: { id: number; data: Partial<DictType> }) => updateDictType(id, data),
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-types'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       if (updated.data.key !== activeTypeKey) {
         setActiveType(updated.data.key)
       }
@@ -134,6 +104,7 @@ export function DictManage() {
     mutationFn: deleteDictType,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-types'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setActiveType(null)
       message.success(t('dictManage.typeDeleted'))
     },
@@ -143,6 +114,7 @@ export function DictManage() {
     mutationFn: (data: Partial<DictData>) => createDictData({ ...data, type_key: activeTypeKey! }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-data'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       closeDataModal()
       message.success(t('dictManage.entryCreated'))
     },
@@ -151,6 +123,7 @@ export function DictManage() {
     mutationFn: ({ id, data }: { id: number; data: Partial<DictData> }) => updateDictData(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-data'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       closeDataModal()
       message.success(t('dictManage.entryUpdated'))
     },
@@ -159,28 +132,21 @@ export function DictManage() {
     mutationFn: deleteDictData,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'dict-data'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       message.success(t('dictManage.entryDeleted'))
     },
   })
 
   const dataColumns = [
     { title: t('dictManage.key'), dataIndex: 'key', key: 'key' },
-    { title: t('dictManage.value'), dataIndex: 'value', key: 'value', ellipsis: true },
-    { title: t('dictManage.label'), key: 'label', render: (_: unknown, record: DictData) => localizedLabel(record, lang) },
+    { title: t('dictManage.label'), key: 'label', render: (_: unknown, record: DictData) => localizedDataLabel(record) },
     { title: t('dictManage.sort'), dataIndex: 'sort_order', key: 'sort_order', width: 60 },
-    {
-      title: t('dictManage.default'),
-      dataIndex: 'is_default',
-      key: 'is_default',
-      width: 60,
-      render: (v: boolean) => v ? tCommon('yes') : '-',
-    },
     {
       title: t('dictManage.active'),
       dataIndex: 'is_active',
       key: 'is_active',
       width: 60,
-      render: (v: boolean) => v ? tCommon('yes') : tCommon('no'),
+      render: (v: boolean) => v ? tCommon('boolean.yes') : tCommon('boolean.no'),
     },
     {
       title: tCommon('actions'),
@@ -218,7 +184,7 @@ export function DictManage() {
         showSearch
         style={{ width: 360, marginBottom: 16 }}
         optionFilterProp="label"
-        options={types?.map((t) => ({ value: t.key, label: `${localizedLabel(t, lang)} (${t.key})` }))}
+        options={types?.map((t) => ({ value: t.key, label: `${localizedTypeLabel(t)} (${t.key})` }))}
       />
 
       {selectedType && (
@@ -226,7 +192,7 @@ export function DictManage() {
           size="small"
           title={
             <Space>
-              <span>{localizedLabel(selectedType, lang)}</span>
+              <span>{localizedTypeLabel(selectedType)}</span>
               <Button size="small" onClick={() => openTypeModal(selectedType)}>
                 {tCommon('edit')}
               </Button>
@@ -265,7 +231,7 @@ export function DictManage() {
           labelCol={{ style: { width: 110 } }}
           initialValues={typeModal.record}
           onFinish={(values) => {
-            const payload = { ...values, i18n: rowsToI18n(typeLocaleRows) }
+            const payload = { ...values, i18n: rowsToI18n(typeLocaleRows, ['label', 'remark']) }
             if (typeModal.record) {
               updateTypeMut.mutate({ id: typeModal.record.id, data: payload })
             } else {
@@ -300,7 +266,7 @@ export function DictManage() {
                     setTypeLocaleRows(next)
                   }}
                   style={{ width: 100 }}
-                  options={LOCALE_OPTIONS}
+                  options={DB_I18N_LOCALE_OPTIONS as unknown as { value: string; label: string }[]}
                 />
                 <Input
                   placeholder={t('dictManage.labelLabel')}
@@ -357,7 +323,7 @@ export function DictManage() {
           labelCol={{ style: { width: 110 } }}
           initialValues={dataModal.record}
           onFinish={(values) => {
-            const payload = { ...values, i18n: rowsToI18n(dataLocaleRows) }
+            const payload = { ...values, i18n: rowsToI18n(dataLocaleRows, ['label']) }
             if (dataModal.record) {
               updateDataMut.mutate({ id: dataModal.record.id, data: payload })
             } else {
@@ -371,17 +337,11 @@ export function DictManage() {
           <Form.Item name="key" label={t('dictManage.keyLabel')} rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="value" label={t('dictManage.valueLabel')}>
-            <TextArea rows={3} />
-          </Form.Item>
           <Form.Item name="label" label={t('dictManage.labelLabel')}>
             <Input />
           </Form.Item>
           <Form.Item name="sort_order" label={t('dictManage.sortOrderLabel')}>
             <InputNumber style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item name="is_default" label={t('dictManage.defaultLabel')} valuePropName="checked">
-            <Switch />
           </Form.Item>
           <Form.Item name="is_active" label={t('dictManage.activeLabel')} valuePropName="checked">
             <Switch defaultChecked />
@@ -401,7 +361,7 @@ export function DictManage() {
                     setDataLocaleRows(next)
                   }}
                   style={{ width: 100 }}
-                  options={LOCALE_OPTIONS}
+                  options={DB_I18N_LOCALE_OPTIONS as unknown as { value: string; label: string }[]}
                 />
                 <Input
                   placeholder={t('dictManage.labelLabel')}

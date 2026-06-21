@@ -10,13 +10,14 @@ import { iconRegistry } from '../../constants/icons'
 import type { Medal, MedalFormValues } from '../../types'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
+import { useI18n } from '../../hooks/useI18n'
+import { buildI18nMap } from '../../utils/i18nPayload'
 
 const { Title } = Typography
 
 export function MedalManage() {
   const { t } = useTranslation('admin')
-  const { i18n } = useTranslation()
-  const lang = i18n.language?.startsWith('zh') ? 'zh' : 'en'
+  const medalI18n = useI18n('medal')
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Medal | null>(null)
   const [form] = Form.useForm()
@@ -37,15 +38,16 @@ export function MedalManage() {
         color: values.color,
         price: values.price,
         is_active: values.is_active,
-        i18n: {
+        i18n: buildI18nMap({
           zh: { label: values.label_zh, description: values.description_zh },
           en: { label: values.label_en, description: values.description_en },
-        },
+        }),
       }
       return createMedal(payload)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-medals'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setOpen(false)
       form.resetFields()
       message.success(t('medalManage.createSuccess'))
@@ -62,15 +64,16 @@ export function MedalManage() {
         color: values.color,
         price: values.price,
         is_active: values.is_active,
-        i18n: {
+        i18n: buildI18nMap({
           zh: { label: values.label_zh, description: values.description_zh },
           en: { label: values.label_en, description: values.description_en },
-        },
+        }),
       }
       return updateMedal(editing!.id, payload)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-medals'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       setOpen(false)
       setEditing(null)
       form.resetFields()
@@ -83,6 +86,7 @@ export function MedalManage() {
     mutationFn: (id: number) => deleteMedal(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-medals'] })
+      queryClient.invalidateQueries({ queryKey: ['db-i18n'] })
       message.success(t('medalManage.deleteSuccess'))
     },
     onError: () => message.error(t('medalManage.deleteFailed')),
@@ -97,8 +101,9 @@ export function MedalManage() {
 
   const openEdit = (record: Medal) => {
     setEditing(record)
-    const i18nZh = record.i18n?.zh || {}
-    const i18nEn = record.i18n?.en || {}
+    const i18nMap = medalI18n.getEntityI18n(String(record.code)) || {}
+    const i18nZh = i18nMap.zh || {}
+    const i18nEn = i18nMap.en || {}
     form.setFieldsValue({
       code: record.code,
       description: record.description,
@@ -129,16 +134,14 @@ export function MedalManage() {
       title: t('medalManage.display'),
       key: 'display',
       render: (_: unknown, record: Medal) => {
-        const i18nMap = record.i18n?.[lang]
-        return i18nMap?.label || ''
+        return medalI18n.getLabel(String(record.code)) || ''
       },
     },
     {
       title: t('medalManage.description'),
       key: 'description',
       render: (_: unknown, record: Medal) => {
-        const i18nMap = record.i18n?.[lang]
-        return i18nMap?.description || ''
+        return medalI18n.getLabel(String(record.code), 'description') || ''
       },
     },
     { title: t('medalManage.price'), dataIndex: 'price', key: 'price', width: 80 },
@@ -147,7 +150,7 @@ export function MedalManage() {
       dataIndex: 'is_active',
       key: 'is_active',
       width: 80,
-      render: (v: boolean) => (v ? t('common:status.yes') : t('common:status.no')),
+      render: (v: boolean) => (v ? t('common:boolean.yes') : t('common:boolean.no')),
     },
     {
       title: t('medalManage.created'),

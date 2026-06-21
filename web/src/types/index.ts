@@ -10,7 +10,6 @@ export interface User {
   status: number
   level_id: number | null
   level_code?: number
-  level_label?: string
   total_snatches?: number
   seeding_count?: number
   created_at: string
@@ -111,21 +110,17 @@ export interface DictType {
   is_active: boolean
   created_at: string
   updated_at: string
-  i18n?: Record<string, Record<string, string>>
 }
 
 export interface DictData {
   id: number
   type_key: string
   key: string
-  value: string
   label: string
   sort_order: number
-  is_default: boolean
   is_active: boolean
   created_at: string
   updated_at: string
-  i18n?: Record<string, Record<string, string>>
 }
 
 export interface UserLevel {
@@ -142,7 +137,6 @@ export interface UserLevel {
   sort_order: number
   is_active: boolean
   created_at: string
-  i18n?: Record<string, Record<string, string>>
 }
 
 export interface Comment {
@@ -247,7 +241,6 @@ export interface Medal {
   price: number
   is_active: boolean
   created_at: string
-  i18n?: Record<string, Record<string, string>>
 }
 
 export interface MedalFormValues {

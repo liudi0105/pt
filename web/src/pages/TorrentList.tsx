@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTranslation } from 'react-i18next'
 import { getTorrentCategoryLabel, TORRENT_CATEGORIES, PUBLISH_DICT_TYPES } from '../constants/torrent'
+import { useI18n } from '../hooks/useI18n'
 
 dayjs.extend(relativeTime)
 
@@ -36,6 +37,7 @@ export function TorrentList() {
   const { t: tt } = useTranslation('torrent')
   const { t } = useTranslation()
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const dictI18n = useI18n('dict_data')
 
   const { data: dictData } = useQuery({
     queryKey: ['dict-data', PUBLISH_DICT_TYPES],
@@ -80,16 +82,16 @@ export function TorrentList() {
 
   const taxonomyOptions = useMemo(() => {
     if (!dictData) return {} as Record<string, { value: string; label: string }[]>
-    const result: Record<string, { value: string; label: string }[]> = {}
-    for (const [dictType, paramKey] of Object.entries(DICT_TO_PARAM)) {
-      const items = dictData[dictType] ?? []
-      result[paramKey] = items.map((d: DictData) => ({
-        value: d.key,
-        label: d.i18n?.[lang]?.label || '',
-      }))
-    }
+      const result: Record<string, { value: string; label: string }[]> = {}
+      for (const [dictType, paramKey] of Object.entries(DICT_TO_PARAM)) {
+        const items = dictData[dictType] ?? []
+        result[paramKey] = items.map((d: DictData) => ({
+          value: d.key,
+          label: dictI18n.getLabel(`${dictType}.${d.key}`) || '',
+        }))
+      }
     return result
-  }, [dictData, lang])
+  }, [dictData, dictI18n.data])
 
   const handleTableChange = useCallback(
     (
