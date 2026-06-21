@@ -243,6 +243,7 @@ export interface Medal {
   code: number
   description: string
   image: string
+  color: string
   price: number
   is_active: boolean
   created_at: string
@@ -253,6 +254,7 @@ export interface MedalFormValues {
   code: number
   description: string
   image: string
+  color: string
   price: number
   is_active: boolean
   label_zh: string
@@ -276,6 +278,7 @@ export interface Achievement {
   name: string
   description: string
   icon: string
+  color: string
   group: string
   condition: string
   is_active: boolean

@@ -3,12 +3,13 @@ import { Table, Input, Tag, Space, Typography, Button, Checkbox, Row, Col, Card,
 import { FireOutlined, FilterOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Link, useParams, useNavigate, useSearch } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { listTorrents, type TorrentListParams } from '../api/torrent'
+import { listTorrents } from '../api/torrent'
 import { getDictData } from '../api/dict'
 import { formatSize } from '../utils/format'
 import type { Torrent, DictData } from '../types'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import type { SorterResult } from 'antd/es/table/interface'
+import type { TorrentSearchParams } from '../routes/$lang/torrents'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTranslation } from 'react-i18next'
@@ -19,25 +20,7 @@ dayjs.extend(relativeTime)
 const { Search } = Input
 const { Title, Text } = Typography
 
-type TorrentSearch = {
-  keyword?: string
-  categories?: string
-  incldead?: number
-  spstate?: string
-  sort?: string
-  order?: string
-  page?: number
-  page_size?: number
-  sources?: string
-  codecs?: string
-  standards?: string
-  media?: string
-  processings?: string
-  teams?: string
-  audiocodecs?: string
-}
-
-const DICT_TO_PARAM: Record<string, string> = {
+const DICT_TO_PARAM: Record<string, keyof TorrentSearchParams> = {
   source: 'sources',
   codec: 'codecs',
   resolution: 'standards',
@@ -49,7 +32,7 @@ const DICT_TO_PARAM: Record<string, string> = {
 export function TorrentList() {
   const navigate = useNavigate()
   const { lang } = useParams({ from: '/$lang' })
-  const search = useSearch({ from: '/$lang/torrents/' }) as TorrentSearch
+  const search = useSearch({ from: '/$lang/torrents/' })
   const { t: tt } = useTranslation('torrent')
   const { t } = useTranslation()
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -61,13 +44,13 @@ export function TorrentList() {
     staleTime: 5 * 60 * 1000,
   })
 
-  const apiParams: TorrentListParams = useMemo(() => ({
+  const apiParams = useMemo(() => ({
     page: search.page || 1,
     page_size: search.page_size || 50,
     keyword: search.keyword,
     categories: search.categories,
     incldead: search.incldead,
-    spstate: search.spstate as any,
+    spstate: search.spstate,
     sort: search.sort || 'created_at',
     order: search.order || 'desc',
     sources: search.sources,
@@ -85,12 +68,12 @@ export function TorrentList() {
     select: (res) => res.data,
   })
 
-  const updateSearch = useCallback((patch: Partial<TorrentSearch>) => {
-    navigate({ search: { ...search, ...patch, page: 1 } as any })
-  }, [navigate, search])
+  const updateSearch = useCallback((patch: Partial<TorrentSearchParams>) => {
+    navigate({ to: '/$lang/torrents', params: { lang }, search: { ...search, ...patch, page: 1 } } as any)
+  }, [navigate, search, lang])
 
-  const toggleQuickFilter = useCallback((key: keyof TorrentSearch, value: any) => {
-    updateSearch({ [key]: (search as any)[key] === value ? undefined : value })
+  const toggleQuickFilter = useCallback(<K extends keyof TorrentSearchParams>(key: K, value: NonNullable<TorrentSearchParams[K]>) => {
+    updateSearch({ [key]: search[key] === value ? undefined : value })
   }, [search, updateSearch])
 
   const selectedCategories = search.categories ? search.categories.split(',').filter(Boolean) : []
@@ -126,6 +109,8 @@ export function TorrentList() {
       const sortField = sortMap[s.field as string] || 'created_at'
       const sortOrder = s.order === 'ascend' ? 'asc' : 'desc'
       navigate({
+        to: '/$lang/torrents',
+        params: { lang },
         search: {
           ...search,
           sort: sortField,
@@ -303,7 +288,7 @@ export function TorrentList() {
 
             {Object.entries(taxonomyOptions).map(([paramKey, options]) => {
               if (!options.length) return null
-              const selected = ((search as any)[paramKey] as string || '').split(',').filter(Boolean)
+              const selected = (search[paramKey as keyof TorrentSearchParams] as string || '').split(',').filter(Boolean)
               const labelKey =
                 paramKey === 'standards'
                   ? 'publish.standard'
@@ -318,7 +303,7 @@ export function TorrentList() {
                   <Checkbox.Group
                     value={selected}
                     onChange={(values) =>
-                      updateSearch({ [paramKey]: values.length ? values.join(',') : undefined } as any)
+                      updateSearch({ [paramKey]: values.length ? values.join(',') : undefined })
                     }
                   >
                     <Row gutter={[0, 4]}>
@@ -337,7 +322,7 @@ export function TorrentList() {
               icon={<ReloadOutlined />}
               onClick={() => {
                 setShowAdvanced(false)
-                navigate({ search: {} as any })
+                navigate({ to: '/$lang/torrents', params: { lang }, search: {} as any })
               }}
             >
               {tt('filter.reset')}

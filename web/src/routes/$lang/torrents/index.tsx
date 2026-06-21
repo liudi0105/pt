@@ -9,7 +9,7 @@ export interface TorrentSearchParams {
   keyword?: string
   categories?: string
   incldead?: number
-  spstate?: number
+  spstate?: string
   sort?: string
   order?: string
   page?: number
@@ -48,7 +48,7 @@ export const Route = createFileRoute('/$lang/torrents/')({
     keyword: search.keyword || undefined,
     categories: search.categories || undefined,
     incldead: search.incldead ? Number(search.incldead) : undefined,
-    spstate: search.spstate ? Number(search.spstate) : undefined,
+    spstate: search.spstate || undefined,
     sort: search.sort || undefined,
     order: search.order || undefined,
     page: search.page ? Number(search.page) : undefined,

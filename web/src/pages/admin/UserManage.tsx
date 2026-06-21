@@ -207,7 +207,7 @@ export function UserManage() {
         footer={null}
       >
         <Form
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           onFinish={(values) => {
             if (!trafficModal.user) return
             updateTraffic.mutate({

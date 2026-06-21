@@ -1,5 +1,4 @@
 import { Card, Descriptions, Tag, Typography, Space } from 'antd'
-import { TrophyOutlined, UploadOutlined, CloudUploadOutlined, TeamOutlined, StarOutlined } from '@ant-design/icons'
 import { useQuery } from '@tanstack/react-query'
 import { getProfile } from '../../api/user'
 import { listMedals } from '../../api/medal'
@@ -8,6 +7,7 @@ import { listAchievements, listUserAchievements } from '../../api/achievement'
 import { useTranslation } from 'react-i18next'
 import { useI18n } from '../../hooks/useI18n'
 import { formatSize, calcRatio } from './utils'
+import { getMedalIcon, getMedalColor, getAchievementIcon, getAchievementColor } from '../../constants/icons'
 import dayjs from 'dayjs'
 import type { Achievement, UserAchievement, Medal, UserMedal } from '../../types'
 
@@ -66,15 +66,6 @@ export default function Profile() {
     .map((um: UserMedal) => medals?.find((m: Medal) => m.id === um.medal_id))
     .filter((m): m is Medal => m != null)
 
-  function achievementIcon(group: string) {
-    switch (group) {
-      case 'upload': return <UploadOutlined />
-      case 'seed': return <CloudUploadOutlined />
-      case 'community': return <TeamOutlined />
-      case 'special': return <StarOutlined />
-      default: return <TrophyOutlined />
-    }
-  }
 
   return (
     <Card>
@@ -85,7 +76,7 @@ export default function Profile() {
               <Space size="middle" wrap>
                 {wearingMedals.map((m: Medal) => (
                   <Space key={m.id} direction="vertical" align="center" size={4}>
-                    <Text style={{ fontSize: 32 }}>🏅</Text>
+                    {(() => { const Icon = getMedalIcon(m.code, m.image); return <Icon size={32} color={getMedalColor(m.code, m.color)} /> })()}
                     <Text strong>
                       {m.i18n?.[lang]?.label || `Medal ${m.code}`}
                     </Text>
@@ -126,7 +117,7 @@ export default function Profile() {
                   return (
                     <Space key={ua.id} direction="vertical" align="center" size={4}>
                       <Text style={{ fontSize: 24 }}>
-                        {a ? achievementIcon(a.group) : <TrophyOutlined />}
+                        {a ? (() => { const Icon = getAchievementIcon(a.code, a.icon); return <Icon size={24} color={getAchievementColor(a.code, a.color)} /> })() : null}
                       </Text>
                       <Text>
                         {tCommon(`achievements.${ua.achievement_code}`, { defaultValue: `Achievement ${ua.achievement_code}` })}

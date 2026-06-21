@@ -262,7 +262,7 @@ export function DictManage() {
         width={600}
       >
           <Form
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           initialValues={typeModal.record}
           onFinish={(values) => {
             const payload = { ...values, i18n: rowsToI18n(typeLocaleRows) }
@@ -354,7 +354,7 @@ export function DictManage() {
         width={600}
       >
         <Form
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           initialValues={dataModal.record}
           onFinish={(values) => {
             const payload = { ...values, i18n: rowsToI18n(dataLocaleRows) }

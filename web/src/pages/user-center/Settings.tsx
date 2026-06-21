@@ -21,7 +21,7 @@ export default function Settings() {
 
   return (
     <Card title={t('settings.changePassword')}>
-      <Form form={form} layout="vertical" onFinish={mutation.mutate} style={{ maxWidth: 400 }}>
+      <Form form={form} labelCol={{ style: { width: 120 } }} onFinish={mutation.mutate} style={{ maxWidth: 400 }}>
         <Form.Item
           name="current_password"
           label={t('settings.currentPassword')}

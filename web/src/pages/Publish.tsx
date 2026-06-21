@@ -96,7 +96,7 @@ export function Publish() {
   return (
     <div style={{ maxWidth: 720, margin: '0 auto' }}>
       <Title level={3}>{tt('publish.title')}</Title>
-      <Form form={form} layout="vertical">
+      <Form form={form} labelCol={{ style: { width: 100 } }}>
         <Card title={tt('publish.basicInfo')} style={{ marginBottom: 16 }}>
           <Form.Item
             name="name"
@@ -119,27 +119,27 @@ export function Publish() {
         <Card title={tt('publish.metadata')} style={{ marginBottom: 16 }}>
           <Space direction="vertical" style={{ width: '100%' }} size="middle">
             <Space style={{ width: '100%' }} wrap>
-              <Form.Item name="source" label={tt('publish.source')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'source', lang)} />
+              <Form.Item name="source" label={tt('publish.source')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'source', lang)} />
               </Form.Item>
-              <Form.Item name="codec" label={tt('publish.codec')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'codec', lang)} />
-              </Form.Item>
-            </Space>
-            <Space style={{ width: '100%' }} wrap>
-              <Form.Item name="standard" label={tt('publish.standard')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'resolution', lang)} />
-              </Form.Item>
-              <Form.Item name="processing" label={tt('publish.processing')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'processing', lang)} />
+              <Form.Item name="codec" label={tt('publish.codec')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'codec', lang)} />
               </Form.Item>
             </Space>
             <Space style={{ width: '100%' }} wrap>
-              <Form.Item name="team" label={tt('publish.team')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'team', lang)} />
+              <Form.Item name="standard" label={tt('publish.standard')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'resolution', lang)} />
               </Form.Item>
-              <Form.Item name="audiocodec" label={tt('publish.audiocodec')} style={{ width: 200 }}>
-                <Select allowClear options={dictOptions(dictData, 'audio', lang)} />
+              <Form.Item name="processing" label={tt('publish.processing')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'processing', lang)} />
+              </Form.Item>
+            </Space>
+            <Space style={{ width: '100%' }} wrap>
+              <Form.Item name="team" label={tt('publish.team')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'team', lang)} />
+              </Form.Item>
+              <Form.Item name="audiocodec" label={tt('publish.audiocodec')}>
+                <Select allowClear style={{ minWidth: 180 }} options={dictOptions(dictData, 'audio', lang)} />
               </Form.Item>
             </Space>
           </Space>

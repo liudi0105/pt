@@ -135,7 +135,7 @@ export function LevelManage() {
         width={600}
       >
         <Form
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           initialValues={editingRecord ? { ...editingRecord, color: editingRecord.color || '#000000' } : {}}
           onFinish={(values) => {
             const payload: Record<string, unknown> = {

@@ -289,7 +289,7 @@ export function SiteSettings() {
       >
         <Form
           form={form}
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           onFinish={(values) => updateMut.mutate({ key: editing.key, value: String(values.value).trim() })}
         >
           <Form.Item name="key" hidden>

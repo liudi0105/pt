@@ -203,7 +203,7 @@ export function Offers() {
         destroyOnClose
       >
         <Card size="small">
-          <Form form={form} layout="vertical" preserve={false}>
+          <Form form={form} preserve={false} labelCol={{ style: { width: 80 } }}>
             <Form.Item
               name="name"
               label={tt('name')}

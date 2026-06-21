@@ -114,7 +114,7 @@ export function AnnouncementManage() {
         footer={null}
         width={640}
       >
-        <Form form={form} layout="vertical" onFinish={(values) => {
+        <Form form={form} labelCol={{ style: { width: 110 } }} onFinish={(values) => {
           const payload = {
             ...values,
             expires_at: values.expires_at?.toISOString() ?? null,

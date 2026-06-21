@@ -4,6 +4,9 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { listMedals, createMedal, updateMedal, deleteMedal } from '../../api/medal'
+import { IconPicker } from '../../components/IconPicker'
+import { ColorPickerField } from '../../components/ColorPickerField'
+import { iconRegistry } from '../../constants/icons'
 import type { Medal, MedalFormValues } from '../../types'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
@@ -31,6 +34,7 @@ export function MedalManage() {
         code: values.code,
         description: values.description,
         image: values.image,
+        color: values.color,
         price: values.price,
         is_active: values.is_active,
         i18n: {
@@ -55,6 +59,7 @@ export function MedalManage() {
         code: values.code,
         description: values.description,
         image: values.image,
+        color: values.color,
         price: values.price,
         is_active: values.is_active,
         i18n: {
@@ -98,6 +103,7 @@ export function MedalManage() {
       code: record.code,
       description: record.description,
       image: record.image,
+      color: record.color,
       price: record.price,
       is_active: record.is_active,
       label_zh: i18nZh.label || '',
@@ -110,6 +116,15 @@ export function MedalManage() {
 
   const columns: ColumnsType<Medal> = [
     { title: t('medalManage.code'), dataIndex: 'code', key: 'code', width: 80 },
+    {
+      title: t('medalManage.icon'),
+      key: 'icon',
+      width: 60,
+      render: (_: unknown, record: Medal) => {
+        const IconComp = record.image ? iconRegistry[record.image] : null
+        return IconComp ? <IconComp size={20} color={record.color || undefined} /> : '-'
+      },
+    },
     {
       title: t('medalManage.display'),
       key: 'display',
@@ -174,7 +189,7 @@ export function MedalManage() {
       >
         <Form
           form={form}
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           initialValues={{ is_active: true }}
           onFinish={(values: MedalFormValues) => {
             if (editing) {
@@ -190,8 +205,11 @@ export function MedalManage() {
           <Form.Item name="description" label={t('medalManage.descriptionLabel')}>
             <Input.TextArea rows={3} />
           </Form.Item>
-          <Form.Item name="image" label={t('medalManage.imageUrlLabel')}>
-            <Input />
+          <Form.Item name="image" label={t('medalManage.iconLabel')}>
+            <IconPicker />
+          </Form.Item>
+          <Form.Item name="color" label={t('medalManage.colorLabel')}>
+            <ColorPickerField />
           </Form.Item>
           <Form.Item name="price" label={t('medalManage.priceLabel')} rules={[{ required: true }]}>
             <InputNumber min={0} style={{ width: '100%' }} />

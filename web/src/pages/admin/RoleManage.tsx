@@ -142,7 +142,7 @@ export function RoleManage() {
       <Table columns={columns} dataSource={roles} rowKey="id" loading={isLoading} size="small" pagination={false} />
 
       <Modal title={editingRole ? t('roleManage.editTitle') : t('roleManage.newTitle')} open={editOpen} onCancel={() => { setEditOpen(false); setEditingRole(null) }} footer={null} destroyOnClose>
-        <Form form={form} layout="vertical" onFinish={(values) => {
+        <Form form={form} labelCol={{ style: { width: 110 } }} onFinish={(values) => {
           if (editingRole) {
             updateMut.mutate({ id: editingRole.id, data: values })
           } else {

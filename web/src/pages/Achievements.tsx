@@ -1,23 +1,14 @@
 import { Card, Row, Col, Tag, Typography, Button, Spin, message, Empty, Tabs } from 'antd'
-import { TrophyOutlined, CheckCircleOutlined, LockOutlined, ReloadOutlined, UploadOutlined, CloudUploadOutlined, TeamOutlined, StarOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, LockOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { listAchievements, listUserAchievements, checkAchievements } from '../api/achievement'
+import { getAchievementIcon, getAchievementColor } from '../constants/icons'
 import type { Achievement, UserAchievement } from '../types'
 
 const { Title, Text } = Typography
 
 const GROUP_ORDER = ['upload', 'seed', 'community', 'special', 'other']
-
-function groupIcon(group: string) {
-  switch (group) {
-    case 'upload': return <UploadOutlined />
-    case 'seed': return <CloudUploadOutlined />
-    case 'community': return <TeamOutlined />
-    case 'special': return <StarOutlined />
-    default: return <TrophyOutlined />
-  }
-}
 
 export function Achievements() {
   const { t } = useTranslation()
@@ -67,7 +58,7 @@ export function Achievements() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <Title level={3} style={{ margin: 0 }}><TrophyOutlined /> {t('nav.achievements')}</Title>
+        <Title level={3} style={{ margin: 0 }}>{t('nav.achievements')}</Title>
         <Button icon={<ReloadOutlined />} onClick={() => checkMut.mutate()} loading={checkMut.isPending}>
           {t('achievement.check')}
         </Button>
@@ -93,7 +84,9 @@ export function Achievements() {
                         style={{ textAlign: 'center', opacity: has ? 0.75 : 1 }}
                       >
                         <div style={{ fontSize: 40, marginBottom: 8 }}>
-                          {groupIcon(a.group)}
+                          {(() => {
+                    const Icon = getAchievementIcon(a.code, a.icon); return <Icon size={40} color={getAchievementColor(a.code, a.color)} />
+                  })()}
                         </div>
                         <Title level={5}>{label}</Title>
                         <Text type="secondary" style={{ display: 'block', marginBottom: 8 }}>

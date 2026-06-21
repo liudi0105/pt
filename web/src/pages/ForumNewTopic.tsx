@@ -54,7 +54,7 @@ export function ForumNewTopic() {
               message="Use a clear title and keep the first post focused on the topic."
             />
 
-            <Form layout="vertical">
+            <Form labelCol={{ style: { width: 100 } }}>
               <Form.Item label={t('category')} required>
                 <Select
                   value={forumId}

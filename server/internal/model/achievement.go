@@ -8,6 +8,7 @@ type Achievement struct {
 	Name        string    `gorm:"size:128" json:"name"`
 	Description string    `gorm:"type:text" json:"description"`
 	Icon        string    `gorm:"size:255" json:"icon"`
+	Color       string    `gorm:"size:32;default:''" json:"color"`
 	Group       string    `gorm:"size:32;index;default:other" json:"group"`
 	Condition   string    `gorm:"type:text" json:"condition"`
 	IsActive    bool      `gorm:"default:true" json:"is_active"`

@@ -139,7 +139,13 @@
     "11": "Thanks Veteran",
     "12": "Forum Star",
     "13": "Veteran Member",
-    "14": "Newcomer"
+    "14": "Newcomer",
+    "15": "Power Uploader",
+    "16": "Data Hoarder",
+    "17": "Seeding Legend",
+    "18": "Forum Legend",
+    "19": "Thanks Guru",
+    "20": "Torrent Master"
   },
   "achievementDescriptions": {
     "0": "Granted after completing the first upload milestone",
@@ -156,7 +162,13 @@
     "11": "Granted after receiving 200 thanks",
     "12": "Granted after 500 forum posts",
     "13": "Granted after 3 years of membership",
-    "14": "Granted for registering an account"
+    "14": "Granted for registering an account",
+    "15": "Granted after uploading over 10TB",
+    "16": "Granted after downloading over 1TB",
+    "17": "Granted after seeding for 10000 hours",
+    "18": "Granted after 1000 forum posts",
+    "19": "Granted after receiving 500 thanks",
+    "20": "Granted after uploading 1000 torrents"
   },
   "achievement": {
     "check": "Check",

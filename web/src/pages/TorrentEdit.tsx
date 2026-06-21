@@ -46,7 +46,7 @@ export function TorrentEdit() {
         <Title level={4}>{t('editTitle')}</Title>
         <Form
           form={form}
-          layout="vertical"
+          labelCol={{ style: { width: 100 } }}
           initialValues={{ name: torrent.name, description: torrent.description, category: torrent.category }}
           onFinish={(values) => editMut.mutate(values)}
         >

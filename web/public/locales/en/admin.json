@@ -242,6 +242,7 @@
   "medalManage": {
     "title": "Medals",
     "code": "Code",
+    "icon": "Icon",
     "display": "Display",
     "description": "Description",
     "price": "Price",
@@ -252,7 +253,8 @@
     "editTitle": "Edit Medal",
     "codeLabel": "Code",
     "descriptionLabel": "Description",
-    "imageUrlLabel": "Image URL",
+    "iconLabel": "Icon",
+    "colorLabel": "Color",
     "priceLabel": "Price (bonus)",
     "activeLabel": "Active",
     "deleteConfirm": "Delete this medal?",
@@ -267,9 +269,18 @@
     "descriptionZh": "Description (Chinese)",
     "descriptionEn": "Description (English)"
   },
+  "iconPicker": {
+    "placeholder": "Select an icon",
+    "searchPlaceholder": "Search icons...",
+    "empty": "No icons found"
+  },
+  "colorPicker": {
+    "ariaLabel": "Select color"
+  },
   "achievementManage": {
     "title": "Achievements",
     "code": "Code",
+    "icon": "Icon",
     "display": "Display",
     "group": "Group",
     "condition": "Condition",
@@ -281,6 +292,7 @@
     "nameLabel": "Name",
     "descriptionLabel": "Description",
     "iconLabel": "Icon",
+    "colorLabel": "Color",
     "groupLabel": "Group",
     "conditionTypeLabel": "Condition Type",
     "conditionValueLabel": "Condition Value",

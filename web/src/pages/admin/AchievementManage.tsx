@@ -3,6 +3,9 @@ import { Table, Button, Modal, Form, Input, InputNumber, Typography, Space, mess
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { listAchievements, createAchievement, updateAchievement, deleteAchievement } from '../../api/achievement'
+import { IconPicker } from '../../components/IconPicker'
+import { ColorPickerField } from '../../components/ColorPickerField'
+import { iconRegistry } from '../../constants/icons'
 import type { Achievement } from '../../types'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
@@ -111,6 +114,7 @@ export function AchievementManage() {
       name: record.name,
       description: record.description,
       icon: record.icon,
+      color: record.color,
       group: record.group,
       condition_type: condType,
       condition_value: condValue,
@@ -121,6 +125,15 @@ export function AchievementManage() {
 
   const columns: ColumnsType<Achievement> = [
     { title: t('achievementManage.code'), dataIndex: 'code', key: 'code', width: 80 },
+    {
+      title: t('achievementManage.icon'),
+      key: 'icon',
+      width: 60,
+      render: (_: unknown, record: Achievement) => {
+        const IconComp = record.icon ? iconRegistry[record.icon] : null
+        return IconComp ? <IconComp size={20} color={record.color || undefined} /> : '-'
+      },
+    },
     {
       title: t('achievementManage.display'),
       key: 'display',
@@ -197,7 +210,7 @@ export function AchievementManage() {
       >
         <Form
           form={form}
-          layout="vertical"
+          labelCol={{ style: { width: 110 } }}
           initialValues={{ is_active: true }}
           onFinish={(values) => {
             if (editing) {
@@ -217,7 +230,10 @@ export function AchievementManage() {
             <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item name="icon" label={t('achievementManage.iconLabel')}>
-            <Input />
+            <IconPicker />
+          </Form.Item>
+          <Form.Item name="color" label={t('achievementManage.colorLabel')}>
+            <ColorPickerField />
           </Form.Item>
           <Form.Item name="group" label={t('achievementManage.groupLabel')} rules={[{ required: true }]}>
             <Select options={GROUP_OPTIONS.map(o => ({ ...o, label: t(o.label) }))} />

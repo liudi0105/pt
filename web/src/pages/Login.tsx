@@ -32,11 +32,11 @@ export function Login() {
         <Title level={3} style={{ textAlign: 'center' }}>
           {t('login')}
         </Title>
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item name="username" rules={[{ required: true, message: t('enterUsername') }]}>
+        <Form form={form} onFinish={handleSubmit} labelCol={{ style: { width: 80 } }}>
+          <Form.Item name="username" label={t('username')} rules={[{ required: true, message: t('enterUsername') }]}>
             <Input prefix={<UserOutlined />} placeholder={t('username')} size="large" />
           </Form.Item>
-          <Form.Item name="password" rules={[{ required: true, message: t('enterPassword') }]}>
+          <Form.Item name="password" label={t('password')} rules={[{ required: true, message: t('enterPassword') }]}>
             <Input.Password prefix={<LockOutlined />} placeholder={t('password')} size="large" />
           </Form.Item>
           <Form.Item>

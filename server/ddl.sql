@@ -125,3 +125,5 @@ CREATE TABLE `game_bets` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integ
 CREATE INDEX `idx_game_bets_user_id` ON `game_bets`(`user_id`);
 
 ALTER TABLE `user_medals` ADD COLUMN `is_wearing` numeric DEFAULT 0;
+ALTER TABLE `achievements` ADD COLUMN `color` varchar(32) DEFAULT '';
+ALTER TABLE `medals` ADD COLUMN `color` varchar(32) DEFAULT '';

@@ -7,7 +7,7 @@ export interface TorrentListParams {
   categories?: string
   keyword?: string
   incldead?: number
-  spstate?: number
+  spstate?: string
   sources?: string
   codecs?: string
   standards?: string

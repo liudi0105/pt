@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Card, Row, Col, Tag, Typography, Button, message, Spin, Space, Popconfirm } from 'antd'
-import { TrophyOutlined, EyeOutlined } from '@ant-design/icons'
+import { EyeOutlined } from '@ant-design/icons'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { listMedals, buyMedal, listUserMedals, wearMedal, unwearMedal } from '../api/medal'
+import { getMedalIcon, getMedalColor } from '../constants/icons'
 import type { Medal, UserMedal } from '../types'
 
 const { Title, Text } = Typography
@@ -64,7 +65,7 @@ export function Medals() {
 
   return (
     <div>
-      <Title level={3}><TrophyOutlined /> {t('nav.medals')}</Title>
+      <Title level={3}>{t('nav.medals')}</Title>
 
       <Space style={{ marginBottom: 16 }}>
         <Button
@@ -124,7 +125,9 @@ export function Medals() {
                 style={{ textAlign: 'center' }}
                 actions={[action]}
               >
-                <div style={{ fontSize: 48, marginBottom: 8 }}>🏅</div>
+                  {(() => {
+                    const Icon = getMedalIcon(m.code, m.image); return <Icon size={48} color={getMedalColor(m.code, m.color)} />
+                  })()}
                 <Title level={5}>{medalLabel}</Title>
                 <Text type="secondary">{medalDescription || t('medal.noDescription')}</Text>
                 <div style={{ marginTop: 8 }}>

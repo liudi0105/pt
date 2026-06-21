@@ -242,6 +242,7 @@
   "medalManage": {
     "title": "勋章管理",
     "code": "编号",
+    "icon": "图标",
     "display": "显示名",
     "description": "描述",
     "price": "价格",
@@ -252,7 +253,8 @@
     "editTitle": "编辑勋章",
     "codeLabel": "编号",
     "descriptionLabel": "描述",
-    "imageUrlLabel": "图片 URL",
+    "iconLabel": "图标",
+    "colorLabel": "颜色",
     "priceLabel": "价格（积分）",
     "activeLabel": "启用",
     "deleteConfirm": "确定删除此勋章？",
@@ -267,9 +269,18 @@
     "descriptionZh": "描述（中文）",
     "descriptionEn": "描述（英文）"
   },
+  "iconPicker": {
+    "placeholder": "选择图标",
+    "searchPlaceholder": "搜索图标...",
+    "empty": "未找到图标"
+  },
+  "colorPicker": {
+    "ariaLabel": "选择颜色"
+  },
   "achievementManage": {
     "title": "成就管理",
     "code": "编号",
+    "icon": "图标",
     "display": "显示名",
     "group": "分组",
     "condition": "条件",
@@ -281,6 +292,7 @@
     "nameLabel": "名称",
     "descriptionLabel": "描述",
     "iconLabel": "图标",
+    "colorLabel": "颜色",
     "groupLabel": "分组",
     "conditionTypeLabel": "条件类型",
     "conditionValueLabel": "条件值",

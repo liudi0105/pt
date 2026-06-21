@@ -39,16 +39,16 @@ export function Register() {
       key: 'open',
       label: t('openRegistration'),
       children: (
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item name="username" rules={[{ required: true, message: t('enterUsername') }]}>
-            <Input prefix={<UserOutlined />} placeholder={t('username')} size="large" />
-          </Form.Item>
-          <Form.Item name="email" rules={[{ required: true, message: t('enterEmail') }, { type: 'email', message: t('invalidEmail') }]}>
-            <Input prefix={<MailOutlined />} placeholder={t('email')} size="large" />
-          </Form.Item>
-          <Form.Item name="password" rules={[{ required: true, message: t('enterPassword') }, { min: 6, message: t('passwordMinLength') }]}>
-            <Input.Password prefix={<LockOutlined />} placeholder={t('password')} size="large" />
-          </Form.Item>
+          <Form form={form} onFinish={handleSubmit} labelCol={{ style: { width: 80 } }}>
+            <Form.Item name="username" label={t('username')} rules={[{ required: true, message: t('enterUsername') }]}>
+              <Input prefix={<UserOutlined />} placeholder={t('username')} size="large" />
+            </Form.Item>
+            <Form.Item name="email" label={t('email')} rules={[{ required: true, message: t('enterEmail') }, { type: 'email', message: t('invalidEmail') }]}>
+              <Input prefix={<MailOutlined />} placeholder={t('email')} size="large" />
+            </Form.Item>
+            <Form.Item name="password" label={t('password')} rules={[{ required: true, message: t('enterPassword') }, { min: 6, message: t('passwordMinLength') }]}>
+              <Input.Password prefix={<LockOutlined />} placeholder={t('password')} size="large" />
+            </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large">{t('register')}</Button>
           </Form.Item>
@@ -59,19 +59,19 @@ export function Register() {
       key: 'invite',
       label: t('inviteCode'),
       children: (
-        <Form form={inviteForm} onFinish={handleInviteSubmit} layout="vertical">
-          <Form.Item name="invite" rules={[{ required: true, message: t('enterInviteCode') }]}>
-            <Input prefix={<KeyOutlined />} placeholder={t('inviteCode')} size="large" />
-          </Form.Item>
-          <Form.Item name="username" rules={[{ required: true, message: t('enterUsername') }]}>
-            <Input prefix={<UserOutlined />} placeholder={t('username')} size="large" />
-          </Form.Item>
-          <Form.Item name="email" rules={[{ required: true, message: t('enterEmail') }, { type: 'email', message: t('invalidEmail') }]}>
-            <Input prefix={<MailOutlined />} placeholder={t('email')} size="large" />
-          </Form.Item>
-          <Form.Item name="password" rules={[{ required: true, message: t('enterPassword') }, { min: 6, message: t('passwordMinLength') }]}>
-            <Input.Password prefix={<LockOutlined />} placeholder={t('password')} size="large" />
-          </Form.Item>
+          <Form form={inviteForm} onFinish={handleInviteSubmit} labelCol={{ style: { width: 80 } }}>
+            <Form.Item name="invite" label={t('inviteCode')} rules={[{ required: true, message: t('enterInviteCode') }]}>
+              <Input prefix={<KeyOutlined />} placeholder={t('inviteCode')} size="large" />
+            </Form.Item>
+            <Form.Item name="username" label={t('username')} rules={[{ required: true, message: t('enterUsername') }]}>
+              <Input prefix={<UserOutlined />} placeholder={t('username')} size="large" />
+            </Form.Item>
+            <Form.Item name="email" label={t('email')} rules={[{ required: true, message: t('enterEmail') }, { type: 'email', message: t('invalidEmail') }]}>
+              <Input prefix={<MailOutlined />} placeholder={t('email')} size="large" />
+            </Form.Item>
+            <Form.Item name="password" label={t('password')} rules={[{ required: true, message: t('enterPassword') }, { min: 6, message: t('passwordMinLength') }]}>
+              <Input.Password prefix={<LockOutlined />} placeholder={t('password')} size="large" />
+            </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large">{t('registerWithInvite')}</Button>
           </Form.Item>
