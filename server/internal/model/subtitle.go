@@ -13,7 +13,13 @@ type Subtitle struct {
 	Hits       int       `gorm:"default:0" json:"hits"`
 	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
 
-	Username string `gorm:"-" json:"username"`
+	Username    string `gorm:"-" json:"username"`
+	TorrentName string `gorm:"-" json:"torrent_name"`
+}
+
+type SubtitleListResult struct {
+	Subtitles []Subtitle `json:"subtitles"`
+	Total     int64      `json:"total"`
 }
 
 func (Subtitle) TableName() string { return "subs" }

@@ -207,7 +207,7 @@ export function getMedalIcon(code: number, dbIcon?: string): LucideIcon {
 }
 
 export function getMedalColor(code: number, dbColor?: string): string {
-  return dbColor ?? MEDAL_COLORS[code] ?? '#8C8C8C'
+  return dbColor || (MEDAL_COLORS[code] ?? '#8C8C8C')
 }
 
 export const ACHIEVEMENT_ICONS: Record<number, LucideIcon> = {
@@ -264,5 +264,5 @@ export function getAchievementIcon(code: number, dbIcon?: string): LucideIcon {
 }
 
 export function getAchievementColor(code: number, dbColor?: string): string {
-  return dbColor ?? ACHIEVEMENT_COLORS[code] ?? '#8C8C8C'
+  return dbColor || (ACHIEVEMENT_COLORS[code] ?? '#8C8C8C')
 }

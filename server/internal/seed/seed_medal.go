@@ -28,6 +28,7 @@ func insertMedal(db *gorm.DB, data map[string]any) error {
 		Code:        code,
 		Description: strVal(data, "description_zh"),
 		Image:       strVal(data, "image"),
+		Color:       strVal(data, "color"),
 		Price:       floatVal(data, "price"),
 		IsActive:    boolVal(data, "is_active"),
 	}

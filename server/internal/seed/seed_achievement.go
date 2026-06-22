@@ -55,6 +55,7 @@ func insertAchievement(db *gorm.DB, data map[string]any) error {
 		Name:        strVal(data, "name"),
 		Description: strVal(data, "description"),
 		Icon:        strVal(data, "icon"),
+		Color:       strVal(data, "color"),
 		Group:       strVal(data, "group"),
 		Condition:   strVal(data, "condition"),
 		IsActive:    boolVal(data, "is_active"),

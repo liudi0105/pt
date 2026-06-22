@@ -195,6 +195,7 @@ export interface Subtitle {
   file_size: number
   hits: number
   username: string
+  torrent_name: string
   created_at: string
 }
 

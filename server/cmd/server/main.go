@@ -91,6 +91,7 @@ func main() {
 			torrents.DELETE("/:id", h.DeleteTorrent)
 		}
 		api.DELETE("/comments/:commentId", h.DeleteComment)
+		api.GET("/subtitles", mw.Auth(), h.ListAllSubtitles)
 		api.GET("/subtitles/:subId/download", h.DownloadSubtitle)
 		api.DELETE("/subtitles/:subId", h.DeleteSubtitle)
 

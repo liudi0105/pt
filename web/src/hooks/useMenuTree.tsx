@@ -4,6 +4,7 @@ import {
   BulbOutlined,
   CommentOutlined,
   DashboardOutlined,
+  FileTextOutlined,
   SearchOutlined,
   UserOutlined,
 } from '@ant-design/icons'
@@ -14,6 +15,7 @@ const iconMap: Record<string, React.ReactNode> = {
   BulbOutlined: <BulbOutlined />,
   CommentOutlined: <CommentOutlined />,
   DashboardOutlined: <DashboardOutlined />,
+  FileTextOutlined: <FileTextOutlined />,
   SearchOutlined: <SearchOutlined />,
   UserOutlined: <UserOutlined />,
 }

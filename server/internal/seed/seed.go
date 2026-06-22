@@ -115,7 +115,7 @@ func readFile(path string) ([]Entry, error) {
 }
 
 func InsertAll(db *gorm.DB, entries []Entry) error {
-	order := []string{"permission", "dict_type", "dict_data", "site_setting", "role", "user_level", "user", "forum", "forum_mod", "topic", "post", "read_post", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "achievement", "user_achievement", "medal", "user_medal", "announcement", "shop_item", "lucky_draw_prize"}
+	order := []string{"permission", "dict_type", "dict_data", "site_setting", "role", "user_level", "user", "forum", "forum_mod", "topic", "post", "read_post", "torrent", "news", "comment", "bookmark", "thanks", "snatch", "offer", "message", "invite", "achievement", "user_achievement", "medal", "user_medal", "subtitle", "announcement", "shop_item", "lucky_draw_prize"}
 	modelOrder := make(map[string]int, len(order))
 	for i, m := range order {
 		modelOrder[m] = i
@@ -231,6 +231,8 @@ func insertEntry(db *gorm.DB, entry Entry) error {
 		return insertMedal(db, entry.Data)
 	case "user_medal":
 		return insertUserMedal(db, entry.Data)
+	case "subtitle":
+		return insertSubtitle(db, entry.Data)
 	case "user_achievement":
 		return insertUserAchievement(db, entry.Data)
 	case "announcement":

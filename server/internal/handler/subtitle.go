@@ -7,10 +7,36 @@ import (
 	"strconv"
 
 	"pt-server/internal/model"
+	"pt-server/internal/repository"
+
 	i18n "pt-server/internal/i18n"
 
 	"github.com/gin-gonic/gin"
 )
+
+func (h *Handler) ListAllSubtitles(c *gin.Context) {
+	filter := repository.SubtitleFilter{
+		Keyword:  c.Query("keyword"),
+		Language: c.Query("language"),
+		Page:     1,
+		PageSize: 50,
+	}
+
+	if p, err := strconv.Atoi(c.DefaultQuery("page", "1")); err == nil {
+		filter.Page = p
+	}
+	if ps, err := strconv.Atoi(c.DefaultQuery("page_size", "50")); err == nil {
+		filter.PageSize = ps
+	}
+
+	result, err := h.repo.Subtitle.ListAll(filter)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": i18n.T(c, "failed_to_list_subtitles")})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+}
 
 func (h *Handler) ListSubtitles(c *gin.Context) {
 	torrentID, err := strconv.ParseInt(c.Param("id"), 10, 64)

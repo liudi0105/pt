@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LangRouteImport } from './routes/$lang'
 import { Route as LangIndexRouteImport } from './routes/$lang/index'
 import { Route as LangUserRouteImport } from './routes/$lang/user_'
+import { Route as LangSubtitlesRouteImport } from './routes/$lang/subtitles'
 import { Route as LangRegisterRouteImport } from './routes/$lang/register'
 import { Route as LangLoginRouteImport } from './routes/$lang/login'
 import { Route as LangUserCenterRouteRouteImport } from './routes/$lang/user-center/route'
@@ -72,6 +73,11 @@ const LangIndexRoute = LangIndexRouteImport.update({
 const LangUserRoute = LangUserRouteImport.update({
   id: '/user_',
   path: '/user',
+  getParentRoute: () => LangRoute,
+} as any)
+const LangSubtitlesRoute = LangSubtitlesRouteImport.update({
+  id: '/subtitles',
+  path: '/subtitles',
   getParentRoute: () => LangRoute,
 } as any)
 const LangRegisterRoute = LangRegisterRouteImport.update({
@@ -321,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/$lang/user-center': typeof LangUserCenterRouteRouteWithChildren
   '/$lang/login': typeof LangLoginRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/subtitles': typeof LangSubtitlesRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
@@ -367,6 +374,7 @@ export interface FileRoutesByTo {
   '/$lang/offers': typeof LangOffersRouteRoute
   '/$lang/login': typeof LangLoginRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/subtitles': typeof LangSubtitlesRoute
   '/$lang/user': typeof LangUserRoute
   '/$lang': typeof LangIndexRoute
   '/$lang/admin/achievements': typeof LangAdminAchievementsRoute
@@ -418,6 +426,7 @@ export interface FileRoutesById {
   '/$lang/user-center': typeof LangUserCenterRouteRouteWithChildren
   '/$lang/login': typeof LangLoginRoute
   '/$lang/register': typeof LangRegisterRoute
+  '/$lang/subtitles': typeof LangSubtitlesRoute
   '/$lang/user_': typeof LangUserRoute
   '/$lang/': typeof LangIndexRoute
   '/$lang/user-center/bonus': typeof LangUserCenterBonusRouteRouteWithChildren
@@ -471,6 +480,7 @@ export interface FileRouteTypes {
     | '/$lang/user-center'
     | '/$lang/login'
     | '/$lang/register'
+    | '/$lang/subtitles'
     | '/$lang/user'
     | '/$lang/'
     | '/$lang/user-center/bonus'
@@ -517,6 +527,7 @@ export interface FileRouteTypes {
     | '/$lang/offers'
     | '/$lang/login'
     | '/$lang/register'
+    | '/$lang/subtitles'
     | '/$lang/user'
     | '/$lang'
     | '/$lang/admin/achievements'
@@ -567,6 +578,7 @@ export interface FileRouteTypes {
     | '/$lang/user-center'
     | '/$lang/login'
     | '/$lang/register'
+    | '/$lang/subtitles'
     | '/$lang/user_'
     | '/$lang/'
     | '/$lang/user-center/bonus'
@@ -635,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/user'
       fullPath: '/$lang/user'
       preLoaderRoute: typeof LangUserRouteImport
+      parentRoute: typeof LangRoute
+    }
+    '/$lang/subtitles': {
+      id: '/$lang/subtitles'
+      path: '/subtitles'
+      fullPath: '/$lang/subtitles'
+      preLoaderRoute: typeof LangSubtitlesRouteImport
       parentRoute: typeof LangRoute
     }
     '/$lang/register': {
@@ -1108,6 +1127,7 @@ interface LangRouteChildren {
   LangUserCenterRouteRoute: typeof LangUserCenterRouteRouteWithChildren
   LangLoginRoute: typeof LangLoginRoute
   LangRegisterRoute: typeof LangRegisterRoute
+  LangSubtitlesRoute: typeof LangSubtitlesRoute
   LangUserRoute: typeof LangUserRoute
   LangIndexRoute: typeof LangIndexRoute
 }
@@ -1120,6 +1140,7 @@ const LangRouteChildren: LangRouteChildren = {
   LangUserCenterRouteRoute: LangUserCenterRouteRouteWithChildren,
   LangLoginRoute: LangLoginRoute,
   LangRegisterRoute: LangRegisterRoute,
+  LangSubtitlesRoute: LangSubtitlesRoute,
   LangUserRoute: LangUserRoute,
   LangIndexRoute: LangIndexRoute,
 }
